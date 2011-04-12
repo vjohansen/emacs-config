@@ -2,17 +2,20 @@
 ;;
 ;; TO LOAD THIS FILE ADD THE FOLLOWING TO .emacs or ~.emacs.d/init.el
 ;;
+
+;; MISSING defvar here
+
 ;; ;; Add path to locally installed packages. Change as needed.
 ;; (dolist (dir
 ;; 	 `(
 ;; 	   "~/src/gnus/lisp"
 ;; 	   "~/site-lisp/ess-5.13/lisp"
-;;         ..
+;;         ;; ...
 ;; 	   ,my-lisp-dir	      ; Most important last
 ;; 	   ))
-;;   (add-to-list load-path dir))
+;;   (add-to-list 'load-path dir))
 ;;
-;; (load "init2")
+;; (load "vj-init")
 ;;
 
 (unless (boundp 'my-lisp-dir)

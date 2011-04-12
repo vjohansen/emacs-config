@@ -24,7 +24,7 @@
                          (setq tab-width 4)
                          (recenter)))
 
-(global-set-key "\M-s"    'my-line-copy)
+(global-set-key "\M-s"    'my-line-copy) ;FIXME
 
 
 (global-set-key [S-up] 'my-scroll-down-hook)

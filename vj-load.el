@@ -1,3 +1,4 @@
+
 (message "vj-load: system-type=%s system-name=%s LOGONSERVER=%s"
   system-type (system-name) (getenv "LOGONSERVER"))
 
@@ -23,14 +24,15 @@
 (setq anything-enable-digit-shortcuts t)
 (global-set-key (kbd "C-å") 'anything)
 
-(when (file-directory-p "~/site-lisp/yasnippet")
-  (add-to-list 'load-path "~/site-lisp/yasnippet")
-  (defvar vj-yasnippet-install-dir  "~/site-lisp/yasnippet")
-  (add-to-list 'load-path vj-yasnippet-install-dir)
-  (require 'yasnippet)
-  (yas/initialize)
-  (yas/load-directory vj-yasnippet-install-dir)
-  (yas/load-directory (concat vj-emacs-config-dir "yasnippet")))
+;; FIXME
+;; (when (file-directory-p "~/site-lisp/yasnippet")
+;;   (add-to-list 'load-path "~/site-lisp/yasnippet")
+;;   (defvar vj-yasnippet-install-dir  "~/site-lisp/yasnippet")
+;;   (add-to-list 'load-path vj-yasnippet-install-dir)
+;;   (require 'yasnippet)
+;;   (yas/initialize)
+;;   (yas/load-directory vj-yasnippet-install-dir)
+;;   (yas/load-directory (concat vj-emacs-config-dir "yasnippet")))
 
 (add-to-list 'load-path "~/site-lisp/org-mode/lisp")
 (add-to-list 'load-path "~/site-lisp/org-mode/contrib/lisp")

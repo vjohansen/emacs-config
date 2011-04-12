@@ -84,6 +84,7 @@ Don't use customize."
 
 
 (defvar vps-project-dir "~/.emacs.d/vps")
+(defvar vps-perl-program "perl")
 
 (defvar vps-default-setting-alist
   '(
@@ -95,7 +96,8 @@ Don't use customize."
      ) "Fallback values for projects. Update with vps-add-default-setting")
 
 (defvar vps-vgrep-call
-  (concat "perl " (or (locate-library "vgrep22.pl") "-S vgrep22.pl"))
+  (concat vps-perl-program " "
+          (or (locate-library "vgrep22.pl") "-S vgrep22.pl"))
   "Command line for calling vgrep22.pl program.")
 
 ;; Internal globals
@@ -682,6 +684,11 @@ Optional argument GREP-IGNORE-CASE when non-nil ignore case in search."
 (font-lock-add-keywords 'vps-list-dirs-mode
   '(("^  \\(.* s\\'\\)" 1 'shadow append)))
 
+(defun vps-list-dirs-find-file ()
+  (interactive)
+  (let ((default-directory ""))
+    (find-file (replace-regexp-in-string "^ *" "" (buffer-substring-no-properties (point-at-bol) (point-at-eol))))))
+
 (defun vps-list-dirs ()
   "Display directories for current project in a buffer. Press space to
 call \\[find-file-at-point]"
@@ -713,7 +720,7 @@ call \\[find-file-at-point]"
   (vps-list-dirs-mode)
   (hide-body)
   (local-set-key (kbd "SPC") 'show-subtree)
-  (local-set-key (kbd "RET") 'find-file-at-point)
+  (local-set-key (kbd "RET") 'vps-list-dirs-find-file)
   (message (propertize " RET find-file-at-point   SPACE show-subtree"
              'face 'header-line)))
 
@@ -849,7 +856,7 @@ call \\[find-file-at-point]"
       (delete-file filename))
     (message "Making index: %s" filename)
     (eshell-command
-      (concat "perl -w " (or (locate-library "vj-make-index.pl")
+      (concat vps-perl-program " -w " (or (locate-library "vj-make-index.pl")
                            "-S vj-make-index.pl") " " vps-project-name " &") t)))
 
 
