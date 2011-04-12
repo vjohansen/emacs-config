@@ -22,9 +22,11 @@
 ;; Installation:
 ;;
 ;; (require 'ac-source-sql)
+;; (setq ac-source-sql-sqlcmd "sqlcmd -S localhost\\SQLEXPRESS -d nothwind")
 ;;
-;; This install a function in sql-interactive-mode-hook that sets ac-sources
+;; A function is installed in sql-interactive-mode-hook that sets ac-sources
 ;;
+;; Use M-x ac-source-sql-test-connection to test the connection
 
 ;;; History:
 
@@ -63,12 +65,15 @@ Example  sqlcmd -S localhost\\SQLEXPRESS -d nothwind")
   (setq ac-sources '(ac-source-sql ac-source-sql-table-name)))
 
 (defun ac-source-sql-test-connection ()
+  (interactive)
   (shell-command
    (format "%s -W -s ,  -Q %s" ac-source-sql-sqlcmd
            (shell-quote-argument "select top 5 table_name, column_name FROM INFORMATION_SCHEMA.COLUMNS ORDER BY table_name")))
   (switch-to-buffer-other-window "*Shell Command Output*"))
 
 (defun ac-source-load-dd-via-sqlcmd ()
+  (unless ac-source-sql-sqlcmd
+    (message "**** YOU MUST SET ac-source-sql-sqlcmd"))
   (message "Calling sqlcmd ..\nPlease wait..")
   (let ((count 0) table-name new-table-name fields result doc
         (output (shell-command-to-string
@@ -106,6 +111,7 @@ Example  sqlcmd -S localhost\\SQLEXPRESS -d nothwind")
 
 (defun ac-source-sql-load-dd ()
   ""
+  (interactive)
   (ac-source-sql-clear-caches)
 
   ;; (funcall (intern (format "ac-source-load-dd-via-%s" 'sqlcmd)))
