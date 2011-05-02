@@ -138,12 +138,13 @@ Example  sqlcmd -S localhost\\SQLEXPRESS -d nothwind")
 
 (defvar ac-source-sql
   '((prefix . "\\_<[a-zA-Z][a-zA-Z_0-9]*\\.\\([a-zA-Z_0-9]+\\)")
-    (document . ac-source-sql-document)
-    (candidates . ac-source-sql-candidates)))
+     (document . ac-source-sql-document)
+     (requires . 1)
+     (candidates . ac-source-sql-candidates)))
 
 (defvar ac-source-sql-table-name
   '((candidates . ac-source-sql-table-name-list)
-    (prefix . symbol)))
+     (prefix . symbol)))
 
 (defun ac-source-sql-document (name)
   (let ((entry
