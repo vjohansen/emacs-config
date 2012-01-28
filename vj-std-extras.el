@@ -2,7 +2,7 @@
 
 (setq gdb-many-windows t)
 (setq dired-dwim-target t)
-
+(setq dired-auto-revert-buffer t)
 
 (setq
   max-lisp-eval-depth 1000
@@ -26,6 +26,7 @@
   mark-even-if-inactive t
   x-stretch-cursor t)
 
+(setq calendar-week-start-day 1)
 ;;(minibuffer-electric-default-mode 1)
 
 ;; ------------------------------------------------------------
