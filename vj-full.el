@@ -46,3 +46,6 @@
     (if mark-active
         (buffer-substring (region-beginning) (region-end))
       (read-string "Query: ")))))
+
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)

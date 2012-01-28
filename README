@@ -3,28 +3,23 @@ Vagns emacs lisp config files.
 Well, not really this is a stripped down version for public
 consumption. MORE WILL COME LATER.
 
-Prerequisites
-
-  - Install yasnippet and auto-complete in ~/site-lisp
-    (If you install in another place you must call (add-to-list
-    'load-path ..) *before* calling vj-load (or vj-init).
-
 If necessary setup exec-path and PATH first:
 
   ;; Windows example (MSYS-Git has grep.exe and other useful tools)
   (add-to-list 'exec-path "c:/tools/Git/bin" t)
   (setenv "PATH" (concat (getenv "PATH") ";c:\\tools\\Git\\bin"))
 
-After that call vj-load.el
+After that call vj-init.el
 
   (add-to-list 'load-path "~/path/to/emacs-config/")
-  (load "vj-load")
+  ;; optionally change my-lisp-dir via defvar (default is "~/elisp")
+  (load "vj-init")
 
 to your ~/.emacs (or ~/emacs.d/init.el)
 
 
 If you do not have a .emacs (or init.el) yet then take a look at the
-vj-init.el. This enables you to automtically load hostname and os
+vj-init.el. This enables you to automatically load hostname and os
 specific emacs lisp files. It also makes the customize filename
 hostname specific.
 
