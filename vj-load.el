@@ -15,8 +15,8 @@
 
 (add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
 
-(when (file-directory-p "~/site-lisp/auto-complete-1.3.1")
-  (add-to-list 'load-path "~/site-lisp/auto-complete-1.3.1")
+(when (file-directory-p "~/site-lisp/auto-complete")
+  (add-to-list 'load-path "~/site-lisp/auto-complete")
   (safe-load "auto-complete-config")
   (ac-config-default))
 
