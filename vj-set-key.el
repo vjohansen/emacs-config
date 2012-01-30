@@ -51,6 +51,21 @@
       (tags-apropos (concat "::" (current-word) "\\>"))
       (tags-apropos (concat "\\<" (current-word) "\\>")))))
 
+
+(defun isearch-yank-symbol-or-char ()
+  "Pull next character or symbol from buffer into search string."
+  (interactive)
+  (isearch-yank-internal
+   (lambda ()
+     (if (or (memq (char-syntax (or (char-after) 0)) '(?w ?_))
+             (memq (char-syntax (or (char-after (1+ (point))) 0)) '(?w ?_)))
+         (forward-symbol 1)
+       (forward-char 1))
+     (point))))
+
+(define-key isearch-mode-map (kbd "C-S-w") 'isearch-yank-symbol-or-char)
+
+
 (defun vj-prog-keys-setup ()
   "Bind æ -> {,  M-æ -> forward-paragraph, etc."
   (interactive)
