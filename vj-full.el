@@ -36,6 +36,10 @@
 ;; (global-set-key [M-f2] (lambda () (interactive) (vps-grep (current-word))))
 (global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
 
+(when (equal system-type 'windows-nt)
+  ;; http://blogs.msdn.com/b/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx
+  (autoload 'powershell "powershell"
+    "Run powershell as a shell within emacs." t))
 
 (defun google ()
   "Googles a query or region if any."
