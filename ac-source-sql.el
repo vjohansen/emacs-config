@@ -137,9 +137,9 @@ Example  sqlcmd -S localhost\\SQLEXPRESS -d nothwind")
              (nth 1 e) ac-source-sql-document-hash-table)))
 
 (defvar ac-source-sql
-  '((prefix . "\\_<[a-zA-Z][a-zA-Z_0-9]*\\.\\([a-zA-Z_0-9]+\\)")
+  '((prefix . "\\_<[a-zA-Z][a-zA-Z_0-9]*\\.\\([a-zA-Z_0-9]*\\)")
      (document . ac-source-sql-document)
-     (requires . 1)
+     (requires . 0)
      (candidates . ac-source-sql-candidates)))
 
 (defvar ac-source-sql-table-name
