@@ -22,6 +22,11 @@
   (defvar my-lisp-dir "~/elisp"))
 
 (setq my-lisp-dir (expand-file-name my-lisp-dir))
+(unless (file-directory-p my-lisp-dir)
+   (make-directory my-lisp-dir)
+   (message "*** Created %s!***\nDelete dir and set my-lisp-dir in .emacs to change" 
+	    my-lisp-dir)
+   (sit-for 2))
 
 ;; Load customize file
 (setq custom-file (format "%s/custom-%s.el" my-lisp-dir (downcase system-name)))
