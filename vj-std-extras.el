@@ -1,13 +1,19 @@
 
 
 (setq gdb-many-windows t)
-(setq dired-dwim-target t)
-(setq dired-auto-revert-buffer t)
+(setq dired-dwim-target            t
+      dired-auto-revert-buffer     t
+      dired-auto-revert-buffer     t
+      display-time-24hr-format     t
+      tags-revert-without-query    t
+      large-file-warning-threshold 100000000
+      comint-input-ignoredups      t
+      make-pointer-invisible       nil)
 
-(setq
-  max-lisp-eval-depth 1000
-  garbage-collection-messages nil
-  gc-cons-threshold (* 8 400000))
+(setq inhibit-splash-screen t
+      max-lisp-eval-depth 1000
+      garbage-collection-messages nil
+      gc-cons-threshold (* 8 400000))
 
 
 (setq default-major-mode 'text-mode)
@@ -26,7 +32,7 @@
   mark-even-if-inactive t
   x-stretch-cursor t)
 
-(setq calendar-week-start-day 1)
+(setq calendar-week-start-day 1)	;monday
 ;;(minibuffer-electric-default-mode 1)
 
 ;; ------------------------------------------------------------
@@ -51,7 +57,13 @@
 
 (require 'dired-x)
 
-;; ------------------------------------------------------------
+(autoload 'wdired-change-to-wdired-mode "wdired")
+(eval-after-load "dired"
+  '(progn
+     (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
+     (define-key dired-mode-map
+       [menu-bar immediate wdired-change-to-wdired-mode]
+       '("Edit File Names" . wdired-change-to-wdired-mode))))
 
 ;; Add different directory sorting keys to dired
 (eval-after-load "dired"
