@@ -18,6 +18,8 @@
 ;; (load "vj-init")
 ;;
 
+(set-background-color "#ffeeff")
+
 (unless (boundp 'my-lisp-dir)
   (defvar my-lisp-dir "~/elisp"))
 
@@ -27,6 +29,7 @@
    (message "*** Created %s!***\nDelete dir and set my-lisp-dir in .emacs to change" 
 	    my-lisp-dir)
    (sit-for 2))
+(add-to-list 'load-path my-lisp-dir)
 
 ;; Load customize file
 (setq custom-file (format "%s/custom-%s.el" my-lisp-dir (downcase system-name)))
@@ -34,6 +37,8 @@
 (set-register ?c `(file . ,custom-file))
 
 (load "vj-load")
+
+(set-background-color "#ffeedd")
 
 (defvar vj-system-type-specific-elisp-file
   (format "%s/system-type-%s.el"
@@ -47,4 +52,5 @@
   (format "%s/machine-%s.el" my-lisp-dir (downcase system-name)))
 (safe-load vj-machine-specific-elisp-file)
 (set-register ?e `(file . ,vj-machine-specific-elisp-file)) ;; C-x r j e
+
 
