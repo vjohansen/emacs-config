@@ -1,4 +1,6 @@
 
+;; GPL blah blah
+
 ;; A work-around for the feature loss in Emacs 24
 ;; grep-mode no longer inherits the feature from compilation-mode where it
 ;; looks for Entering Directory lines. :-(

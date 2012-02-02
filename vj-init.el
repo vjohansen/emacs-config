@@ -2,21 +2,12 @@
 ;;
 ;; TO LOAD THIS FILE ADD THE FOLLOWING TO .emacs or ~.emacs.d/init.el
 ;;
-
-;; MISSING defvar here
-
-;; ;; Add path to locally installed packages. Change as needed.
-;; (dolist (dir
-;; 	 `(
-;; 	   "~/src/gnus/lisp"
-;; 	   "~/site-lisp/ess-5.13/lisp"
-;;         ;; ...
-;; 	   ,my-lisp-dir	      ; Most important last
-;; 	   ))
-;;   (add-to-list 'load-path dir))
+;;   (add-to-list 'load-path "~/site-lisp/emacs-config/")
+;;   (defvar my-lisp-dir "~/elisp")
+;;   (load "vj-init")
 ;;
-;; (load "vj-init")
-;;
+
+(setq debug-on-quit t)
 
 (unless (boundp 'my-lisp-dir)
   (defvar my-lisp-dir "~/elisp"))
@@ -24,13 +15,13 @@
 (setq my-lisp-dir (expand-file-name my-lisp-dir))
 (unless (file-directory-p my-lisp-dir)
    (make-directory my-lisp-dir)
-   (message "*** Created %s!***\nDelete dir and set my-lisp-dir in .emacs to change" 
+   (message "*** Created %s!***\nDelete dir and set my-lisp-dir in .emacs to change"
 	    my-lisp-dir)
    (sit-for 2))
 
 ;; Load customize file
 (setq custom-file (format "%s/custom-%s.el" my-lisp-dir (downcase system-name)))
-(load custom-file)
+(load custom-file t)
 (set-register ?c `(file . ,custom-file))
 
 (load "vj-load")
@@ -48,3 +39,4 @@
 (safe-load vj-machine-specific-elisp-file)
 (set-register ?e `(file . ,vj-machine-specific-elisp-file)) ;; C-x r j e
 
+(setq debug-on-quit nil)

@@ -1,4 +1,10 @@
 
+;; This will add magit and auto-complete directories to load-path if they have
+;; been downloaded and put in ~/site-lisp (change via
+;; vj-load-site-lisp-path). Also "vj-" + package-name will be loaded. Set
+;; another prefix via vj-load-site-lisp-prefix.
+;;
+
 (defvar vj-load-site-lisp-prefix "vj-")
 (defvar vj-load-site-lisp-path "~/site-lisp")
 
@@ -11,6 +17,6 @@
 (dolist (dir (directory-files vj-load-site-lisp-path t))
   (when (string-match
           (concat "/" (regexp-opt '("magit" "auto-complete") t)
-            "-?\\([^/]+\\)\\'")
+            "\\([^/]+\\)\\'")
           dir)
     (vj-load-site-lisp dir (match-string 1 dir))))
