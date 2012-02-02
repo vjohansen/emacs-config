@@ -54,7 +54,7 @@
 
 ;; ------------------------------------------------------------
 
-
+;; Use M-n/M-p in minibuffer to complete history entries based on prefix
 (mapcar
  (function
   (lambda (x)
