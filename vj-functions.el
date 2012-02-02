@@ -334,3 +334,22 @@ isearch-nonincremental)
     (setq case-fold-search old-case-fold-search)
     ))
 
+;; ------------------------------------------------------------
+
+
+(defun slash-replace-on-region (beg end)
+  "(VJO 2012)"
+  (interactive "r")
+  (let (from to)
+    (save-excursion
+      (goto-char beg)
+      (when (search-forward-regexp "[/\\]+")
+        (setq from (match-string-no-properties 0))
+        (cond
+          ((equal from "/") (setq to "\\"))
+          ((equal from "\\") (setq to "\\\\"))
+          ((equal from "\\\\") (setq to "/"))
+          (t (message "error")))))      ;never happens
+    (if to
+      (save-excursion
+        (replace-string from to nil beg end)))))

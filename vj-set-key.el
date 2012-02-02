@@ -39,6 +39,7 @@
 (global-set-key "\M-q\M-l" 'vj-insert-local-variables-section)
 (global-set-key "\M-qc" 'indent-region)
 (global-set-key "\M-qp" 'find-file-at-point)
+(global-set-key "\M-q\M-s" 'slash-replace-on-region)
 
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
@@ -74,7 +75,6 @@
   (local-set-key (kbd "Ø") '(lambda () (interactive) (insert "}")))
   (local-set-key (kbd "Å") '(lambda () (interactive) (insert "\\n")))
 
-;;  (local-set-key (kbd "M-Å") 'delete-horizontal-space)
   (setq show-trailing-whitespace t)
   )
 
