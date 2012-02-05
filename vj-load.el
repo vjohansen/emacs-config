@@ -70,5 +70,10 @@
 ;; Generate a vps project based on all elisp files in `load-path'
 (vps-add-project "elisp" `((dirs ,load-path) (ext ("el"))))
 
+;; FIXME
+(vps-add-project "vj-elisp" `((rdirs (,my-lisp-dir))
+			      (dirs (,vj-emacs-config-dir))
+			      (ext ("el"))))
+
 (server-start)
 

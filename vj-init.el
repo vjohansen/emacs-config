@@ -3,7 +3,7 @@
 ;; TO LOAD THIS FILE ADD THE FOLLOWING TO .emacs or ~.emacs.d/init.el
 ;;
 ;;   (add-to-list 'load-path "~/site-lisp/emacs-config/")
-;;   (defvar my-lisp-dir "~/elisp")
+;;   (setq my-lisp-dir "~/elisp")
 ;;   (load "vj-init")
 ;;
 

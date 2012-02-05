@@ -5,15 +5,16 @@
 ;; grep-mode no longer inherits the feature from compilation-mode where it
 ;; looks for Entering Directory lines. :-(
 
-(defvar compilation-find-file-extra nil)
+(defvar compilation-find-file-hook nil)
 
-(add-hook 'compilation-find-file-extra 'compilation-find-file-via-entering)
+(add-hook 'compilation-find-file-hook 'compilation-find-file-via-entering)
 
 ;; Look for "Entering directory `c:/xx/hestehoved'"
 (defun compilation-find-file-via-entering (filename)
   (let ((result
 	 (save-excursion
-	   (if (re-search-backward (concat "Ent" "ering directory `\\([^']*\\)'") nil t)
+	   (if (re-search-backward
+                 (concat "Ent" "ering directory `\\([^']*\\)'") nil t)
 	       (concat (match-string-no-properties 1) "/"
 		       filename)))))
     (if (and result (file-exists-p result))
@@ -59,10 +60,10 @@ attempts to find a file whose name is produced by (format FMT FILENAME)."
               fmts (cdr fmts)))
       (setq dirs (cdr dirs)))
 
-    (when (and (null buffer) compilation-find-file-extra)
+    (when (and (null buffer) compilation-find-file-hook)
       (message "Look for %s" filename)
       (setq buffer (run-hook-with-args-until-success
-		    'compilation-find-file-extra filename)))
+		    'compilation-find-file-hook filename)))
 
     (while (null buffer)    ;Repeat until the user selects an existing file.
       ;; The file doesn't exist.  Ask the user where to find it.
