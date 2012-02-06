@@ -14,10 +14,13 @@
 ;; Change annoying yes/no RET questions to single keypress of y or n
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(prefer-coding-system 'utf-8)
+
+;; Also show filename and vps project in title bar
 (setq frame-title-format
   '("" invocation-name " "  " %f [" vps-project-name "]"))
 
-(setq visible-bell t)
+(setq visible-bell t) ;; no beeps!
 
 (setq indent-tabs-mode nil              ; Do not use tabs for indent
       compilation-ask-about-save nil)   ; Just save files before compile

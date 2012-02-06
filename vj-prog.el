@@ -14,6 +14,7 @@
 
 
 (setq auto-mode-alist (cons '("\\.p[lm]$" . cperl-mode) auto-mode-alist))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
 
 ;; (setq cperl-array-face (make-face 'cperl-array-face))
 ;; (set-face-foreground 'cperl-array-face "DarkMagenta")

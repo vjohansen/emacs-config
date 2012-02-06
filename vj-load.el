@@ -81,5 +81,10 @@
 
 (vps-change-project "elisp")
 
+;; FIXME
+(vps-add-project "vj-elisp" `((rdirs (,my-lisp-dir))
+			      (dirs (,vj-emacs-config-dir))
+			      (ext ("el"))))
+
 (server-start)
 
