@@ -1,5 +1,44 @@
 
-(require 'auto-complete-etags)
+; ------------------------------------------------------------
+
+(add-hook 'emacs-lisp-mode-hook 'vj-emacs-lisp-mode-hook)
+;;(add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
+
+(defun vj-emacs-lisp-mode-hook ()
+  "Installs my preferred emacs-lisp mode."
+  (interactive)
+  (font-lock-add-keywords nil
+    '(("\\(`\\)(" (1 'fringe append))))
+  (local-set-key "\C-c\C-q" '(lambda ()
+                               (interactive)
+                               (save-excursion
+                                 (beginning-of-defun)
+                                 (indent-sexp))))
+  (local-set-key "\M-q\M-q" 'lisp-fill-paragraph)
+  (setq lisp-indent-offset 2)
+  (setq fill-column 78)
+  ;; Templates
+  (auto-fill-mode)
+  ;;    (filladapt-mode)
+  ;; (local-set-key "\C-c\C-f" 'tempo-forward-mark)
+  ;; (local-set-key "\C-c\C-e" 'tempo-complete-tag)
+  ;; (elisp-tempo)
+  )
+
+(defun pretty-lambdas ()
+    (font-lock-add-keywords
+     nil `(("(\\(lambda\\>\\)"
+            (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                      ,(make-char 'greek-iso8859-7 107))
+                      nil))))))
+
+
+(defun pretty-js-lambdas ()
+  (font-lock-add-keywords
+   nil `(("\\(function\\) *("
+          (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
 
 ; ------------------------------------------------------------
 
@@ -33,7 +72,7 @@
     (setq cperl-lazy-help-time 2)
     (cperl-lazy-install)))
 
-(require 'perl-completion)
+(safe-load "perl-completion")
 
 
 (defun vj-cperl-mode-hook ()

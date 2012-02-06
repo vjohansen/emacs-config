@@ -8,6 +8,7 @@
 (require 'vj-std-extras)     ;         `find-file-at-point'
 (require 'vj-set-key)
 (load "vj-functions")
+(load "vj-prog")
 
 ;; --- vj-load-packages ---
 
@@ -15,10 +16,43 @@
 
 (add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
 
-(when (file-directory-p "~/site-lisp/auto-complete")
-  (add-to-list 'load-path "~/site-lisp/auto-complete")
-  (safe-load "auto-complete-config")
-  (ac-config-default))
+(defvar vj-load-site-lisp-path
+  (expand-file-name (concat vj-emacs-config-dir "/..")))
+
+
+
+(let ((dir (car (directory-files vj-load-site-lisp-path t "^auto-complete"))))
+  (if (file-directory-p dir)
+    (progn
+      (add-to-list 'load-path dir)
+      (safe-load "auto-complete-config")
+      (ac-config-default)
+      (require 'auto-complete-etags))
+    (message "install auto-complete!")))
+
+
+(defvar vj-load-site-lisp-prefix "vj-")
+
+(defun vj-load-site-lisp-code (dir file)
+  (add-to-list 'load-path dir nil)
+  (message "Add %s and load %s" dir
+    (concat vj-load-site-lisp-prefix (match-string 1 dir)))
+  (load (concat vj-load-site-lisp-prefix (match-string 1 dir)) t))
+
+(defun vj-load-site-lisp (base-package-names)
+  "Load base-package-names if in vj-load-site-lisp-path.
+This will add directories to load-path if they have been
+downloaded and put in ~/site-lisp (change via
+vj-load-site-lisp-path) if the prefix name exist in
+`base-package-names' (name sans version number). Also 'vj-' +
+base-package-name will be loaded. Set another prefix via
+vj-load-site-lisp-prefix."
+  (dolist (dir (directory-files vj-load-site-lisp-path t))
+    (when (string-match
+            (concat "/" (regexp-opt base-package-names t) "-?\\([^/]*\\)\\'")
+            dir)
+      (vj-load-site-lisp-code dir (match-string 1 dir)))))
+
 
 (require 'anything)
 (require 'anything-config)
