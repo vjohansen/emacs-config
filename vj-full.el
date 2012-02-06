@@ -1,6 +1,6 @@
 
 (if window-system
-    (setq confirm-kill-emacs y-or-n-p)
+    (setq confirm-kill-emacs 'y-or-n-p)
     (setq confirm-kill-emacs nil))
 
 (setq nxml-slash-auto-complete-flag t
@@ -73,5 +73,9 @@
         (buffer-substring (region-beginning) (region-end))
       (read-string "Query: ")))))
 
+(autoload 'iedit-mode "iedit" nil t)
+(define-key global-map (kbd "C-;") 'iedit-mode)
+
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+

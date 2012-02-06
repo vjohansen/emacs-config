@@ -1,4 +1,5 @@
 
+(require 'auto-complete-etags)
 
 ; ------------------------------------------------------------
 
@@ -25,19 +26,34 @@
 ;;(setq font-lock-constant-face (make-face 'font-lock-constant-face))
 ;;(set-face-background 'font-lock-constant-face "Thistle")
 
-
 (add-hook 'cperl-mode-hook 'vj-cperl-mode-hook)
+
+(eval-after-load "cperl"
+  '(progn
+    (setq cperl-lazy-help-time 2)
+    (cperl-lazy-install)))
+
+(require 'perl-completion)
+
 
 (defun vj-cperl-mode-hook ()
   "VJOs Perl mode hook for cperl-mode"
 
- (make-local-variable 'compile-command)
+  ;; (make-local-variable 'compile-command)
+  ;; (setq compile-command
+  ;;   (concat
+  ;;     (if (equal vj-env 'home-mac) "/opt/local/bin/perl" "perl")
+  ;;     " -w " (file-name-nondirectory (buffer-file-name))))
+  ;; (message "vj-perl: set compile-command to \"%s\"" compile-command)
+
+  (make-local-variable 'compile-command)
   (setq compile-command
-    (concat
-      (if (equal vj-env 'home-mac) "/opt/local/bin/perl" "perl")
-      " -w " (file-name-nondirectory (buffer-file-name))))
+    (concat "perl -w " (file-name-nondirectory (buffer-file-name))))
   (message "vj-perl: set compile-command to \"%s\"" compile-command)
 
+;;  (add-hook 'ac-sources 'ac-source-perl-completion)
+  (setq ac-sources 'ac-source-perl-completion)
+  (auto-complete-mode t)
 
   (setq cperl-indent-level 2
     cperl-continued-statement-offset 2
@@ -117,6 +133,16 @@ that file will need to be in your path."
 
 ; ------------------------------------------------------------
 
+(autoload 'php-mode "php-mode-improved" "*Major mode for editing PHP code." t)
+
+(add-hook 'php-mode-hook 'vj-php-mode-hook)
+
+(defun vj-php-mode-hook ()
+  "VJs PHP mode hook for php-mode"
+  (auto-complete-mode t)
+  (setq c-basic-offset 4))
+
+; ------------------------------------------------------------
 
 ;;; XML
 
@@ -164,3 +190,4 @@ that file will need to be in your path."
 
 
 ; ------------------------------------------------------------
+

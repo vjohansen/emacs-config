@@ -63,12 +63,23 @@
 (require 'vps)
 (vps-init "\M-i")
 
+
+(when (>= emacs-major-version 24)
+  ;; Redefine compilation-find-file!
+  (load "vj-compilation-find-file-not-found-hook"))
+
 (require 'anything-vps)
 
 (add-to-list 'anything-sources 'anything-source-vps-files)
 
 ;; Generate a vps project based on all elisp files in `load-path'
-(vps-add-project "elisp" `((dirs ,load-path) (ext ("el"))))
+
+(vps-add-project "load-path" `((dirs ,load-path) (ext ("el"))))
+
+(vps-add-project "elisp" `((rdirs (,my-lisp-dir))
+                           (dirs (,vj-emacs-config-dir)) (ext ("el"))))
+
+(vps-change-project "elisp")
 
 ;; FIXME
 (vps-add-project "vj-elisp" `((rdirs (,my-lisp-dir))
