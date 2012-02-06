@@ -7,7 +7,8 @@
 ;;   (load "vj-init")
 ;;
 
-(setq debug-on-quit t)
+(setq debug-on-error t
+      debug-on-quit t)
 (set-background-color "#ffeeff")
 
 (unless (boundp 'my-lisp-dir)
@@ -43,4 +44,5 @@
 (safe-load vj-machine-specific-elisp-file)
 (set-register ?e `(file . ,vj-machine-specific-elisp-file)) ;; C-x r j e
 
-(setq debug-on-quit nil)
+(setq debug-on-error nil
+      debug-on-quit nil)
