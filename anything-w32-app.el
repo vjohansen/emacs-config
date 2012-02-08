@@ -2,14 +2,14 @@
 
 ;; Example: (vj-get-cached-data "~/x" (lambda () '("test")) 10)
 ;; - Load data from x file if newer than 10 days otherwise build it via the
-;;   lambda and store in the filename given
+;;   lambda and store in the filename given.
+;; Always return data either cached or built via the function.
 (defun vj-get-cached-data (filename builder-func rebuild-days)
   (let* ((exists (file-exists-p (expand-file-name filename)))
           (mtime (if exists
                    (time-to-seconds (time-since
                                       (nth 5 (file-attributes filename))))))
-          (age (if exists
-                 (/ (vj-file-last-modified-duration filename) (* 24 60 60))))
+          (age (if exists (/ mtime (* 24 60 60))))
           result)
     (if (and exists (< age rebuild-days))
       (load-file filename)              ;sets result
@@ -40,9 +40,12 @@
              (cons link-name (w32-utl-lnk-get-target-and-args file)))
            files))))
 
-
 (defvar w32-apps-list
-  (get-cached-data "~/.w32-apps.el" 'vj-w32-apps-build 30))
+  (delq nil (mapcar
+              ;; remove those where exe-path is ""
+              (lambda (x) (if (equal (nth 1 x) "") nil x))
+              ;; input list
+              (vj-get-cached-data "~/.w32-apps.el" 'vj-w32-apps-build 60))))
 
 (defvar anything-source-w32-launch
   '((name . "Launch Program")
@@ -67,16 +70,12 @@
   ""
   (apply 'call-process
     ; maybe (cdr app-and-parms) should be split on space?
-    (append (list (car app-and-parms) nil 0 nil) (cdr app-and-parms)))) 
+    (append (list (car app-and-parms) nil 0 nil) (cdr app-and-parms))))
 
 (defun anything-for-apps ()
-  "Preconfigured `anything' for opening files.
-ffap -> recentf -> buffer -> bookmark -> file-cache -> files-in-current-dir -> locate"
+  "Preconfigured `anything' for apps."
   (interactive)
   (anything-other-buffer '(anything-source-w32-launch)
     "*anything for apps*"))
 
 (global-set-key (kbd "C-æ") 'anything-for-apps)
-
-;; TEST
-;; (setq w32-apps-list '(("Notepad-aaa" "C:\\Windows\\system32\\notepad.exe" "aaa.txt")("Notepad-bbb" "C:\\Windows\\system32\\notepad.exe" "bbb.txt")))

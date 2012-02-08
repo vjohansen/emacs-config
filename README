@@ -3,26 +3,40 @@ Vagns emacs lisp config files.
 Well, not really this is a stripped down version for public
 consumption. MORE WILL COME LATER.
 
-If necessary setup exec-path and PATH first:
+Quick Start
+
+  mkdir ~/site-lisp
+  cd ~/site-lisp
+  git clone <github-URL>
+  git clone https://github.com/m2ym/auto-complete.git
+  cp ~/site-lisp/emacs-config/sample-dot-emacs.el ~/.emacs
+  mkdir ~/elisp
+  emacs
+  C-x r j e   (loads the machine specific elisp file from ~/elisp AKA my-lisp-dir)
+
+If necessary setup exec-path and PATH first in .emacs:
 
   ;; Windows example (MSYS-Git has grep.exe and other useful tools)
   (add-to-list 'exec-path "c:/tools/Git/bin" t)
   (setenv "PATH" (concat (getenv "PATH") ";c:\\tools\\Git\\bin"))
 
-After that call vj-init.el
+Create a .emacs with (or just copy this from sample-dot-emacs.el)
 
   (add-to-list 'load-path "~/path/to/emacs-config/")
   ;; optionally change my-lisp-dir via defvar (default is "~/elisp")
   (load "vj-init")
 
-to your ~/.emacs (or ~/emacs.d/init.el)
+The following registers have set up for fast loading of config files. Use
+C-x r j <letter>:
 
+| Letter | File                                |
+|--------+-------------------------------------|
+| e      | vj-machine-specific-elisp-file      |
+| s      | vj-system-type-specific-elisp-file  |
+| E      | "~/.emacs" or "~/ .emacs.d/init.el" |
+| c      | custom-file                         |
 
-If you do not have a .emacs (or init.el) yet then take a look at the
-vj-init.el. This enables you to automatically load hostname and os
-specific emacs lisp files. It also makes the customize filename
-hostname specific.
-
+The custom file will have a machine specific name.
 
 License: GPL
 (unless otherwise specified)
