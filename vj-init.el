@@ -9,6 +9,8 @@
 
 (setq debug-on-error t
       debug-on-quit t)
+
+(defvar vj-background-color-old (frame-parameter nil 'background-color))
 (set-background-color "#d8f0f0")
 
 (defvar my-lisp-dir "~/elisp")

@@ -837,6 +837,7 @@ call \\[find-file-at-point]"
     (if (file-exists-p filename)
       (delete-file filename))
     (message "Making index: %s" filename)
+    (redisplay)
     (if (> (shell-command
              (concat "perl -w " (or (locate-library "vj-make-index.pl")
                                   "-S vj-make-index.pl") " " vps-project-name)

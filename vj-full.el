@@ -27,6 +27,18 @@
   (interactive))
 (global-set-key "\M-\C-y" 'kill-ring-search)
 
+
+(autoload 'iedit-mode "iedit" nil t)
+(define-key global-map (kbd "C-;") 'iedit-mode)
+
+
+(autoload 'etags-select-find-tag-at-point "etags-select" "*Do a find-tag-at-point, and display all exact matches." t)
+(global-set-key "\M-?" 'etags-select-find-tag-at-point)
+
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+
 (autoload 'align-regexp2 "align-regexp2" "*Align region according to regular expressions..." t)
 
 (autoload 'align-equals "align-equals" "*make the first assignment operator on each line line up vertically" t)
@@ -72,10 +84,4 @@
     (if mark-active
         (buffer-substring (region-beginning) (region-end))
       (read-string "Query: ")))))
-
-(autoload 'iedit-mode "iedit" nil t)
-(define-key global-map (kbd "C-;") 'iedit-mode)
-
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
