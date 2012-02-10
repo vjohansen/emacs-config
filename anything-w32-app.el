@@ -1,4 +1,5 @@
 (require 'w32-utl)
+(require 'findr)
 
 ;; Example: (vj-get-cached-data "~/x" (lambda () '("test")) 10)
 ;; - Load data from x file if newer than 10 days otherwise build it via the

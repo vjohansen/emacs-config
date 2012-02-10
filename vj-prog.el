@@ -1,4 +1,5 @@
 
+
 ; ------------------------------------------------------------
 
 (add-hook 'emacs-lisp-mode-hook 'vj-emacs-lisp-mode-hook)
@@ -42,12 +43,16 @@
 
 ; ------------------------------------------------------------
 
+(defun vj-csharp-mode-hook ()
+	(c-set-style "bsd")
+	(setq c-basic-offset 2))
+
 (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
 (setq auto-mode-alist (cons '("\\.cs\\'" . csharp-mode) auto-mode-alist))
 
 (eval-after-load "csharp-mode"
   '(progn
-     (add-hook 'csharp-mode-hook 'csharp-mode-hook)))
+     (add-hook 'csharp-mode-hook 'vj-csharp-mode-hook)))
 
 ; ------------------------------------------------------------
 
@@ -173,6 +178,8 @@ that file will need to be in your path."
 ; ------------------------------------------------------------
 
 (autoload 'php-mode "php-mode-improved" "*Major mode for editing PHP code." t)
+
+(add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)\\'" . php-mode))
 
 (add-hook 'php-mode-hook 'vj-php-mode-hook)
 

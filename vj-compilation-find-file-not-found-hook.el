@@ -5,6 +5,8 @@
 ;; grep-mode no longer inherits the feature from compilation-mode where it
 ;; looks for Entering Directory lines. :-(
 
+(require 'compile)
+
 (defvar compilation-find-file-hook nil)
 
 (add-hook 'compilation-find-file-hook 'compilation-find-file-via-entering)
@@ -24,7 +26,7 @@
       nil)))
 
 (defun compilation-find-file (marker filename directory &rest formats)
-  "Find a buffer for file FILENAME.
+  "Find a buffer for file FILENAME (***OVERRIDDEN***).
 If FILENAME is not found at all, ask the user where to find it.
 Pop up the buffer containing MARKER and scroll to MARKER if we ask
 the user where to find the file.
@@ -111,3 +113,5 @@ attempts to find a file whose name is produced by (format FMT FILENAME)."
       (when (overlay-get ov 'intangible)
         (overlay-put ov 'intangible nil)))
     buffer))
+
+(message "Override compilation-find-file!")
