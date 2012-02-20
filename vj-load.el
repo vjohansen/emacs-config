@@ -13,6 +13,7 @@
 ;; --- vj-load-packages ---
 
 (defvar vj-emacs-config-dir (file-name-directory (locate-file "vj-load.el" load-path)))
+(set-register ?d `(file . vj-emacs-config-dir))
 
 (add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
 
