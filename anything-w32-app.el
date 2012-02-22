@@ -54,11 +54,14 @@
 ;;     (type . program)
       (action . (("Launch" .
                    (lambda (filename)
-                     (let ((f (car filename)))
+                     (let* ((f (car filename))
+                            (ext (file-name-extension f)))
                        (message "Launch %s" f)
-                       (if (equal  (file-name-extension f) "url")
+                       (if (equal ext "url")
                          (vj-os-open f)
-                         (vj-w32-launch filename))
+                         (if (equal ext "msc")
+                           (shell-command (message "start %s" f))
+                           (vj-w32-launch filename)))
                          )))
                   ("Dired" .
                     (lambda (filename)
