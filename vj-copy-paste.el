@@ -1,12 +1,12 @@
 
 
 
-;; Fluxbox on solaris
-;; ------------------
+;; Fluxbox on unix
+;; ---------------
 ;;
 ;; Mod4 is left windows on my setup
 ;;
-;;   Mod4 c :ExecCommand ssh hostname "xclip -o > /u/vj/tempfile"
+;;   Mod4 c :ExecCommand ssh hostname "xclip -o > /home/vj/tempfile"
 
 
 ;; Windows with AutoHotKey
@@ -21,17 +21,18 @@
 ;;     FileAppend, %clipboard%, h:\tempfile
 ;;   return
 ;;
-;; Note: h: in windows is mapped via samba a saerver to the unix homedir so
-;; that ~/ on unix is the same file system as  h: on windows
+;; Note: h: in windows is mapped via samba a server to the unix homedir so
+;; that ~/ on unix is the same file system as h: on windows
 
 ;; Shell - ZSH
 ;;
-;; In .zshrc (M-i t) will $(< ~/tempfile). To expand immediately press C-x *
+;; In .zshrc (M-i t) will insert $(< ~/tempfile). To expand immediately press C-x *
 ;;
 ;;   bindkey -s "^[ic" ' > ~/tempfile'
 ;;   bindkey -s "^[it" '\$(< ~/tempfile)'
 
 
+;; override this in the machine or sytem specific file as needed
 (defvar vj-tempfile-name (if (equal system-type 'windows-nt)
                              "h:/tempfile" "~/tempfile"))
 
