@@ -26,8 +26,8 @@
 
 ;; Load customize file
 (setq custom-file (format "%s/custom-%s.el" my-lisp-dir (downcase system-name)))
-(load custom-file t)
 (set-register ?c `(file . ,custom-file))
+(load custom-file t)
 
 (load "vj-load")
 
@@ -38,15 +38,21 @@
     my-lisp-dir
     (downcase (replace-regexp-in-string "[^a-zA-Z0-9_]+" "-"
                 (symbol-name system-type)))))
-(safe-load vj-system-type-specific-elisp-file)
 (set-register ?s `(file . ,vj-system-type-specific-elisp-file)) ;; C-x r j s
+(if (file-exists-p vj-system-type-specific-elisp-file)
+    (load vj-system-type-specific-elisp-file)
+  (message "*** Create the file: %s ***" vj-system-type-specific-elisp-file))
+
 
 (defvar vj-machine-specific-elisp-file
   (format "%s/machine-%s.el" my-lisp-dir (downcase system-name)))
+(set-register ?e `(file . ,vj-machine-specific-elisp-file)) ;; C-x r j e
 (if (file-exists-p vj-machine-specific-elisp-file)
     (load vj-machine-specific-elisp-file)
-  (message "*** Create the file: %s ***" vj-machine-specific-elisp-file))
-(set-register ?e `(file . ,vj-machine-specific-elisp-file)) ;; C-x r j e
+  (message "*** CREATING THE FILE: %s ***" vj-machine-specific-elisp-file)
+  (sit-for 2)
+  (with-temp-file vj-machine-specific-elisp-file
+    (insert ";; add stuff here\n\n;; footer\n(set-background-color vj-background-color-old)")))
 
 (setq debug-on-error nil
       debug-on-quit nil)
