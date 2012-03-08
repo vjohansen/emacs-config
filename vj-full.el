@@ -82,6 +82,7 @@
 
 (global-set-key (kbd "<C-f12>") 'shell-toggle-cd)
 (global-set-key (kbd "<M-f12>") 'shell-toggle)
+(global-set-key (kbd "ESC <f12>") 'shell-toggle)
 
 (defun google ()
   "Googles a query or region if any."
