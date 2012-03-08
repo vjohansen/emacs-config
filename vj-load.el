@@ -59,18 +59,19 @@ vj-load-site-lisp-prefix."
 (setq anything-enable-digit-shortcuts t)
 (global-set-key (kbd "C-å") 'anything)
 
-(add-to-list 'load-path "~/site-lisp/org-mode/lisp")
-(add-to-list 'load-path "~/site-lisp/org-mode/contrib/lisp")
-(eval-after-load "org"
-  '(progn
-     (when (fboundp 'org-babel-do-load-languages)
-       (org-babel-do-load-languages
-	'org-babel-load-languages
-	'((perl . t)
-	  (ditaa . t)
-	  (shell . nil)
-	  (emacs-lisp . nil)
-	  )))))
+(when (file-directory-p (format "%s/org-mode/lisp" vj-load-site-lisp-path))
+  (add-to-list 'load-path (format "%s/org-mode/lisp" vj-load-site-lisp-path))
+  (add-to-list 'load-path (format "%s/org-mode/contrib/lisp" vj-load-site-lisp-path))
+  (eval-after-load "org"
+    '(progn
+       (when (fboundp 'org-babel-do-load-languages)
+	 (org-babel-do-load-languages
+	   'org-babel-load-languages
+	   '((perl . t)
+	      (ditaa . t)
+	      (shell . nil)
+	      (emacs-lisp . nil)
+	      ))))))
 
 (require 'bm)
 (global-set-key (kbd "<C-f2>") 'bm-toggle)
