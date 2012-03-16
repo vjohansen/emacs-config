@@ -48,25 +48,39 @@
               ;; input list
               (vj-get-cached-data "~/.w32-apps.el" 'vj-w32-apps-build 60))))
 
+
+
+
 (defvar anything-source-w32-launch
   '((name . "Launch Program")
-     (candidates . (lambda () w32-apps-list))
-;;     (type . program)
-      (action . (("Launch" .
-                   (lambda (filename)
-                     (let* ((f (car filename))
+     (candidates . (lambda ()
+                     (delq nil
+                       (mapcar
+                         (lambda (f)
+                           (if (string-match "\\.\\(exe\\|msc\\)\\'"
+                                 (nth 1 f))
+                             f))
+                         w32-apps-list))))
+     (action . (("Launch" .
+                  (lambda (filename)
+                    (let* ((f (car filename))
                             (ext (file-name-extension f)))
-                       (message "Launch %s" f)
-                       (if (equal ext "url")
-                         (vj-os-open f)
-                         (if (equal ext "msc")
-                           (shell-command (message "start %s" f))
-                           (vj-w32-launch filename)))
-                         )))
-                  ("Dired" .
-                    (lambda (filename)
-                      (dired (file-name-directory (car filename)))
-                      (dired-goto-file (car filename))))))
+                      (message "Launch %s" f)
+                      (if (equal ext "url")
+                        (vj-os-open f)
+                        (if (string-match (format "%s\\'"
+                                            (regexp-opt '("msc"))) ext )
+                          (shell-command (message "start %s" f))
+                          (if (string-match
+                                (format "%s\\'" (regexp-opt '("txt"))) ext )
+                            (find-file (car filename))
+
+                            (vj-w32-launch filename)))
+                        ))))
+                 ("Dired" .
+                   (lambda (filename)
+                     (dired (file-name-directory (car filename)))
+                     (dired-goto-file (car filename))))))
      (requires-pattern . 2))
   "Source for launching windows apps.")
 
