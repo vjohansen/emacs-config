@@ -40,6 +40,7 @@
 (global-set-key "\M-qc" 'indent-region)
 (global-set-key "\M-qp" 'find-file-at-point)
 (global-set-key "\M-q\M-s" 'slash-replace-on-region)
+(global-set-key "\M-qr" 'insert-char-above)
 
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
