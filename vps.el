@@ -687,7 +687,8 @@ Optional argument GREP-IGNORE-CASE when non-nil ignore case in search."
 (defun vps-list-dirs-find-file ()
   (interactive)
   (let ((default-directory ""))
-    (find-file (replace-regexp-in-string "^ *" "" (buffer-substring-no-properties (point-at-bol) (point-at-eol))))))
+    (find-file (replace-regexp-in-string "^ *" ""
+                 (buffer-substring-no-properties (point-at-bol) (point-at-eol))))))
 
 (defun vps-list-dirs ()
   "Display directories for current project in a buffer. Press space to
@@ -698,20 +699,26 @@ call \\[find-file-at-point]"
   (switch-to-buffer (get-buffer-create "*vps dirs*"))
   (delete-region (point-min) (point-max))
   (insert (concat "Project: " vps-project-name "\n\n"))
-  (dolist (dir (vps-dirs))
-    (if (not (file-directory-p dir))
-      (insert "* " dir " (n/a)\n")
-      ;; else:
-      (insert "* " dir "\n")
-      (dolist (file (directory-files dir t nil  t) )
-        (if (string-match
-              (concat "\\(" (mapconcat 'regexp-quote
-                              completion-ignored-extensions
-                              "\\|") "\\)\\'")
-              file)
-          (insert "  " (propertize file 'face 'dired-ignored) " s\n")
-          (insert "  " file "\n")))
-      (insert "    \n")))
+  (let ((dirs (vps-dirs)) dir len)
+    (setq len (length dirs))
+    (dotimes-with-progress-reporter (i len) "Reading directories.."
+      (progn 
+        (setq dir (nth i dirs))
+        ;;    (dolist (dir dirs)
+        (if (not (file-directory-p dir))
+          (insert "* " dir " (n/a)\n")
+          ;; else: 
+          (insert "* " dir "\n")
+          (dolist (file (directory-files dir t nil  t))
+            (if (string-match
+                  (concat "\\(" (mapconcat 'regexp-quote
+                                  completion-ignored-extensions
+                                  "\\|") "\\)\\'")
+                  file)
+              (insert "  " (propertize file 'face 'dired-ignored) " s\n")
+              (insert "  " file "\n")))
+          (insert "    \n"))))
+    )
   (insert "\n")
   (insert "* Settings keys\n")
   (mapcar (lambda (x) (insert (symbol-name (car x)) " ")) (vps-project))
