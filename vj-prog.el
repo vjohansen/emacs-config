@@ -237,3 +237,110 @@ that file will need to be in your path."
 
 ; ------------------------------------------------------------
 
+(load "tempo-c-cpp")
+
+(add-hook 'c-mode-common-hook 'vjo-c-mode-common-hook)
+;;(add-hook 'c-mode-common-hook 'hs-hide-initial-comment-block t)
+
+;; (fset 'my-c-comment
+;;       [47 42 32 32 42 47 left left left])
+;; (fset 'my-c-printf
+;;       [ 112 114 105 110 116 102 40 34 34 44 41 59 left left left left])
+
+(defun vjo-c-mode-common-hook ()
+
+  (c-set-style "bsd")
+  (setq c-basic-offset 2)
+  (setq c-auto-newline nil)
+  (setq c-tab-always-indent nil)
+  (setq c-block-comment-prefix "")      ; was "* "
+  (modify-syntax-entry ?_ "w" c-mode-syntax-table)
+
+
+  (local-set-key "\C-c\C-f" 'tempo-forward-mark)
+  (local-set-key "\C-c\C-e" 'tempo-complete-tag)
+  (local-set-key "\C-c\C-c" 'comment-region)
+  (local-set-key "\C-t" 'vjo-toggle-h-cpp-file)
+  (local-set-key "\C-ch" 'hs-hide-block)
+  (local-set-key "\C-cs" 'hs-show-block)
+  (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
+
+  (require 'if-jump)
+  (local-set-key [C-home]'(lambda() (interactive) (if-jump-jump 'backward)))
+  (local-set-key [C-end] '(lambda() (interactive) (if-jump-jump 'forward)))
+
+  (hs-minor-mode 1)
+  (define-key hs-minor-mode-map
+    [?\C-z]
+    (lookup-key hs-minor-mode-map [?\C-c ?@]))
+
+  (auto-fill-mode)
+;;  (filladapt-mode)
+  (setq fill-column 78)
+;;  (c-setup-filladapt)
+
+  )
+
+(defun vjo-current-symbol ()
+  "(VJO Dec 2005)"
+  (interactive)
+  (and
+    (thing-at-point-looking-at "[a-zA-Z][a-zA-Z0-9_.:-]*")
+    (match-string-no-properties 0)))
+
+(defun vjo-cout-watch-current-word ()
+  "(VJO Jan 2002)"
+  (interactive)
+  (let ( (cw (vjo-current-symbol)) )
+    (when cw
+      (end-of-line)
+      (newline-and-indent)
+      (if (memq major-mode '(csharp-mode))
+        (insert (concat "Console.WriteLine" "(\"" cw "={0}\"," cw ");"))
+        (insert (concat "cout << \"" cw "=\" << " cw " << endl;")))
+      )))
+
+;; (defun vjo-c++-mode-hook ()
+;;   "c++-mode-hook"
+;;   (interactive)
+;;   (modify-syntax-entry ?_ "w" c++-mode-syntax-table)
+;;   (c-set-offset 'inline-open 0)
+;;   (c-set-offset 'inextern-lang 0)
+;;                                      ;  (c-set-offset 'access-label 0)
+;;                                         ; (message "VJO C++")
+;;   )
+
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c-or-c++-mode))
+(defun c-or-c++-mode ()
+  (if (save-excursion
+        (goto-char (point-min))
+        (or (re-search-forward "//" 10000 t) (< (buffer-size) 5) ))
+      (c++-mode)
+    (c-mode)))
+
+(defun vjo-toggle-h-cpp-file ()
+  "Switch buffer from cpp to h and vice versa depending on current buffer"
+  (interactive)
+  (let* (
+        (name (file-name-sans-extension (buffer-file-name)))
+        (hname (concat name ".h"))
+        (hppname (concat name ".hpp"))
+        (cname (concat name ".c"))
+        (cppname (concat name ".cpp"))
+        )
+    (if (string-match "\\.hp?p?$" (buffer-file-name))
+        (or
+         (and (file-exists-p cppname) (find-file cppname))
+         (and (file-exists-p cname) (find-file cname))
+         (if (y-or-n-p "Create cpp file ")
+             (find-file cppname))
+         )
+        (or
+         (and (file-exists-p hppname) (find-file hppname))
+         (and (file-exists-p hname) (find-file hname))
+         (if (y-or-n-p "Create h-file ")
+             (find-file hname)))
+      ))
+    )
+
+; ------------------------------------------------------------

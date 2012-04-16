@@ -334,6 +334,19 @@ isearch-nonincremental)
     (setq case-fold-search old-case-fold-search)
     ))
 
+
+(defun insert-char-above (&optional n)
+  "Insert the character above point.
+With a prefix arg, insert the N characters above point.
+(Kevin Rodgers)"
+  (interactive "p")
+  (insert (save-excursion
+            (next-line -1)
+            (buffer-substring (point)
+                              (progn
+                                (forward-char n)
+                                (point))))))
+
 ;; ------------------------------------------------------------
 
 

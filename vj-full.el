@@ -77,13 +77,12 @@
       "*Run powershell as a shell within emacs." t)
     (autoload 'shell-toggle "eshell-toggle" "Toggles between the *shell* buffer and whatever buffer you are editing."
       t))
-
   (autoload 'shell-toggle "shell-toggle" "Toggles between the *shell* buffer and whatever buffer you are editing."
-    t)
-)
+    t))
 
 (global-set-key (kbd "<C-f12>") 'shell-toggle-cd)
 (global-set-key (kbd "<M-f12>") 'shell-toggle)
+(global-set-key (kbd "ESC <f12>") 'shell-toggle)
 
 (defun google ()
   "Googles a query or region if any."
