@@ -51,7 +51,21 @@
       (rename-file vj-tempfile-name (concat vj-tempfile-name "_") t))
   (write-region beg end vj-tempfile-name))
 
+
+(defun my-open-tempfile ()
+   "Reopen ~/tempfile  (VJO 2012)."
+   (interactive)
+  (dolist (buf (buffer-list))
+    (when (and (buffer-file-name buf)
+          (equal
+            (expand-file-name (buffer-file-name buf))
+            (expand-file-name vj-tempfile-name)))
+      (kill-buffer buf)
+      ))
+   (find-file vj-tempfile-name))
+
 (global-set-key [S-f6] 'my-copy-region-to-file)
 (global-set-key [C-S-f6] 'my-insert-specific-file)
+(global-set-key [C-f6] 'my-open-tempfile)
 
 (provide 'vj-copy-paste)
