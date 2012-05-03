@@ -93,6 +93,7 @@
 (global-set-key (kbd "M-æ")  'backward-paragraph)
 (global-set-key (kbd "M-ø")  'forward-paragraph)
 (global-set-key (kbd "M-å")  'delete-horizontal-space)
+(global-set-key (kbd "C-M-å")  'just-one-space)
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 ;;       to show the keybinding description
