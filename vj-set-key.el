@@ -42,6 +42,9 @@
 (global-set-key "\M-q\M-s" 'slash-replace-on-region)
 (global-set-key "\M-qr" 'insert-char-above)
 
+(global-set-key (kbd "M-q +") 'my-increment-number-at-point)
+(global-set-key (kbd "M-q M-+") 'copy-and-inc-line)
+
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
   (lambda (&optional member)

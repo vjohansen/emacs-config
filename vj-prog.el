@@ -1,4 +1,5 @@
 
+(require 'tempo)
 
 ; ------------------------------------------------------------
 
@@ -242,10 +243,6 @@ that file will need to be in your path."
 (add-hook 'c-mode-common-hook 'vjo-c-mode-common-hook)
 ;;(add-hook 'c-mode-common-hook 'hs-hide-initial-comment-block t)
 
-;; (fset 'my-c-comment
-;;       [47 42 32 32 42 47 left left left])
-;; (fset 'my-c-printf
-;;       [ 112 114 105 110 116 102 40 34 34 44 41 59 left left left left])
 
 (defun vjo-c-mode-common-hook ()
 
@@ -256,6 +253,8 @@ that file will need to be in your path."
   (setq c-block-comment-prefix "")      ; was "* "
   (modify-syntax-entry ?_ "w" c-mode-syntax-table)
 
+;;  (define-key c-mode-map "\C-m" 'my-cc-mode-return)
+;;  (define-key c++-mode-map "\C-m" 'my-cc-mode-return)
 
   (local-set-key "\C-c\C-f" 'tempo-forward-mark)
   (local-set-key "\C-c\C-e" 'tempo-complete-tag)
@@ -319,28 +318,58 @@ that file will need to be in your path."
     (c-mode)))
 
 (defun vjo-toggle-h-cpp-file ()
-  "Switch buffer from cpp to h and vice versa depending on current buffer"
+  "Switch buffer from cc to h and vice versa depending on current buffer"
   (interactive)
   (let* (
         (name (file-name-sans-extension (buffer-file-name)))
         (hname (concat name ".h"))
-        (hppname (concat name ".hpp"))
+        (hhname (concat name ".hh"))
         (cname (concat name ".c"))
         (cppname (concat name ".cpp"))
+        (ccname (concat name ".cc"))
         )
-    (if (string-match "\\.hp?p?$" (buffer-file-name))
+    (if (string-match "\\.hh?$" (buffer-file-name))
         (or
+         (and (file-exists-p ccname) (find-file ccname))
          (and (file-exists-p cppname) (find-file cppname))
          (and (file-exists-p cname) (find-file cname))
-         (if (y-or-n-p "Create cpp file ")
-             (find-file cppname))
+         (if (y-or-n-p "Create cc file ")
+             (find-file ccname))
          )
         (or
-         (and (file-exists-p hppname) (find-file hppname))
+         (and (file-exists-p hhname) (find-file hhname))
          (and (file-exists-p hname) (find-file hname))
-         (if (y-or-n-p "Create h-file ")
-             (find-file hname)))
+         (if (y-or-n-p "Create hh-file ")
+             (find-file hhname)))
       ))
     )
+
+
+
+;; (defun vj-gdb ()
+;;   (interactive)
+;;   (let ((subdir (format "%s/std-exe-%s"
+;;                   (getenv "MAKEENV_SYSTEM")
+;;                   (getenv "MAKEENV_CONFIG")))
+;;          (fn))
+;;     (setq fn (car (directory-files subdir t "\.exe$")))
+;;     (gdb (format "gdb %s" fn))))
+
+
+
+(defun my-cc-mode-return ()
+   "Intelligent line breaking in all cc-modes. Handles strings in a smart
+ way (Klaus Berndl)"
+   (interactive)
+   (cond ((eq (c-in-literal) 'string)
+          (if (memq major-mode '(java-mode jde-mode))
+              (insert-and-inherit "\"+")
+            (insert-and-inherit "\""))
+          (c-context-line-break)
+          (insert "\" ") ;; cause of strings in c will be concatenated we
+                         ;; must add a single space.
+          (end-of-line))
+         (t (c-context-line-break))))
+
 
 ; ------------------------------------------------------------
