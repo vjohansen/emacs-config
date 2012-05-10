@@ -12,18 +12,6 @@
 )
 
 
-(defun vj-find-tag ()
-    "My find-tag wrapper for easy repetition (VJO 2003).
- Call `find-tag' with current word first time and after that call
- find-tag with NEXT-P set to t (if called repeatedly)"
-    (interactive)
-    (vps-auto-change-project t)         ;can change last-command
-;;    (message "vj-find-tag tag %s, cmd %s" last-tag last-command)
-    (if (eq last-command 'vj-find-tag)
-        (find-tag nil t)
-        (find-tag (current-word) current-prefix-arg)))
-
-
 (defun vj-os-open (filename)
   "Let the OS open the file with the appropriate program."
   (cond ((equal system-type 'darwin)
@@ -360,6 +348,39 @@ With a prefix arg, insert the N characters above point.
                               (progn
                                 (forward-char n)
                                 (point))))))
+
+;; ------------------------------------------------------------
+
+
+;;; TODO: only print "/* str */" after endif if more than 10 lines apart
+;;; Should check if mark is active (`mark-active')
+(defun vj-ifdef-insert(str)
+  "my ifdef insertion (VJO 1997)"
+  (interactive "*sEnter define: ")
+  (if mark-active
+    (save-excursion
+      (if (> (mark) (point))
+        (exchange-point-and-mark))
+      (if (eq current-prefix-arg nil)
+        (insert "#endif /* " str " */\n")
+        (insert "#endif /* not " str " */\n"))
+      (exchange-point-and-mark)
+      (if (eq current-prefix-arg nil)
+        (insert "#ifdef " str "\n")
+        (insert "#ifndef " str "\n"))
+      )))
+
+(defun vj-ifndef-insert ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^\\( \\|$\\)" nil t)
+    (forward-line 1)              ;skip file header
+    (insert (concat "#ifndef " (tempo-c-cpp-hfilename) "\n"))
+    (insert (concat "#define " (tempo-c-cpp-hfilename) "\n"))
+    (goto-char (point-max))
+    (insert (concat "\n#endif /* not " (tempo-c-cpp-hfilename) " */"))))
+
 
 ;; ------------------------------------------------------------
 
