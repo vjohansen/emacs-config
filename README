@@ -14,6 +14,10 @@ Quick Start
   emacs
   C-x r j e   (loads the machine specific elisp file from ~/elisp AKA my-lisp-dir)
 
+Note: annoyingly popup.el from auto-complete has gotten is own repo at
+
+  git://github.com/m2ym/popup-el.git
+
 If necessary setup exec-path and PATH first in .emacs:
 
   ;; Windows example (MSYS-Git has grep.exe and other useful tools)
