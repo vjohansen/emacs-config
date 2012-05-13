@@ -22,14 +22,9 @@
 
 
 
-(let ((dir (car (directory-files vj-load-site-lisp-path t "^auto-complete"))))
-  (if (file-directory-p dir)
-    (progn
-      (add-to-list 'load-path dir)
-      (safe-load "auto-complete-config")
-      (ac-config-default)
-      (require 'auto-complete-etags))
-    (message "install auto-complete!")))
+(require 'auto-complete-config)
+(ac-config-default)
+(require 'auto-complete-etags)
 
 
 (defvar vj-load-site-lisp-prefix "vj-")

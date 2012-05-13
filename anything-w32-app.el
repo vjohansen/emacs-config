@@ -20,7 +20,7 @@
       (with-temp-file filename
         (insert (format ";; Emacs was here. Generated %s\n"
                   (current-time-string)))
-        (recentf-dump-variable 'result)))
+        (recentf-dump-variable 'result))) ;FIXME maybe prin1 can be used?
     result))
 
 
