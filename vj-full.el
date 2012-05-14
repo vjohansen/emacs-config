@@ -22,6 +22,8 @@
 (autoload 'edit-list "edit-list"
   "*Edit a list called LIST-NAME interactively.")
 
+(autoload 'browse-kill-ring "browse-kill-ring" nil t)
+
 (autoload 'kill-ring-search "kill-ring-search"
   "Search the kill ring in the minibuffer."
   (interactive))
@@ -82,6 +84,7 @@
 
 (global-set-key (kbd "<C-f12>") 'shell-toggle-cd)
 (global-set-key (kbd "<M-f12>") 'shell-toggle)
+(global-set-key (kbd "ESC <f12>") 'shell-toggle)
 
 (defun google ()
   "Googles a query or region if any."
