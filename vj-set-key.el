@@ -40,6 +40,14 @@
 (global-set-key "\M-qc" 'indent-region)
 (global-set-key "\M-qp" 'find-file-at-point)
 (global-set-key "\M-q\M-s" 'slash-replace-on-region)
+(global-set-key "\M-qr" 'insert-char-above)
+(global-set-key "\M-qm" 'magit-status)
+
+(global-set-key "\M-qi" 'vj-ifdef-insert)
+(global-set-key "\M-q\M-i" 'vj-ifndef-insert)
+
+(global-set-key (kbd "M-q +") 'my-increment-number-at-point)
+(global-set-key (kbd "M-q M-+") 'copy-and-inc-line)
 
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
@@ -92,6 +100,7 @@
 (global-set-key (kbd "M-æ")  'backward-paragraph)
 (global-set-key (kbd "M-ø")  'forward-paragraph)
 (global-set-key (kbd "M-å")  'delete-horizontal-space)
+(global-set-key (kbd "C-M-å")  'just-one-space)
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 ;;       to show the keybinding description

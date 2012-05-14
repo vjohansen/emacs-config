@@ -13,6 +13,7 @@
 ;; --- vj-load-packages ---
 
 (defvar vj-emacs-config-dir (file-name-directory (locate-file "vj-load.el" load-path)))
+(set-register ?d `(file . vj-emacs-config-dir))
 
 (add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
 
@@ -21,14 +22,9 @@
 
 
 
-(let ((dir (car (directory-files vj-load-site-lisp-path t "^auto-complete"))))
-  (if (file-directory-p dir)
-    (progn
-      (add-to-list 'load-path dir)
-      (safe-load "auto-complete-config")
-      (ac-config-default)
-      (require 'auto-complete-etags))
-    (message "install auto-complete!")))
+(require 'auto-complete-config)
+(ac-config-default)
+(require 'auto-complete-etags)
 
 
 (defvar vj-load-site-lisp-prefix "vj-")
@@ -59,19 +55,19 @@ vj-load-site-lisp-prefix."
 (setq anything-enable-digit-shortcuts t)
 (global-set-key (kbd "C-å") 'anything)
 
-(when (file-directory-p (format "%s/org-mode/lisp" vj-load-site-lisp-path))
-  (add-to-list 'load-path (format "%s/org-mode/lisp" vj-load-site-lisp-path))
-  (add-to-list 'load-path (format "%s/org-mode/contrib/lisp" vj-load-site-lisp-path))
-  (eval-after-load "org"
-    '(progn
-       (when (fboundp 'org-babel-do-load-languages)
-	 (org-babel-do-load-languages
-	   'org-babel-load-languages
-	   '((perl . t)
-	      (ditaa . t)
-	      (shell . nil)
-	      (emacs-lisp . nil)
-	      ))))))
+(add-to-list 'load-path (format "%s/org-mode/lisp" vj-load-site-lisp-path))
+(add-to-list 'load-path (format "%s/org-mode/contrib/lisp" vj-load-site-lisp-path))
+(eval-after-load "org"
+  '(progn
+     (when (fboundp 'org-babel-do-load-languages)
+       (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((perl . t)
+            (ditaa . t)
+            (sql . t)
+            (shell . nil)
+            (emacs-lisp . nil)
+            )))))
 
 (require 'bm)
 (global-set-key (kbd "<C-f2>") 'bm-toggle)

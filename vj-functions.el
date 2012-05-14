@@ -12,18 +12,6 @@
 )
 
 
-(defun vj-find-tag ()
-    "My find-tag wrapper for easy repetition (VJO 2003).
- Call `find-tag' with current word first time and after that call
- find-tag with NEXT-P set to t (if called repeatedly)"
-    (interactive)
-    (vps-auto-change-project t)         ;can change last-command
-;;    (message "vj-find-tag tag %s, cmd %s" last-tag last-command)
-    (if (eq last-command 'vj-find-tag)
-        (find-tag nil t)
-        (find-tag (current-word) current-prefix-arg)))
-
-
 (defun vj-os-open (filename)
   "Let the OS open the file with the appropriate program."
   (cond ((equal system-type 'darwin)
@@ -211,6 +199,20 @@ This should probably be generalized in the future."
         (copy-and-inc-line-no-arg)))
 
 
+(defun my-increment-number-at-point (&optional amount)
+  "Increment the number under point by `amount'"
+  (interactive "p")
+  (let ((num (number-at-point)))
+    (when (numberp num)
+      (let ((newnum (+ num amount))
+         (p (point)))
+    (save-excursion
+      (skip-chars-backward "-.0123456789")
+      (delete-region (point) (+ (point) (length (number-to-string num))))
+      (insert (number-to-string newnum)))
+    (goto-char p)))))
+
+
 (defun backslash-replace-on-region (beg end)
    "(VJO 2002)"
    (interactive "r")
@@ -333,6 +335,52 @@ isearch-nonincremental)
              ))
     (setq case-fold-search old-case-fold-search)
     ))
+
+
+(defun insert-char-above (&optional n)
+  "Insert the character above point.
+With a prefix arg, insert the N characters above point.
+(Kevin Rodgers)"
+  (interactive "p")
+  (insert (save-excursion
+            (next-line -1)
+            (buffer-substring (point)
+                              (progn
+                                (forward-char n)
+                                (point))))))
+
+;; ------------------------------------------------------------
+
+
+;;; TODO: only print "/* str */" after endif if more than 10 lines apart
+;;; Should check if mark is active (`mark-active')
+(defun vj-ifdef-insert(str)
+  "my ifdef insertion (VJO 1997)"
+  (interactive "*sEnter define: ")
+  (if mark-active
+    (save-excursion
+      (if (> (mark) (point))
+        (exchange-point-and-mark))
+      (if (eq current-prefix-arg nil)
+        (insert "#endif /* " str " */\n")
+        (insert "#endif /* not " str " */\n"))
+      (exchange-point-and-mark)
+      (if (eq current-prefix-arg nil)
+        (insert "#ifdef " str "\n")
+        (insert "#ifndef " str "\n"))
+      )))
+
+(defun vj-ifndef-insert ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward "^\\( \\|$\\)" nil t)
+    (forward-line 1)              ;skip file header
+    (insert (concat "#ifndef " (tempo-c-cpp-hfilename) "\n"))
+    (insert (concat "#define " (tempo-c-cpp-hfilename) "\n"))
+    (goto-char (point-max))
+    (insert (concat "\n#endif /* not " (tempo-c-cpp-hfilename) " */"))))
+
 
 ;; ------------------------------------------------------------
 
