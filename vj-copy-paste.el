@@ -24,6 +24,14 @@
 ;; Note: h: in windows is mapped via samba a server to the unix homedir so
 ;; that ~/ on unix is the same file system as h: on windows
 
+
+;; #v::
+;;   FileRead, Contents, h:\tempfile
+;;   Send %Contents%
+;;   Contents =
+;; return
+
+
 ;; Shell - ZSH
 ;;
 ;; In .zshrc (M-i t) will insert $(< ~/tempfile). To expand immediately press C-x *
