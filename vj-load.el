@@ -2,6 +2,33 @@
 (message "vj-load: system-type=%s system-name=%s LOGONSERVER=%s"
   system-type (system-name) (getenv "LOGONSERVER"))
 
+(defvar vj-emacs-config-dir (file-name-directory (locate-file "vj-load.el" load-path)))
+
+(add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
+
+(defvar vj-load-site-lisp-path
+  (expand-file-name (concat vj-emacs-config-dir "/..")))
+
+
+;; FIXME org-mode needs special handling to override the built-in version
+(setq vj-var (expand-file-name (concat vj-load-site-lisp-path "/org-mode")))
+(when (file-directory-p vj-var)
+  (add-to-list 'load-path (concat vj-var "/lisp"))
+  (add-to-list 'load-path (concat vj-var "/contrib/lisp"))
+  (eval-after-load "org"
+    '(progn
+       (when (fboundp 'org-babel-do-load-languages)
+         (org-babel-do-load-languages
+           'org-babel-load-languages
+           '((perl . t)
+              (ditaa . t)
+              (sql . t)
+              (shell . nil)
+              (emacs-lisp . nil)
+              )))))
+)
+
+
 ;; --- vj-load-std ---
 
 (require 'vj-std-essentials) ; <- Tip: Use M-q RET on package name to call
@@ -12,62 +39,14 @@
 
 ;; --- vj-load-packages ---
 
-(defvar vj-emacs-config-dir (file-name-directory (locate-file "vj-load.el" load-path)))
-(set-register ?d `(file . vj-emacs-config-dir))
-
-(add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
-
-(defvar vj-load-site-lisp-path
-  (expand-file-name (concat vj-emacs-config-dir "/..")))
-
-
-
 (require 'auto-complete-config)
 (ac-config-default)
 (require 'auto-complete-etags)
-
-
-(defvar vj-load-site-lisp-prefix "vj-")
-
-(defun vj-load-site-lisp-code (dir file)
-  (add-to-list 'load-path dir nil)
-  (message "Add %s and load %s" dir
-    (concat vj-load-site-lisp-prefix (match-string 1 dir)))
-  (load (concat vj-load-site-lisp-prefix (match-string 1 dir)) t))
-
-(defun vj-load-site-lisp (base-package-names)
-  "Load base-package-names if in vj-load-site-lisp-path.
-This will add directories to load-path if they have been
-downloaded and put in ~/site-lisp (change via
-vj-load-site-lisp-path) if the prefix name exist in
-`base-package-names' (name sans version number). Also 'vj-' +
-base-package-name will be loaded. Set another prefix via
-vj-load-site-lisp-prefix."
-  (dolist (dir (directory-files vj-load-site-lisp-path t))
-    (when (string-match
-            (concat "/" (regexp-opt base-package-names t) "-?\\([^/]*\\)\\'")
-            dir)
-      (vj-load-site-lisp-code dir (match-string 1 dir)))))
-
 
 (require 'anything)
 (require 'anything-config)
 (setq anything-enable-digit-shortcuts t)
 (global-set-key (kbd "C-å") 'anything)
-
-(add-to-list 'load-path (format "%s/org-mode/lisp" vj-load-site-lisp-path))
-(add-to-list 'load-path (format "%s/org-mode/contrib/lisp" vj-load-site-lisp-path))
-(eval-after-load "org"
-  '(progn
-     (when (fboundp 'org-babel-do-load-languages)
-       (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((perl . t)
-            (ditaa . t)
-            (sql . t)
-            (shell . nil)
-            (emacs-lisp . nil)
-            )))))
 
 (require 'bm)
 (global-set-key (kbd "<C-f2>") 'bm-toggle)
