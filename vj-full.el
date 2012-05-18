@@ -57,7 +57,7 @@
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 ;;(global-set-key "\361	" 'fnexpand-complete) ; M-q TAB
-(global-set-key (kbd "M-q <tab>") 'fnexpand-complete) ; M-q TAB
+(global-set-key (kbd "M-q TAB") 'fnexpand-complete) ; M-q TAB
 
 
 (load "vj-grep")
@@ -97,3 +97,5 @@
         (buffer-substring (region-beginning) (region-end))
       (read-string "Query: ")))))
 
+;; Type unicode numbers with C-q
+(setq read-quoted-char-radix 16)

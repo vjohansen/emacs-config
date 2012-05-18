@@ -117,6 +117,7 @@ vj-load-site-lisp-prefix."
 			      (dirs (,vj-emacs-config-dir))
 			      (ext ("el"))))
 
-(message "server-start")
-(server-start)
+(when window-system
+  (message "server-start")
+  (server-start))
 
