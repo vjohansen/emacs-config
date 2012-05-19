@@ -73,6 +73,7 @@
 (require 'vps)
 (vps-init "\M-i")
 
+(require 'vj-grep)
 
 (when (>= emacs-major-version 24)
   ;; Redefine compilation-find-file!
@@ -90,11 +91,6 @@
                            (dirs (,vj-emacs-config-dir)) (ext ("el"))))
 
 (vps-change-project "elisp")
-
-;; FIXME
-(vps-add-project "vj-elisp" `((rdirs (,my-lisp-dir))
-			      (dirs (,vj-emacs-config-dir))
-			      (ext ("el"))))
 
 (when window-system
   (message "server-start")

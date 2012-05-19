@@ -18,7 +18,7 @@
 
 ;; Also show filename and vps project in title bar
 (setq frame-title-format
-  '("" invocation-name " "  " %f [" vps-project-name "]"))
+  '("" invocation-name "@" system-name " "  " %f [" vps-project-name "]"))
 
 (setq visible-bell t) ;; no beeps!
 

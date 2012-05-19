@@ -3,7 +3,6 @@
 (setq gdb-many-windows t)
 (setq dired-dwim-target            t
       dired-auto-revert-buffer     t
-      dired-auto-revert-buffer     t
       display-time-24hr-format     t
       tags-revert-without-query    t
       large-file-warning-threshold 100000000
