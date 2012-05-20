@@ -1,5 +1,6 @@
 
 (require 'tempo)
+(setq auto-mode-alist (cons '("\\.zsh\\'" . sh-mode) auto-mode-alist))
 
 ; ------------------------------------------------------------
 
