@@ -20,6 +20,13 @@ from filenames for nicer display."
   "Face for highlighting failed part in Isearch echo-area message."
   :group 'vj-grep)
 
+(defvar vj-perl-program "perl")
+
+(defvar vj-vgrep-call
+  (concat vj-perl-program " "
+          (or (locate-library "vgrep22.pl") "-S vgrep22.pl"))
+  "Command line for calling vgrep22.pl program.")
+
 
 (defun vgrep (word &optional ext-string)
   "Run grep WORD on files with vj-grep-source-extensions in current directory.
@@ -36,7 +43,7 @@ With prefix argument do a recursive grep."
       (setq word (current-word)))
   (unless (< (length word) 1)
     (grep
-     (concat vps-vgrep-call
+     (concat vj-vgrep-call
        " -i -e " (or ext-string vj-grep-source-extensions) " "
        (shell-quote-argument word) " "
        (if current-prefix-arg
@@ -55,7 +62,7 @@ With prefix argument do a recursive grep."
     ((compilation-enter-directory-regexp-alist '(("Dir: \\(.*\\)" 1)))
       (compilation-scroll-output nil)
       (command
-        (concat vps-vgrep-call " -i "
+        (concat vj-vgrep-call " -i "
           " -e " vj-grep-source-extensions
           " " (shell-quote-argument
                 (vj-read-from-minibuffer "rgrep" (current-word) 'grep-history))
@@ -65,15 +72,13 @@ With prefix argument do a recursive grep."
             (read-from-minibuffer "rgrep command: " command)
             command ))))
 
-;;(defcustom vj-incgrep-system-project-name)
-
-;; TODO pass projectnames to inc grep
 
 ;; VJ april 2005
 (defun vj-grep-includes (word)
   "grep in iclude files for current buffer"
   (interactive (list (read-string "include grep: " (thing-at-point 'symbol))))
-  (grep (concat "perl -w " (or (locate-library "incgrep.pl") "-S incgrep.pl")
+  (grep (concat vj-perl-program " -w "
+          (or (locate-library "incgrep.pl") "-S incgrep.pl")
           " " (buffer-file-name) " " word)))
 
 

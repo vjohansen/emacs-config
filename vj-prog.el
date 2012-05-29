@@ -4,6 +4,24 @@
 
 ; ------------------------------------------------------------
 
+;; Autodetect tab-infested files
+
+;; http://lists.gnu.org/archive/html/emacs-devel/2005-09/msg00860.html
+
+(defun sm-find-file-tab-setup ()
+  (when (and (null indent-tabs-mode)
+;;          (local-variable-p 'indent-tabs-mode) ; Trust the major mode.
+          (save-excursion
+            (goto-char (point-min))
+            ;; If there are at least 10 lines with a leading TAB, use TABs.
+            (re-search-forward "^	" (+ (point) 100000) t 10)))
+    (set (make-local-variable 'indent-tabs-mode) t)
+    (setq tab-width 4)))
+
+(add-hook 'find-file-hook 'sm-find-file-tab-setup)
+
+; ------------------------------------------------------------
+
 (add-hook 'emacs-lisp-mode-hook 'vj-emacs-lisp-mode-hook)
 ;;(add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
 
