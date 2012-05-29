@@ -59,6 +59,9 @@
 ; ------------------------------------------------------------
 
 
+;; See also "Perl Development Environment in emacs"
+;; http://cpansearch.perl.org/src/YEWENBIN/Emacs-PDE-0.2.16/lisp/doc/QuickStartEn.html
+
 (setq auto-mode-alist (cons '("\\.p[lm]$" . cperl-mode) auto-mode-alist))
 (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
 

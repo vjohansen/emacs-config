@@ -401,3 +401,17 @@ With a prefix arg, insert the N characters above point.
     (if to
       (save-excursion
         (replace-string from to nil beg end)))))
+
+(defvar vj-perl-history
+  '("$S=','; @F=split(qr($S)); $F[1]=  ; $_=join($S,@F);"
+     "$_ = \"$. - $_\""
+     "s///g"))
+
+(defun perl-on-region (command)
+  (interactive
+    (let ((string (read-string "perl -pe " nil 'vj-perl-history)))
+      (list string)))
+  ;; (kill-ring-save (mark) (point))
+  (let ((coding-system-for-write 'raw-text))
+    (shell-command-on-region (mark) (point)
+      (format "perl -pe %s" (shell-quote-argument command)) nil t)))
