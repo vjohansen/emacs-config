@@ -119,7 +119,8 @@
   (message "vj-perl: set compile-command to \"%s\"" compile-command)
 
 ;;  (add-hook 'ac-sources 'ac-source-perl-completion)
-  (setq ac-sources 'ac-source-perl-completion)
+  (if (boundp 'ac-source-perl-completion)
+    (setq ac-sources 'ac-source-perl-completion))
   (auto-complete-mode t)
 
   (setq cperl-indent-level 2

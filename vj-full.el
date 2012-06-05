@@ -11,6 +11,7 @@
       tab-width                     2
       compilation-ask-about-save    nil
       compilation-scroll-output     'first-error
+      use-file-dialog               nil
       eshell-ask-to-save-history    'always
       eshell-save-history-on-exit   t
       eshell-buffer-maximum-lines   8192)
