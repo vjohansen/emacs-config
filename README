@@ -7,16 +7,11 @@ Quick Start
 
   mkdir ~/site-lisp
   cd ~/site-lisp
-  git clone <github-URL for emacs-config>
-  git clone https://github.com/m2ym/auto-complete.git
+  git clone git://github.com/vjohansen/emacs-config.git
   cp ~/site-lisp/emacs-config/sample-dot-emacs.el ~/.emacs
   mkdir ~/elisp
   emacs
   C-x r j e   (loads the machine specific elisp file from ~/elisp AKA my-lisp-dir)
-
-Note: annoyingly popup.el from auto-complete has gotten is own repo at
-
-  git://github.com/m2ym/popup-el.git
 
 If necessary setup exec-path and PATH first in .emacs:
 
@@ -30,7 +25,7 @@ Create a .emacs with (or just copy this from sample-dot-emacs.el)
   ;; optionally change my-lisp-dir via defvar (default is "~/elisp")
   (load "vj-init")
 
-The following registers have set up for fast loading of config files. Use
+The following registers have set up for quickly opening config files. Use
 C-x r j <letter>:
 
 | Letter | File                                |
@@ -45,10 +40,7 @@ The custom file will have a machine specific name.
 License: GPL
 (unless otherwise specified)
 
-test
-
-The site-lisp directory contain compies of elisp files from 
+The site-lisp directory contain compies of elisp files from
 
   https://github.com/m2ym/auto-complete.git
   git://github.com/m2ym/popup-el.git
-

@@ -62,7 +62,9 @@
   (defun vj-helm-local-locate ()
     (interactive)
     (when (not (file-exists-p "~/.vj-locate.db"))
-      (message "Run: updatedb -l 0 -o ~/.vj-locate.db -U ~")
+      (message
+        (propertize "Run: updatedb -l 0 -o ~/.vj-locate.db -U ~"
+          'face 'compilation-info))
       (sit-for 2.0))
     (let ((helm-c-locate-command "locate -d ~/.vj-locate.db -i -r %s"))
       (helm-other-buffer
