@@ -44,6 +44,7 @@
   ;; (local-set-key "\C-c\C-f" 'tempo-forward-mark)
   ;; (local-set-key "\C-c\C-e" 'tempo-complete-tag)
   ;; (elisp-tempo)
+  (eldoc-mode t)
   )
 
 (defun pretty-lambdas ()
