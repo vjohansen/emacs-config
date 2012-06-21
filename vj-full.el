@@ -21,7 +21,7 @@
 
 
 (autoload 'edit-list "edit-list"
-  "*Edit a list called LIST-NAME interactively.")
+  "*Edit a list called LIST-NAME interactively." nil t)
 
 (autoload 'browse-kill-ring "browse-kill-ring" nil t)
 

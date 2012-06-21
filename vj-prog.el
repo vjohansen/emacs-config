@@ -397,3 +397,23 @@ that file will need to be in your path."
 
 
 ; ------------------------------------------------------------
+
+
+(setq auto-mode-alist
+  (append '(("CMakeLists\\.txt\\'" . cmake-mode)
+             ("\\.cmake\\'" . cmake-mode))
+    auto-mode-alist))
+
+(autoload 'cmake-mode "cmake-mode" "CMake*" t)
+
+(eval-after-load "cmake-mode"
+  '(progn
+     (load "context-info-cmake")
+     (add-to-list 'compilation-error-regexp-alist-alist
+       '(cmake
+          "^CMake Error at \\([^:\b]+\\):\\([0-9]+\\) (" 1 2))
+     (add-to-list 'compilation-error-regexp-alist 'cmake)
+
+     (add-to-list 'ac-modes 'cmake-mode)))
+
+; ------------------------------------------------------------

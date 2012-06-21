@@ -18,8 +18,8 @@
 
 (setq visible-bell t) ;; no beeps!
 
-(setq indent-tabs-mode nil              ; Do not use tabs for indent
-      compilation-ask-about-save nil)   ; Just save files before compile
+(setq-default indent-tabs-mode nil)     ; Do not use tabs for indent
+(setq compilation-ask-about-save nil)   ; Just save files before compile
 (setq find-file-existing-other-name t)
 
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
@@ -35,7 +35,7 @@
 
 (iswitchb-mode t)
 
-;; Make it possible for comma to start subprocess (ANDing)
+;; Make it possible for comma to start subprocessing (ANDing)
 
 (defun iswitchb-my-keys ()
   "Add my keybindings for iswitchb."

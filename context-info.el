@@ -28,9 +28,9 @@
 ;; Use header-line-format to show info depending on (point)
 ;;
 ;; Installation:
-;; 
+;;
 ;;   (require 'context-info)
-;;  
+;;
 
 ;;; Code:
 
@@ -50,13 +50,10 @@
 (defun context-info-display (info)
   ""
   (setq context-info-last info)
-  ;; Only set header-line-format to "" if
-  ;; it is currently non-nil
-  (if (and header-line-format (not info))
-    (setq info ""))
-  (setq header-line-format info)
-  (force-mode-line-update)
-  (run-hooks context-info-show-hook))
+  (when info
+    (setq header-line-format info)
+    (force-mode-line-update)
+    (run-hooks context-info-show-hook)))
 
 (defun context-info ()
   (interactive)
@@ -88,8 +85,8 @@
 ;;   (let* ((eldoc-sym sym))
 ;;     (seek-ectag eldoc-sym 'vj-find-ectag)
 ;;     (if (> (length *ectags-matches*) 0)
-;;         (pp-to-string (car *ectags-matches*))     
-;; ;;        (ectags-match-tag-info (car *ectags-matches*))     
+;;         (pp-to-string (car *ectags-matches*))
+;; ;;        (ectags-match-tag-info (car *ectags-matches*))
 ;;       (format "Unknown %s " eldoc-sym))))
 
 
@@ -130,12 +127,12 @@
 
     ;;    (csharp-types classname-re)
     ;;(member classname (csharp-types))
-    
+
     (if (and type (csharp-full-type-name-p r-type))
       (concat (propertize type 'face 'font-lock-type-face)
         (propertize generic 'face 'bold))
       (setq found (csharp-types r-type))
-      (cond 
+      (cond
         ((equal (length found) 0)
           type)
         ((equal (length found) 1)
@@ -227,8 +224,8 @@
             ;; Is it near and closer than current?
             (when (and (< (abs (- point-line line))
                          context-info-flymake-autoshow-max-line-difference)
-                    (or (not nearest-line) 
-                      (< (abs (- point-line line)) 
+                    (or (not nearest-line)
+                      (< (abs (- point-line line))
                         (abs(- point-line nearest-line)))))
 
               (setq tip (if (equal line last-line)
