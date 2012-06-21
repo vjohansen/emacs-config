@@ -39,6 +39,7 @@
 
 ;; --- vj-load-packages ---
 
+;; (load "help-mode") ; help-xref-following issue
 (require 'auto-complete-config)
 (ac-config-default)
 (require 'auto-complete-etags)

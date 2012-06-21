@@ -1,8 +1,4 @@
 
-;; Use C-x r j E to load .emacs
-(if (not (file-exists-p "~/.emacs"))
-  (set-register ?E '(file . "~/.emacs.d/init.el"))
-  (set-register ?E '(file . "~/.emacs")))1
 (set-register ?t '(file . "~/tempfile")) ;Use this instead of *scratch*
 
 (show-paren-mode t)

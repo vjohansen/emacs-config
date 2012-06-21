@@ -403,8 +403,9 @@ With a prefix arg, insert the N characters above point.
         (replace-string from to nil beg end)))))
 
 (defvar vj-perl-history
-  '("$S=','; @F=split(qr($S)); $F[1]=  ; $_=join($S,@F);"
-     "$_ = \"$. - $_\""
+  '("perl -MText::Autoformat -e 'autoformat'"
+     "$S=','; @F=split(qr($S)); $F[1]=  ; $_=join($S,@F);" ; field manip
+     "$_ = \"$. - $_\""                 ; number lines
      "s///g"))
 
 (defun perl-on-region (command)
