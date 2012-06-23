@@ -10,7 +10,7 @@
 
 (defun sm-find-file-tab-setup ()
   (when (and (null indent-tabs-mode)
-;;          (local-variable-p 'indent-tabs-mode) ; Trust the major mode.
+          (local-variable-p 'indent-tabs-mode) ; Trust the major mode.
           (save-excursion
             (goto-char (point-min))
             ;; If there are at least 10 lines with a leading TAB, use TABs.
@@ -121,7 +121,9 @@
 
 ;;  (add-hook 'ac-sources 'ac-source-perl-completion)
   (if (boundp 'ac-source-perl-completion)
-    (setq ac-sources 'ac-source-perl-completion))
+    (when (not (equal system-type 'windows-nt))
+      (perl-completion-mode)
+      (add-to-list 'ac-sources 'ac-source-perl-completion nil)))
   (auto-complete-mode t)
 
   (setq cperl-indent-level 2

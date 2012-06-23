@@ -23,8 +23,10 @@
       (start-process "vj-os-open" nil "/usr/bin/open" (expand-file-name filename)))))
 
 
+(defun eshell/lt () "vj 2009" (eshell/ls "-lrt"))
+
 (defun eshell/open (FILE)
-    "Let the OS determine how open a file."
+  "Let the OS determine how open a file."
   (vj-os-open FILE))
 
 (defun eshell/e (filename)

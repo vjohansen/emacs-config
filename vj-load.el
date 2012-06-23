@@ -77,7 +77,7 @@
 (require 'vj-grep)
 
 (when (>= emacs-major-version 24)
-  ;; Redefine compilation-find-file!
+  ;; Redefine compilation-find-file! Needed by vps
   (load "vj-compilation-find-file-not-found-hook"))
 
 (require 'anything-vps)
