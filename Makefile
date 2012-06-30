@@ -22,9 +22,6 @@ $(SITE_LISP)/helm:
 $(SITE_LISP)/magit:
 	git clone https://github.com/magit/magit.git $@
 
-$(SITE_LISP)/egit:
-	git clone git://github.com/jimhourihan/egit.git $@
-
 # https://github.com/magnars/hardcore-mode.el.git
 # git://repo.or.cz/org-mode.git
 # https://github.com/kiwanami/emacs-calfw.git 

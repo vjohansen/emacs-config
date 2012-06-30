@@ -35,6 +35,9 @@
 (if (not (keymapp (lookup-key global-map "\M-q")))
     (global-unset-key "\M-q"))
 
+(global-set-key [f6] 'point-to-register)
+(global-set-key (kbd "C-x j") 'jump-to-register)
+
 (global-set-key "\M-q\M-q" 'fill-paragraph)
 (global-set-key "\M-q\M-l" 'vj-insert-local-variables-section)
 (global-set-key "\M-qc" 'indent-region)

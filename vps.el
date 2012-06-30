@@ -1,6 +1,6 @@
 ;;; vps.el --- Define a project (set of dirs) and handle tags, grep etc.
 
-;; Copyright (C) 2003-2010 Vagn Johansen
+;; Copyright (C) 2003-2012 Vagn Johansen
 
 ;;; Commentary:
 
@@ -42,7 +42,15 @@
 (require 'compile)
 (require 'etags)
 (require 'dired-x)
-(require 'vj-util)
+(require 'grep)
+
+(defun vps-ensure-trailing-slash (dir)
+  (replace-regexp-in-string "\\([^/\\]\\)$" "\\1/" dir))
+
+(defun vps-file-last-modified-duration (filename)
+  "Return seconds from now to last modified for FILENAME."
+  (let ((mtime (nth 5 (file-attributes filename))))
+    (time-to-seconds (time-since mtime))))
 
 ;;(eval-when-compile (require 'c-includes))
 
@@ -162,7 +170,7 @@ Optional argument ARGS is the list of possible completions."
 
 (defun vps-all-sub-directories (directory)
   "Return all directories recursively below DIRECTORY."
-  (let ((sub-dirs) (dir (vj-ensure-trailing-slash directory)))
+  (let ((sub-dirs) (dir (vps-ensure-trailing-slash directory)))
     (dolist (maybe-dir (directory-files
                          dir
                          t              ; FULL
@@ -450,7 +458,7 @@ If no project name is supplied, use the current project name."
         ;; else: tags exists
         (progn
           (setq tags-age
-            (/ (vj-file-last-modified-duration (vps-tags-filename))
+            (/ (vps-file-last-modified-duration (vps-tags-filename))
               (* 24 60 60))) ;; in days
           (when (and (> tags-age
                         (vps-get-setting-or-default 'max-tags-age

@@ -16,10 +16,6 @@ from filenames for nicer display."
   :type 'string
   :group 'vj-grep)
 
-(defface vj-grep-match '((t (:inherit match :background "bisque")))
-  "Face for highlighting failed part in Isearch echo-area message."
-  :group 'vj-grep)
-
 (defvar vj-perl-program "perl")
 
 (defvar vj-vgrep-call

@@ -43,6 +43,7 @@
 (require 'auto-complete-config)
 (ac-config-default)
 (require 'auto-complete-etags)
+(setq ac-delay 0.3)
 
 (require 'anything)
 (require 'anything-config)
