@@ -8,6 +8,13 @@
 ;;
 ;;   Mod4 c :ExecCommand ssh hostname "xclip -o > /home/vj/tempfile"
 
+;; tmux on unix
+;; ------------
+;; (DO NOT use screen. Upgrade!)
+;;
+;; # <prefix key> C-t
+;; bind-key C-t save-buffer ~/tempfile
+
 
 ;; Windows with AutoHotKey
 ;; -----------------------
