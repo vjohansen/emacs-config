@@ -10,20 +10,6 @@
 ;; Easier to type on danish keyboard than M-/
 (global-set-key (kbd "M-\'") 'dabbrev-expand)
 
-(defun vj-switch-to-buffer-hook ()
-   "Call switch-to-buffer without prompting"
-   (interactive)
-   (switch-to-buffer nil))
-
-(global-set-key (kbd "C-+") 'vj-switch-to-buffer-hook)
-
-;; Locally set tab-width to 4. Usually used when reading files made in VS
-;; where the default is tabs with an indent that is 4.
-(global-set-key [C-f9] (lambda ()
-                         (interactive)
-                         (setq tab-width 4)
-                         (recenter)))
-
 (global-set-key [S-up] 'my-scroll-down-hook)
 (global-set-key [S-down] 'my-scroll-up-hook)
 
@@ -72,6 +58,43 @@
      (point))))
 
 (define-key isearch-mode-map (kbd "C-S-w") 'isearch-yank-symbol-or-char)
+
+
+(defun vj-switch-to-buffer-hook ()
+   "Call switch-to-buffer without prompting"
+   (interactive)
+   (switch-to-buffer nil))
+
+(global-set-key (kbd "C-+") 'vj-switch-to-buffer-hook)
+
+(global-set-key [f7] 'vj-browse-url)
+(global-set-key (kbd "ESC <f7>") 'browse-url)
+
+(defun vj-browse-url ()
+  (interactive)
+  (let
+    ((w3m-url (get-text-property (point) 'w3m-href-anchor))
+      (url-at-point (thing-at-point-url-at-point))
+      (html-buffer-url
+        (if (and (buffer-file-name) (string-match "\\.html?$"
+                                     (buffer-file-name)))
+          (format "file://%s" (buffer-file-name)))))
+    (cond
+      (w3m-url
+        (browse-url w3m-url)
+        (shell-command "wmctrl -a firefox"))
+      (url-at-point ;; http://ozymandias.dk
+        (w3m url-at-point))
+      (html-buffer-url
+        (browse-url html-buffer-url))
+      (t (message "no link here")))))
+
+;; Locally set tab-width to 4. Usually used when reading files made in VS
+;; where the default is tabs with an indent that is 4.
+(global-set-key [C-f9] (lambda ()
+                         (interactive)
+                         (setq tab-width 4)
+                         (recenter)))
 
 
 (defun vj-prog-keys-setup ()
