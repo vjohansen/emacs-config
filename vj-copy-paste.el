@@ -48,8 +48,7 @@
 
 
 ;; override this in the machine or sytem specific file as needed
-(defvar vj-tempfile-name (if (equal system-type 'windows-nt)
-                             "h:/tempfile" "~/tempfile"))
+(defvar vj-tempfile-name "~/tempfile")
 
 
 (defun my-insert-specific-file ()
