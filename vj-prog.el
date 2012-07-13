@@ -2,7 +2,6 @@
 (require 'tempo)
 (setq auto-mode-alist (cons '("\\.zsh\\'" . sh-mode) auto-mode-alist))
 
-(require 'smart-compile)
 ; ------------------------------------------------------------
 
 ;; Autodetect tab-infested files
@@ -274,7 +273,7 @@ that file will need to be in your path."
 (defun vjo-c-mode-common-hook ()
 
   (c-set-style "bsd")
-  (setq c-basic-offset 2)
+  (setq c-basic-offset 4)
   (setq c-auto-newline nil)
   (setq c-tab-always-indent nil)
   (setq c-block-comment-prefix "")      ; was "* "
@@ -300,6 +299,9 @@ that file will need to be in your path."
     [?\C-z]
     (lookup-key hs-minor-mode-map [?\C-c ?@]))
 
+  ;; ac does not work if ac-source-yasnippet is the first element
+  (setq ac-sources '(ac-source-gtags ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))  (setq ac-sources '(ac-source-words-in-same-mode-buffers))
+
   (auto-fill-mode)
 ;;  (filladapt-mode)
   (setq fill-column 78)
@@ -323,7 +325,9 @@ that file will need to be in your path."
       (newline-and-indent)
       (if (memq major-mode '(csharp-mode))
         (insert (concat "Console.WriteLine" "(\"" cw "={0}\"," cw ");"))
-        (insert (concat "cout << \"" cw "=\" << " cw " << endl;")))
+        (if (memq major-mode '(c-mode))
+          (insert (concat "printf(\"" cw "= %s\\n\"," cw ");"))
+          (insert (concat "cout << \"" cw "=\" << " cw " << endl;"))))
       )))
 
 ;; (defun vjo-c++-mode-hook ()
@@ -340,7 +344,7 @@ that file will need to be in your path."
 (defun c-or-c++-mode ()
   (if (save-excursion
         (goto-char (point-min))
-        (or (re-search-forward "//" 10000 t) (< (buffer-size) 5) ))
+        (or (re-search-forward "[^:]//" 10000 t) (< (buffer-size) 5) ))
       (c++-mode)
     (c-mode)))
 
@@ -353,15 +357,17 @@ that file will need to be in your path."
         (hhname (concat name ".hh"))
         (cname (concat name ".c"))
         (cppname (concat name ".cpp"))
+        (cxxname (concat name ".cxx"))
         (ccname (concat name ".cc"))
         )
     (if (string-match "\\.hh?$" (buffer-file-name))
         (or
          (and (file-exists-p ccname) (find-file ccname))
          (and (file-exists-p cppname) (find-file cppname))
+         (and (file-exists-p cxxname) (find-file cxxname))
          (and (file-exists-p cname) (find-file cname))
          (if (y-or-n-p "Create cc file ")
-             (find-file ccname))
+           (find-file ccname))
          )
         (or
          (and (file-exists-p hhname) (find-file hhname))

@@ -75,7 +75,7 @@ With prefix argument do a recursive grep."
   (interactive (list (read-string "include grep: " (thing-at-point 'symbol))))
   (grep (concat vj-perl-program " -w "
           (or (locate-library "incgrep.pl") "-S incgrep.pl")
-          " " (buffer-file-name) " " word)))
+          " " (buffer-file-name) " " (shell-quote-argument word))))
 
 
 (provide 'vj-grep)

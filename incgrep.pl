@@ -6,9 +6,12 @@ use Cwd;
 
 ### CONFIG
 my $verbose = 0;
+my $not_found_count = 0;
 
 my @g_include_directories =
-  (".", "/usr/include"
+  (".", "/usr/include", "/usr/include/linux",
+   "/usr/lib/gcc/x86_64-redhat-linux/4.4.4/include/",
+   "/home/vj/src/easyviz/install/include", "/home/vj/src/easyviz/evncserver2/common"
 #   "c:/tools/milbin/boost_v1.30.2"
   );
 
@@ -26,6 +29,7 @@ if ($ENV{EMACS})
 }
 
 cpp_grep($filename, 0, ".");
+if ($not_found_count > 0) {print "\n$not_found_count header files not found\n"; }
 
 # Recursively grep for in filename in @g_include_directories
 # args: filename, function call level, current directory
@@ -51,13 +55,13 @@ sub cpp_grep
         next;
        }
 
-      print "  " x $level, "* $filename\n"  if $verbose >= 1;
+      print "  " x $level, "* $filename\n"  if $verbose >= 2;
       my @include_files = find_include_files($filename, $cwd);
       for my $include_file (@include_files)
       {
         if ($seen{$include_file})
         {
-          print "already seen $include_file\n" if $verbose >= 2;
+          print "already seen $include_file\n" if $verbose >= 3;
           next;                         # skip it
         }
         $seen{$include_file}++;
@@ -77,6 +81,7 @@ sub cpp_grep
       }
       if (not @include_files)
       {
+        $not_found_count++;
         print "# $filename not found\n" if $verbose;
       }
     }

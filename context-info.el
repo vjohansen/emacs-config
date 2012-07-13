@@ -235,7 +235,7 @@
     (if tip (format "!%d: %s" last-line tip))))
 
 
-(add-hook 'context-info-hook 'context-info-flymake)
+;;(add-hook 'context-info-hook 'context-info-flymake)
 
 ;; ------------------------------------------------------------------------
 

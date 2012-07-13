@@ -96,7 +96,7 @@ Don't use customize."
 
 (defvar vps-default-setting-alist
   '(
-     (ext ("c" "cpp" "h" "hpp" "el"))
+     (ext ("c" "cpp" "cxx" "cc" "h" "hpp" "el"))
      (auto-build-tags t)
      (file-cache-add nil)
      (setup-function nil)
@@ -799,8 +799,8 @@ call \\[find-file-at-point]"
 
 (defun vps-quick-add-recursive-project (name ext-string)
   (interactive "sEnter project name: \nsExtensions (eg \"c,h\"): ")
-  (if (eq ext-string "")
-    (setq ext-string "c,cpp,h,hpp,pl,pm,py,cs"))
+  (if (equal ext-string "")
+    (setq ext-string "c,cpp,h,hpp,hxx,cxx,cc,pl,pm,py,cs,rb"))
   (let ((dir (file-name-directory (read-file-name "Directory: "))))
     (vps-add-project name `((rdirs (,dir))
                             (ext ,(split-string ext-string ","))))))
