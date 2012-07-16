@@ -9,6 +9,7 @@
 (defvar vj-load-site-lisp-path
   (expand-file-name (concat vj-emacs-config-dir "/..")))
 
+(set-register ?l `(file . ,vj-load-site-lisp-path))
 
 ;; FIXME org-mode needs special handling to override the built-in version
 (setq vj-var (expand-file-name (concat vj-load-site-lisp-path "/org-mode")))

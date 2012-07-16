@@ -73,7 +73,8 @@
 (defun vj-browse-url ()
   (interactive)
   (let
-    ((w3m-url (get-text-property (point) 'w3m-href-anchor))
+    ((w3m-url (if (featurep 'w3m)
+                (get-text-property (point) 'w3m-href-anchor)))
       (url-at-point (thing-at-point-url-at-point))
       (html-buffer-url
         (if (and (buffer-file-name) (string-match "\\.html?$"
@@ -84,7 +85,9 @@
         (browse-url w3m-url)
         (shell-command "wmctrl -a firefox"))
       (url-at-point ;; http://ozymandias.dk
-        (w3m url-at-point))
+        (if (featurep 'w3m)
+          (w3m url-at-point)
+          (browse-url url-at-point)))
       (html-buffer-url
         (browse-url html-buffer-url))
       (t (message "no link here")))))
