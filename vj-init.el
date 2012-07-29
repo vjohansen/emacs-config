@@ -46,13 +46,16 @@
 
 (defvar vj-machine-specific-elisp-file
   (format "%s/machine-%s.el" my-lisp-dir (downcase system-name)))
+
 (set-register ?e `(file . ,vj-machine-specific-elisp-file)) ;; C-x r j e
-(if (file-exists-p vj-machine-specific-elisp-file)
-    (load vj-machine-specific-elisp-file)
+
+(unless (file-exists-p vj-machine-specific-elisp-file)
   (message "*** CREATING THE FILE: %s ***" vj-machine-specific-elisp-file)
   (sit-for 2)
   (with-temp-file vj-machine-specific-elisp-file
     (insert ";; add stuff here\n\n;; footer\n(set-background-color vj-background-color-old)")))
+
+(load vj-machine-specific-elisp-file)
 
 (setq debug-on-error nil
       debug-on-quit nil)

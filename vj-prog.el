@@ -2,6 +2,8 @@
 (require 'tempo)
 (setq auto-mode-alist (cons '("\\.zsh\\'" . sh-mode) auto-mode-alist))
 
+(autoload 'smart-compile "smart-compile" "Smart-Compile*" t)
+
 ; ------------------------------------------------------------
 
 ;; Autodetect tab-infested files

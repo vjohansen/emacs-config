@@ -8,7 +8,8 @@ VPS_TXT_FILES=$(wildcard $(VPS_DIR)/*.txt)
 VPS_DB_FILES=$(patsubst %.txt,%.db,$(VPS_TXT_FILES))
 
 help:
-	@echo "git - clone into ~/site-lisp (override with SITE_LISP)"
+	@echo "git      - clone into ~/site-lisp (override with SITE_LISP)"
+	@echo "gdbfiles - generate VPS inverse index files"
 
 $(SITE_LISP):
 	mkdir $@

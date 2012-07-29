@@ -37,11 +37,11 @@
 
 
 
-(defvar vj-helm-list '(helm-c-source-buffers-list
+(defvar vj-helm-list '(helm-c-source-recentf
+                        helm-c-source-buffers-list
  			helm-c-source-files-in-current-dir
  			helm-source-vps-files
-			helm-c-source-recentf
-			helm-c-source-locate))
+                        helm-c-source-locate))
 
 (defun vj-helm ()
   (interactive)
@@ -96,3 +96,4 @@
         '(helm-c-source-locate)
         "*vj-helm-local-locate*"))))
 
+;; (setq helm-completion-window-scroll-margin 0) 
