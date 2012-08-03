@@ -53,7 +53,8 @@
   (octave-mode        . (run-octave))
   ("\\.c\\'"          . "gcc -O2 %f -lm -o %n")
 ;;  ("\\.c\\'"          . "gcc -O2 %f -lm -o %n && ./%n")
-  ("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f -lm -o %n")
+;;  ("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f -lm -o %n")
+  ("\\.[Cc]+[Pp]*\\'" . "g++ -O0 -g %f -lm -o %n")
   ("\\.m\\'"          . "gcc -O2 %f -lobjc -lpthread -o %n")
   ("\\.java\\'"       . "javac %f")
   ("\\.php\\'"        . "php -l %f")
@@ -64,6 +65,7 @@
   ("\\.texi\\'"       . "makeinfo %f")
   ("\\.mp\\'"         . "mptopdf %f")
   ("\\.pl\\'"         . "perl -cw %f")
+  ("\\.py\\'"         . "python %f")
   ("\\.rb\\'"         . "ruby -cw %f")
 )  "Alist of filename patterns vs corresponding format control strings.
 Each element looks like (REGEXP . STRING) or (MAJOR-MODE . STRING).

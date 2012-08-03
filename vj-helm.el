@@ -33,9 +33,9 @@
 (if (eq system-type 'windows-nt)
   (setq helm-c-locate-command "c:/tools/Locate32/Locate.exe %s"))
 (setq helm-ff-transformer-show-only-basename nil)
+
 (global-set-key (kbd "C-å") 'vj-helm)
-
-
+(global-set-key (kbd "C-x b") 'helm-mini)
 
 (defvar vj-helm-list '(helm-c-source-recentf
                         helm-c-source-buffers-list
