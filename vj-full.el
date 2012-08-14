@@ -88,6 +88,30 @@
 (global-set-key (kbd "<M-f12>") 'shell-toggle)
 (global-set-key (kbd "ESC <f12>") 'shell-toggle)
 
+
+
+;;  http://www.reddit.com/r/emacs/comments/y76sl/proper_way_of_overriding_mode_keys/
+;;
+(define-minor-mode vj-global-keys-mode
+  "VJ's set-key mode"
+  :init-value nil
+  :lighter " ☥"
+  :keymap
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap (kbd "C-<backspace>") 'forward-char)
+    keymap)
+  :group 'vj-global-keys)
+
+(define-globalized-minor-mode vj-global-keys-global-mode vj-global-keys-mode
+  (lambda ()
+    (if (not (minibufferp (current-buffer)))
+        (vj-global-keys-mode 1))))
+
+(add-to-list 'emulation-mode-map-alists '(vj-global-keys-global-mode vj-global-keys-mode-map))
+
+
+
+
 (defun google ()
   "Googles a query or region if any."
   (interactive)
