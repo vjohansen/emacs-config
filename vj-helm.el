@@ -75,7 +75,6 @@
      (delayed))
   "Source for retrieving files via W. Desktop Search.")
 
-
 (if (eq system-type 'windows-nt)
 
   ;; Windows
@@ -95,5 +94,27 @@
       (helm-other-buffer
         '(helm-c-source-locate)
         "*vj-helm-local-locate*"))))
+
+
+(defun helm-ucs-init ()
+  "Initialize buffer for `helm-source-ucs'."
+  (unless (helm-candidate-buffer)
+    (with-current-buffer (helm-candidate-buffer 'global)
+      (erase-buffer)
+      (dolist (pair (ucs-names))
+        (insert (format "%c - %s - %X - %d"
+                  (cdr pair) (car pair) (cdr pair) (cdr pair)) "\n")))))
+
+(defvar helm-source-ucs
+  '((name . "Unicode char")
+     (init . helm-ucs-init)
+     (candidates-in-buffer)
+     (requires-pattern . 2)
+     (action ("Insert" . (lambda (fn)
+                           (insert format "%c" (nth 2 (split-string  fn " - ")))))))
+     )
+;; (helm-other-buffer '(helm-source-ucs) "*helm UCS*")
+
+
 
 ;; (setq helm-completion-window-scroll-margin 0) 
