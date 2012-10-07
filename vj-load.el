@@ -46,10 +46,10 @@
 (require 'auto-complete-etags)
 (setq ac-delay 0.3)
 
-(require 'anything)
-(require 'anything-config)
-(setq anything-enable-digit-shortcuts t)
-(global-set-key (kbd "C-å") 'anything)
+;; (require 'anything)
+;; (require 'anything-config)
+;; (setq anything-enable-digit-shortcuts t)
+;; (global-set-key (kbd "C-å") 'anything)
 
 (require 'bm)
 (global-set-key (kbd "<C-f2>") 'bm-toggle)
