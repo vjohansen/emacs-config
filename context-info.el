@@ -53,7 +53,7 @@
   (when info
     (setq header-line-format info)
     (force-mode-line-update)
-    (run-hooks context-info-show-hook)))
+    (run-hooks 'context-info-show-hook)))
 
 (defun context-info ()
   (interactive)
@@ -139,65 +139,6 @@
           (car found))
         (t "ambiguous")) ;; <- FIXME look at using statements
       )))
-
-
-;; ------------------------------------------------------------------------
-
-(add-hook 'js2-mode-hook 'context-info-js2-setup t)
-
-(defun context-info-js2-setup ()
-  (add-hook 'context-info-hook 'context-info-js2 t t))
-
-;; Function: add-hook hook function &optional append local
-;;
-;; "If local is non-nil, that says to make the new hook function buffer-local
-;; in the current buffer and automatically calls make-local-hook to make the
-;; hook itself buffer-local."
-;;
-;; The local flag is used to simulate mode-local hooks
-
-(defun context-info-js2 ()
-  ""
-  (vj-js2-where)
-)
-
-
-(defun vj-js2-where()
-  (interactive)
-  (let (args text (node (js2-node-at-point)))
-    (while node
-
-      (setq text
-        (concat
-          (replace-regexp-in-string "^js2-" ""
-            (js2-node-short-name node))
-          " " text))
-
-      (when (equal (js2-node-type node) js2-FUNCTION)
-        (setq args (js2-function-node-params node))
-        (setq text (format "%s (FUNC %s (%s))" text
-                     (js2-function-name node)
-                     "?"
-                     ;;(mapconcat (lambda (a) (js2-function-arg-name a)) args ", ")
-                     )))
-      ;; next
-      (setq node (js2-node-parent node)))
-    (or text "?")))
-
-
-(defun vj-js2-autoshow-FIXME ()
-  (interactive)
-  (let (buffer-name line pos item)
-    (when (and (equal major-mode 'js2-mode)
-            (setq item (assoc (current-word) (vj-js2-function-list))))
-      (setq buffer-name (nth 3 item))
-      (setq line (nth 2 item))
-      (setq pos (nth 1 item))
-      (setq header-line-format
-        (concat
-          (propertize (format "%s:%d: " buffer-name pos) 'face 'file-name-shadow)
-          line))
-      (force-mode-line-update))))
 
 
 ;; ------------------------------------------------------------------------
