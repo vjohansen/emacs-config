@@ -10,6 +10,8 @@ my $not_found_count = 0;
 
 my @g_include_directories =
   (".", "/usr/include", "/usr/include/linux",
+   "/usr/include/QtCore",
+   "/usr/include/Qt",
    "/usr/lib/gcc/x86_64-redhat-linux/4.4.4/include/",
    "/home/vj/src/easyviz/install/include", "/home/vj/src/easyviz/evncserver2/common"
 #   "c:/tools/milbin/boost_v1.30.2"
