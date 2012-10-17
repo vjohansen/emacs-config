@@ -67,8 +67,8 @@
 ; ------------------------------------------------------------
 
 (defun vj-csharp-mode-hook ()
-	(c-set-style "bsd")
-	(setq c-basic-offset 2))
+        (c-set-style "bsd")
+        (setq c-basic-offset 2))
 
 (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
 (setq auto-mode-alist (cons '("\\.cs\\'" . csharp-mode) auto-mode-alist))
@@ -133,7 +133,7 @@
     cperl-continued-brace-offset -2
     cperl-brace-offset 0
     cperl-brace-imaginary-offset 0
-    cperl-label-offset 0		; was -2
+    cperl-label-offset 0                ; was -2
     ;;    cperl-electric-parens 'null
     ;;    cperl-electric-parens 't
     cperl-indent-parens-as-block t
@@ -173,23 +173,23 @@ that file will need to be in your path."
 ;;  "compile"
 ;;  ;; Append regexp for Perl errors to global list (20.2 misses the "." case)
 ;;  '(setq compilation-error-regexp-alist  ; Perl
-;; 	(append compilation-error-regexp-alist
-;; 		'(;; <Good Perl advice> at foo.cgi line 13.
-;; 		  ;; syntax error at bar.pl line 270, near ...
-;; 		  ;; NB: Emacs 20.2 needs the `.*' (implicitly anchored w/ `^')
-;; 		  (".* at \\([^ ]+\\) line \\([0-9]+\\)[,.]" 1 2)))))
+;;      (append compilation-error-regexp-alist
+;;              '(;; <Good Perl advice> at foo.cgi line 13.
+;;                ;; syntax error at bar.pl line 270, near ...
+;;                ;; NB: Emacs 20.2 needs the `.*' (implicitly anchored w/ `^')
+;;                (".* at \\([^ ]+\\) line \\([0-9]+\\)[,.]" 1 2)))))
 
 ;; (eval-after-load
 ;;  "compile"
 ;;  '(setq compilation-error-regexp-alist  ; "assertion .."
-;; 	(append compilation-error-regexp-alist
-;; 		'(;; <Good Perl advice> at foo.cgi line 13.
-;; 		  ;; syntax error at bar.pl line 270, near ...
-;; 		  ;; NB: Emacs 20.2 needs the `.*' (implicitly anchored w/ `^')
-;; 		  ("assertion \\([^ ]+\\), line \\([0-9]+\\)" 1 2)))))
-;; ;;		  ("failed: file \"\\([^ ]+\\), line \\([0-9]+\\)" 1 2)))))
+;;      (append compilation-error-regexp-alist
+;;              '(;; <Good Perl advice> at foo.cgi line 13.
+;;                ;; syntax error at bar.pl line 270, near ...
+;;                ;; NB: Emacs 20.2 needs the `.*' (implicitly anchored w/ `^')
+;;                ("assertion \\([^ ]+\\), line \\([0-9]+\\)" 1 2)))))
+;; ;;             ("failed: file \"\\([^ ]+\\), line \\([0-9]+\\)" 1 2)))))
 
-;; ;;		  ("assertion .* failed: file \\([^ ]+\\), line \\([0-9]+\\)[,.]" 1 2)))))
+;; ;;             ("assertion .* failed: file \\([^ ]+\\), line \\([0-9]+\\)[,.]" 1 2)))))
 
 
 (defun perl-region (command)
@@ -437,3 +437,26 @@ that file will need to be in your path."
 (add-hook 'find-file-hook 'sm-try-smerge t)
 
 ; ------------------------------------------------------------
+
+(require 'flymake)
+
+;; Invoke ruby with '-c' to get syntax checking
+(defun flymake-ruby-init ()
+  (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                        'flymake-create-temp-inplace))
+          (local-file  (file-relative-name
+                         temp-file
+                         (file-name-directory buffer-file-name))))
+    (list "ruby" (list "-c" local-file))))
+
+(push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
+(push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks)
+
+(push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
+
+(add-hook 'ruby-mode-hook
+  '(lambda ()
+     ;; Don't want flymake mode for ruby regions in rhtml files and also on read only files
+     (if (and (not (null buffer-file-name)) (file-writable-p buffer-file-name))
+       (flymake-mode))
+     ))
