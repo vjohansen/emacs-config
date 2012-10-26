@@ -454,9 +454,17 @@ that file will need to be in your path."
 
 (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
 
-(add-hook 'ruby-mode-hook
-  '(lambda ()
-     ;; Don't want flymake mode for ruby regions in rhtml files and also on read only files
-     (if (and (not (null buffer-file-name)) (file-writable-p buffer-file-name))
-       (flymake-mode))
-     ))
+(defun vj-ruby-setup ()
+  ""
+  (make-local-variable 'compile-command)
+  (setq compile-command
+    (concat "ruby " (file-name-nondirectory (buffer-file-name))))
+  (require 'yari)
+  ;; Don't want flymake mode for ruby regions in rhtml files and also on read only files
+  (if (and
+        (not (null buffer-file-name))
+        (not (file-remote-p buffer-file-name))
+        (file-writable-p buffer-file-name))
+    (flymake-mode)))
+
+(add-hook 'ruby-mode-hook 'vj-ruby-setup)

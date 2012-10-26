@@ -14,5 +14,6 @@
 (add-hook 'javascript-mode-hook 'prog-mode-setup)
 (add-hook 'js-mode-hook 'prog-mode-setup)
 (add-hook 'js2-mode-hook 'prog-mode-setup)
+(add-hook 'ruby-mode-hook 'prog-mode-setup)
 
 (provide 'prog-mode)
