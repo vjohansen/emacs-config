@@ -92,6 +92,14 @@
         (browse-url html-buffer-url))
       (t (message "no link here")))))
 
+
+(defun vj-git-grep ()
+  (interactive)
+  (let ((grep-use-null-device))
+    (grep (format "cd $(git rev-parse --show-toplevel) && pwd && git --no-pager grep -n %s" (current-word)))))
+
+(global-set-key (kbd "C-<f5>") 'vj-git-grep)
+
 ;; Locally set tab-width to 4. Usually used when reading files made in VS
 ;; where the default is tabs with an indent that is 4.
 (global-set-key [C-f9] (lambda ()
