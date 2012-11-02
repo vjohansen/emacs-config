@@ -454,9 +454,20 @@ that file will need to be in your path."
 
 (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
 
+(defun vj-ruby-indent-defun ()
+  ""
+  (interactive)
+  (save-excursion
+    (when (re-search-backward "^def" nil t)
+      (let ((p1 (point)))
+        (when (search-forward-regexp "^end" nil t)
+          (indent-region p1 (point)))))))
+
+
 (defun vj-ruby-setup ()
   ""
   (make-local-variable 'compile-command)
+  (local-set-key (kbd "C-c C-q") 'vj-ruby-indent-defun)
   (setq compile-command
     (concat "ruby " (file-name-nondirectory (buffer-file-name))))
   (require 'yari)
