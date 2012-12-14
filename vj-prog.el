@@ -291,6 +291,7 @@ that file will need to be in your path."
   (local-set-key "\C-ch" 'hs-hide-block)
   (local-set-key "\C-cs" 'hs-show-block)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
+  (local-set-key "\C-ci" 'ewd-insert-new-method)
 
   (require 'if-jump)
   (local-set-key [C-home]'(lambda() (interactive) (if-jump-jump 'backward)))
@@ -375,7 +376,7 @@ that file will need to be in your path."
          (and (file-exists-p hhname) (find-file hhname))
          (and (file-exists-p hname) (find-file hname))
          (if (y-or-n-p "Create hh-file ")
-             (find-file hhname)))
+             (find-file hname)))
       ))
     )
 
@@ -405,6 +406,48 @@ that file will need to be in your path."
                          ;; must add a single space.
           (end-of-line))
          (t (c-context-line-break))))
+
+
+
+;; If point is in a class definition, return the name of the
+;; class. Otherwise, return nil. Thanks to Elijah Daniel for this one.
+
+(defun ewd-classname ()
+  "If the point is in a class definition, gets the name of the class.
+Return nil otherwise."
+  (save-excursion
+    (let ((brace (assoc 'inclass (c-guess-basic-syntax))))
+      (if (null brace) '()
+        (goto-char (cadr brace))
+        (let ((class-open (assoc 'class-open (c-guess-basic-syntax))))
+          (if class-open (goto-char (cadr class-open)))
+          (if (looking-at "^class[ \t]+\\([A-Za-z_][^ \t:{]*\\)")
+              (buffer-substring (match-beginning 1) (match-end 1))
+            (error "Error parsing class definition!")))))))
+
+;; Insert function prototype in current header file and matching
+;; function body in implementation file.
+(defun ewd-insert-new-method (rettype proto)
+  "Insert a function declaration into the current class header file at
+point, along with matching function definition in the corresponding
+implementation file, complete with class name and scope resolution
+operator.  This function expects the implementation file to be named
+foo.cpp and in the same directory as the current header file, foo.h."
+  (interactive "sReturn type:\nsPrototype: ")
+  (let ((classname (ewd-classname))
+        (c-tab-always-indent t))
+    (if (null classname) (message "Not in class definition!")
+      (unless (string-equal rettype "") (setq rettype (concat rettype " ")))
+      (insert rettype proto ";")
+      (c-indent-command)
+      (save-window-excursion
+        (find-file (concat (file-name-sans-extension (buffer-file-name))
+                           ".cc"))
+        (end-of-buffer)
+        (insert "\n\n")
+        (end-of-buffer)
+        (insert rettype classname "::" proto "\n{\n  \n}\n")
+        (previous-line 2)))))
 
 
 ; ------------------------------------------------------------
