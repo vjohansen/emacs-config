@@ -1,8 +1,13 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   A major mode for editing RELAX NG Compact syntax.
-;;   Version: 1.0b3
-;;   Date: 2002-12-05
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; rnc-mode.el --- A major mode for editing RELAX NG Compact syntax.
+
+;; Copyright (c) 2002, Pantor Engineering AB
+
+;; Author: David Rosenborg <David.Rosenborg@pantor.com>
+;; Maintainer: Tom Emerson <tremerson@gmail.com>
+;; Version: 1.0b5
+;; Package-Version: 1.0.5
+
+;; This file is not part of GNU Emacs.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -42,10 +47,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;   Created by David.Rosenborg@pantor.com
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;   Example setup for your ~/.emacs file:
 ;;
 ;;   (autoload 'rnc-mode "rnc-mode")
@@ -54,10 +55,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   Changes since 1.0b4:
+;;     Updated comments to follow Emacs Lisp header conventions
+;;   Changes since 1.0b3:
+;;     Updated to work with GNU Emacs 23+.
 ;;   Changes since 1.0b:
 ;;     Added a couple of defvars for faces to handle differences
 ;;     between GNU Emacs and XEmacs.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Code:
 
 (require 'font-lock)
 
@@ -79,8 +86,9 @@
 (defun rnc-make-regexp-choice (operands)
   "(op1 op2 ...) -> \"\\(op1\\|op2\\|...\\)\""
   (let ((result "\\("))
-    (mapcar (lambda (op) (setq result (concat result op "\\|"))) operands)
-    (concat (substring result 0 -2) "\\)")))
+    (dolist (op operands
+             (concat (substring result 0 -2) "\\)"))
+      (setq result (concat result op "\\|")))))
 
 ;; Font lock treats face names differently in GNU Emacs and XEmacs
 ;; The following defvars is a workaround
@@ -210,7 +218,7 @@
 	    (beginning-of-line)
 	    (let ((pos (re-search-forward "\\S " (point-max) t)))
 	      (and pos (= (- pos 1) p))))
-      (forward-char-command))))
+      (forward-char))))
 
 (defvar rnc-mode-map () "Keymap used in RNC mode.")
 (when (not rnc-mode-map)
@@ -260,3 +268,5 @@
   (run-hooks 'rnc-mode-hook))
 
 (provide 'rnc-mode)
+
+;;; rnc-mode.el ends here
