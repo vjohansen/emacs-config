@@ -49,8 +49,8 @@
 
 (defun context-info-display (info)
   ""
-  (setq context-info-last info)
-  (when info
+  (unless (equal context-info-last info)
+    (setq context-info-last info)
     (setq header-line-format info)
     (force-mode-line-update)
     (run-hooks 'context-info-show-hook)))
