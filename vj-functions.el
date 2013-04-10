@@ -225,37 +225,6 @@ This should probably be generalized in the future."
 ;; ------------------------------------------------------------
 
 
-;; From Drew Adams
-
-(defface isearch-fail '((t (:foreground "Black" :background "plum")))
-  "Face for highlighting failed part in Isearch echo-area message."
-  :group 'isearch)
-
-(defun isearch-message (&optional c-q-hack ellipsis)
-  ;; Generate and print the message string.
-  (let ((cursor-in-echo-area ellipsis)
-        (cmds isearch-cmds)
-        succ-msg m)
-    (while (not (isearch-success-state (car cmds))) (pop cmds))
-    (setq succ-msg (and cmds (isearch-message-state (car cmds))))
-    (setq m (concat
-             (isearch-message-prefix c-q-hack ellipsis
-isearch-nonincremental)
-             succ-msg
-             (and (not isearch-success)
-                  (string-match succ-msg isearch-message)
-                  (not (string= succ-msg isearch-message))
-                  (propertize (substring isearch-message (match-end 0))
-                              'face 'isearch-fail))))
-    (when (string-match " +$" m)
-      (propertize (substring m (match-beginning 0)) 'face
-'trailing-whitespace))
-    (setq m (concat m (isearch-message-suffix c-q-hack ellipsis)))
-    (if c-q-hack m (let ((message-log-max nil)) (message "%s" m)))))
-
-;; ------------------------------------------------------------
-
-
 (defun ext-unfill-paragraph ()
   "Do the opposite of `fill-paragraph'; stuff all lines in the current paragraph into a single long line."
   (interactive)
