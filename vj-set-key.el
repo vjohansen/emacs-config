@@ -83,7 +83,8 @@
     (cond
       (w3m-url
         (browse-url w3m-url)
-        (shell-command "wmctrl -a firefox"))
+        ;;(shell-command "wmctrl -a firefox")
+        )
       (url-at-point ;; http://ozymandias.dk
         (if (featurep 'w3m)
           (w3m url-at-point)
@@ -95,8 +96,9 @@
 
 (defun vj-git-grep ()
   (interactive)
-  (let ((grep-use-null-device))
-    (grep (format "cd $(git rev-parse --show-toplevel) && pwd && git --no-pager grep -n %s" (current-word)))))
+  (let ((grep-use-null-device)
+         (dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
+    (grep (format "cd %s && pwd && git --no-pager grep -n %s" dir (current-word)))))
 
 (global-set-key (kbd "C-<f5>") 'vj-git-grep)
 
