@@ -79,6 +79,19 @@ Don't use customize."
   :type 'hook
   :group 'vps)
 
+(defcustom vps-write-file-list-hook nil
+  "Hook that is run when all filenames have been inserted.
+
+Useful for removing build filenames from the list:
+
+  (add-hook 'vps-write-file-list-hook
+    (lambda ()
+      (goto-char (point-min))
+      (flush-lines \"/build/\")))
+"
+  :type 'hook
+  :group 'vps)
+
 (defcustom vps-max-tags-age-in-days 3
   "Max allowed age of tags file for current or selected project before rebuilding."
   :type 'integer
@@ -750,7 +763,8 @@ call \\[find-file-at-point]"
         (if (file-directory-p dir)
           (dolist (file (directory-files dir t
                           (vps-ext-regexp vps-project-name) t))
-            (insert file "\n"))))))
+            (insert file "\n"))))
+      (run-hooks 'vps-write-file-list-hook)))
 
 
 (defun vps-write-alldirslist ()
