@@ -31,7 +31,7 @@
 ;; Added to helm-locate.el
 ;;     (define-key map (kbd "M-]")     'helm-ff-run-toggle-basename)
 (if (eq system-type 'windows-nt)
-  (setq helm-c-locate-command "c:/tools/Locate32/Locate.exe %s"))
+  (setq helm-c-locate-command "c:/tools/Locate32/Locate.exe %s %s"))
 (setq helm-ff-transformer-show-only-basename nil)
 
 (global-set-key (kbd "C-å") 'vj-helm)
