@@ -929,6 +929,21 @@ first 'rdirs directory."
       (cadr (vps-get-setting 'compile-command))))))
 
 
+(defun vps-midnight-install ()
+  "Rebuild directory cache for current project at midnight.
+
+Note that (require 'midnight) may install clean-buffer-list in midnight-hook"
+  (interactive)
+  (require 'midnight)
+  (unless midnight-mode
+    (message "vps-midnight-install: you must enable option midnight-mode!"))
+  (add-hook 'midnight-hook 'vps-midnight))
+
+(defun vps-midnight ()
+  "Rebuild directory cache for current project."
+  (message "vps-midnight %s" (current-time-string))
+  (vps-rebuild-rdir-cache (vps-get-setting-or-default 'rdirs nil)))
+
 (provide 'vps)
 
 ;;; vps.el ends here
