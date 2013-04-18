@@ -387,3 +387,9 @@ With a prefix arg, insert the N characters above point.
   (let ((coding-system-for-write 'raw-text))
     (shell-command-on-region (mark) (point)
       (format "perl -pe %s" (shell-quote-argument command)) nil t)))
+
+(defun vj-git-grep ()
+  (interactive)
+  (let ((grep-use-null-device)
+         (dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
+    (grep (format "cd %s && pwd && git --no-pager grep -n %s" dir (current-word)))))
