@@ -946,7 +946,8 @@ Note that (require 'midnight) may install clean-buffer-list in midnight-hook"
 (defun vps-midnight ()
   "Rebuild directory cache for current project."
   (message "vps-midnight %s" (current-time-string))
-  (vps-rebuild-rdir-cache (vps-get-setting-or-default 'rdirs nil)))
+  (vps-rebuild-rdir-cache (vps-get-setting-or-default 'rdirs nil))
+  (vps-write-filelist))
 
 (provide 'vps)
 
