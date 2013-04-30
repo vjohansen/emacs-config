@@ -2,7 +2,6 @@ use DB_File;
 use strict;
 
 my $dbfilename = shift @ARGV || die "Usage: $0 vps-project-name";
-my $dir = "$ENV{HOME}/.emacs.d/vps";
 my %database;
 tie %database,  'DB_File', $dbfilename, O_CREAT|O_RDWR, 0666, $DB_BTREE;
 (my $filelist = $dbfilename) =~ s/\.db$/.txt/;
@@ -19,7 +18,7 @@ FILE: while ($filename = <FILELIST>)
   $database{'-'.++$file_id} = $filename; # Assign ID to the file
   my $text = join("", <FILE>);
   # Create hash with all the words
-  my %tmp; 
+  my %tmp;
   while ($text =~ m/([a-z_][a-zA0-9_-]{4,})/gi) # Ignore short words
   {
     $tmp{lc($1)}++;

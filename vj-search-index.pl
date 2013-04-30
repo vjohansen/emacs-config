@@ -9,8 +9,6 @@ my $no_matches = 1;
 print "  Hi"."-lock: ((\":.*\\\\($inputSymbol\\\\)\" (1 (quote 'vj-grep-match) t)))\n";
 #           ^---- split to avoid problem when viewing this file in Emacs
 
-my $dir = "$ENV{HOME}/.emacs.d/vps";
-
 for my $filename (@filenames)
 {
   my %database;
