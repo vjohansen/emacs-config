@@ -7,7 +7,7 @@
 ;; (global-set-key (kbd "C-'") 'helm-vps-index-db)
 
 
-(require 'helm)
+(require 'helm-grep)
 (require 'vps)
 
 (defvar helm-vps-index-db-source
@@ -19,9 +19,9 @@
                               "-S vj-search-index-complete.pl")
            helm-pattern
            (vps-index-db-filename))))
-     (action ("View" . 
+     (action ("View" .
                (lambda (line)
-                 (let ((fields (split-string line ":")))
+                 (let ((fields (helm-grep-split-line line)))
                    (find-file-other-window (nth 0 fields))
                    (goto-line (string-to-int (nth 1 fields)))
                    (when (fboundp 'etags-select-highlight)
