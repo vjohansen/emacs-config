@@ -3,7 +3,7 @@ use DB_File;
 use strict;
 my $inputSymbol = shift @ARGV;
 my $symbol = lc($inputSymbol);
-my @projects = @ARGV or die "Usage: perl $0 symbol vps-project-name(s)\n";
+my @filenames = @ARGV or die "Usage: perl $0 symbol db-filename(s)\n";
 my $no_matches = 1;
 
 print "  Hi"."-lock: ((\":.*\\\\($inputSymbol\\\\)\" (1 (quote 'vj-grep-match) t)))\n";
@@ -11,13 +11,13 @@ print "  Hi"."-lock: ((\":.*\\\\($inputSymbol\\\\)\" (1 (quote 'vj-grep-match) t
 
 my $dir = "$ENV{HOME}/.emacs.d/vps";
 
-for my $project (@projects)
+for my $filename (@filenames)
 {
   my %database;
-  tie %database, 'DB_File', "$dir/$project.db";
-  %database or die "$0: tie $dir/$project.db failed\n\nUse M-x vps-make-index RET\n\n";
+  tie %database, 'DB_File', $filename,O_RDWR, 0666, $DB_BTREE;
+  %database or die "$0: tie $filename failed\n\nUse M-x vps-make-index RET\n\n";
 
-  $database{$symbol} or do {print "\nSymbol $symbol not in $project index\n"; next;};
+  $database{$symbol} or do {print "\nSymbol $symbol not in $filename\n"; next;};
   $no_matches = 0;
   my @ids = split(/-/, $database{$symbol});
   @ids = splice(@ids, 1);               # skip first

@@ -873,7 +873,7 @@ call \\[find-file-at-point]"
     (redisplay)
     (if (> (shell-command
              (concat "perl -w " (or (locate-library "vj-make-index.pl")
-                                  "-S vj-make-index.pl") " " vps-project-name)
+                                  "-S vj-make-index.pl") " " filename)
              nil "*vps-make-index: Error*")
           0)
       (switch-to-buffer "*vps-make-index: Error*")
@@ -891,7 +891,7 @@ call \\[find-file-at-point]"
     (message "Making index: %s" filename)
     (eshell-command
       (concat vps-perl-program " -w " (or (locate-library "vj-make-index.pl")
-                           "-S vj-make-index.pl") " " vps-project-name " &") t)))
+                           "-S vj-make-index.pl") " " filename " &") t)))
 
 
 (defun vps-grep-via-index (word)
@@ -921,11 +921,10 @@ call \\[find-file-at-point]"
     (grep (concat vps-vj-search-index-program " "
             word
             " "
-            (or vps-project-name (error "no current project"))))))
+            (vps-index-db-filename)))))
 
 (defun vps-compile ()
-  "Call compile with the project setting in 'compile-command in
-first 'rdirs directory."
+  "Call compile with the project setting in 'compile-command in first 'rdirs directory."
   (interactive)
   (compile (read-from-minibuffer "Compile command: "
     (format "cd %s && %s"

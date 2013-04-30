@@ -1,11 +1,11 @@
 use DB_File;
 use strict;
 
-my $project = shift @ARGV || die "Usage: $0 vps-project-name";
+my $dbfilename = shift @ARGV || die "Usage: $0 vps-project-name";
 my $dir = "$ENV{HOME}/.emacs.d/vps";
 my %database;
-tie %database,  'DB_File', "$dir/$project.db", O_CREAT|O_RDWR, 0666, $DB_HASH;
-my $filelist = "$dir/$project.txt";
+tie %database,  'DB_File', $dbfilename, O_CREAT|O_RDWR, 0666, $DB_BTREE;
+(my $filelist = $dbfilename) =~ s/\.db$/.txt/;
 open FILELIST, "<", $filelist or die "open failed: $filelist : $!";
 my $file_id = 0;
 
