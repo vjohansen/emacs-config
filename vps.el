@@ -47,6 +47,10 @@
 (defun vps-ensure-trailing-slash (dir)
   (replace-regexp-in-string "\\([^/\\]\\)$" "\\1/" dir))
 
+(defun vps-chomp (str)
+  "Remove trailing newline a la Perls chomp function."
+  (replace-regexp-in-string "[\015\012]+\\'" "" str))
+
 (defun vps-file-last-modified-duration (filename)
   "Return seconds from now to last modified for FILENAME."
   (let ((mtime (nth 5 (file-attributes filename))))
@@ -320,7 +324,7 @@ If no project name is supplied, use the current project name."
              ;; rebuild cache file
              (vps-rebuild-rdir-cache (vps-get-setting-or-default 'rdirs nil)))
          ;; load cache file from disk
-         (prog1 (split-string (vps-file-to-string (vps-dirlist-filename)) "\n")
+         (prog1 (split-string (vps-chomp (vps-file-to-string (vps-dirlist-filename))) "\n")
                 (setq vps-rdir-cache-timestamp
                       (nth 5 (file-attributes (vps-dirlist-filename)))))
          )))
