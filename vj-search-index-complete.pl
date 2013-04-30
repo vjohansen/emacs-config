@@ -49,7 +49,11 @@ if ($filenames) {
   print $cmd if $debug;
 
   while (@otherWords) {
-    $cmd .= " | grep -i $otherWords[0]";
+    my $word = $otherWords[0];
+    if ($word =~ /\w/) {
+      $word =~ s/^!/-v /; # ! means not
+      $cmd .= " | grep -i $word" if $word;
+    }
     shift @otherWords;
   }
 
