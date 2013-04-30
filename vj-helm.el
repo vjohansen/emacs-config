@@ -28,6 +28,8 @@
 (require 'helm-buffers)
 (require 'helm-misc) ;; enables C-r in minibuffer
 
+(require 'helm-vps) ;; NOT in helm git repo
+
 ;; Added to helm-locate.el
 ;;     (define-key map (kbd "M-]")     'helm-ff-run-toggle-basename)
 (if (eq system-type 'windows-nt)
@@ -51,18 +53,6 @@
       (vj-helm-local-locate))
     (helm-other-buffer vj-helm-list "*vj-helm*")))
 
-
-(defvar helm-source-vps-files
-  '((name . "Project Files")
-     (init . (lambda ()
-	       (with-current-buffer (helm-candidate-buffer 'global)
-		 (when (and vps-project-name
-			 (file-exists-p (vps-filelist-filename)))
-		   (insert-file-contents (vps-filelist-filename))))))
-     (requires-pattern . 3)
-     (candidates-in-buffer)
-     (candidate-number-limit . 999)
-     (type . file)))
 
 ;; Desktop search for windows
 (defvar helm-source-wdsgrep
