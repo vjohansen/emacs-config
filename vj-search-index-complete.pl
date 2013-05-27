@@ -5,7 +5,7 @@
 use DB_File;
 use strict;
 my $debug = 0;
-my $inputSymbol = shift @ARGV;
+my $inputSymbol = lc(shift @ARGV);
 my @otherWords;
 ($inputSymbol, @otherWords) = split /\s+/, $inputSymbol;
 my $symbol = lc($inputSymbol);
