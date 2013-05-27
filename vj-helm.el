@@ -1,3 +1,5 @@
+(require 'helm-vps)
+(global-set-key (kbd "C-'") 'helm-vps-index-db)
 
 (defface helm-selection
   '((((class color) (background light))
@@ -27,6 +29,7 @@
 (require 'helm-files)
 (require 'helm-buffers)
 (require 'helm-misc) ;; enables C-r in minibuffer
+(require 'helm-grep) ;for grep to work
 
 (require 'helm-vps) ;; NOT in helm git repo
 
@@ -39,11 +42,13 @@
 (global-set-key (kbd "C-å") 'vj-helm)
 (global-set-key (kbd "C-x b") 'helm-mini)
 
-(defvar vj-helm-list '(helm-c-source-recentf
+(defvar vj-helm-list '(
+ 			helm-source-vps-files
+                        helm-c-source-recentf
                         helm-c-source-buffers-list
  			helm-c-source-files-in-current-dir
- 			helm-source-vps-files
-                        helm-c-source-locate))
+                        helm-c-source-locate
+                        ))
 
 (defun vj-helm ()
   (interactive)
@@ -86,4 +91,4 @@
         "*vj-helm-local-locate*"))))
 
 
-;; (setq helm-completion-window-scroll-margin 0) 
+;; (setq helm-completion-window-scroll-margin 0)
