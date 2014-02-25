@@ -32,7 +32,7 @@
 
 ;; Supports spaces in the pattern. First word is prefix and the remaining are
 ;; substrings
-(defvar helm-vps-index-db-source
+(defvar helm-source-vps-index-db
   '((name . "Word Prefix Search")
      (candidates-process .
        (lambda ()
@@ -56,6 +56,6 @@
 
 (defun helm-vps-index-db ()
   (interactive)
-  (helm-other-buffer 'helm-vps-index-db-source "*helm-vps-index-db*"))
+  (helm-other-buffer 'helm-source-vps-index-db "*helm-vps-index-db*"))
 
 (provide 'helm-vps)
