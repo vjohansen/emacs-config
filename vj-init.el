@@ -10,8 +10,11 @@
 (setq debug-on-error t
       debug-on-quit t)
 
-(defvar vj-background-color-old (frame-parameter nil 'background-color))
-(set-background-color "#d8f0f0")
+
+(defvar vj-background-color-old nil)
+(when (< emacs-major-version 24)
+  (setq vj-background-color-old (frame-parameter nil 'background-color))
+  (set-background-color "#d8f0f0"))
 
 (defvar my-lisp-dir "~/elisp")
 
@@ -31,7 +34,8 @@
 
 (load "vj-load")
 
-(set-background-color "#ffeedd")
+(when (< emacs-major-version 24)
+  (set-background-color "#ffeedd"))
 
 (defvar vj-system-type-specific-elisp-file
   (format "%s/system-type-%s.el"
@@ -53,7 +57,7 @@
   (message "*** CREATING THE FILE: %s ***" vj-machine-specific-elisp-file)
   (sit-for 2)
   (with-temp-file vj-machine-specific-elisp-file
-    (insert ";; add stuff here\n\n;; footer\n(set-background-color vj-background-color-old)")))
+    (insert ";; add stuff here\n\n;; footer\n")))
 
 (load vj-machine-specific-elisp-file)
 

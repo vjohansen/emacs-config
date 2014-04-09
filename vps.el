@@ -818,7 +818,7 @@ call \\[find-file-at-point]"
 (defun vps-quick-add-recursive-project (name ext-string)
   (interactive "sEnter project name: \nsExtensions (eg \"c,h\"): ")
   (if (equal ext-string "")
-    (setq ext-string "c,cpp,h,hpp,hxx,cxx,cc,pl,pm,py,cs,rb"))
+    (setq ext-string "c,cpp,h,hpp,hxx,cxx,cc,pl,pm,py,cs,rb,fsx,fs"))
   (let ((dir (file-name-directory (read-file-name "Directory: "))))
     (vps-add-project name `((rdirs (,dir))
                             (ext ,(split-string ext-string ","))))))
