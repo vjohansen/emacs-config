@@ -42,12 +42,28 @@
 (global-set-key (kbd "C-å") 'vj-helm)
 (global-set-key (kbd "C-x b") 'helm-mini)
 
+
+(defvar vj-fav-fn "~/.fav")
+(defvar vj-fav-list
+  (with-temp-buffer
+    (when (and vj-fav-fn (file-exists-p vj-fav-fn))
+      (insert-file-contents vj-fav-fn)
+      (split-string (buffer-string)))))
+
+(defvar vj-helm-source-fav
+  '((name . "Favorites")
+     (candidates . (lambda () vj-fav-list))
+     (type . file)
+     (requires-pattern . 3))
+  "Source for favorites.")
+
 (defvar vj-helm-list '(
+                        vj-helm-source-fav
  			helm-source-vps-files
                         helm-c-source-recentf
                         helm-c-source-buffers-list
  			helm-c-source-files-in-current-dir
-                        helm-c-source-locate
+                       ;; helm-c-source-locate
                         ))
 
 (defun vj-helm ()
