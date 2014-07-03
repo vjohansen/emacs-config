@@ -86,7 +86,8 @@ while (@dirs) {
 
     if ($dir eq '-r') {
         $dir = shift @dirs;
-#        print "dir: $dir\n";
+        $dir =~ s/%20/ /g;                            # convert to spaces
+#        print "dir: \"$dir\"\n";
         $dir =~s/^~/$ENV{HOME}/;
         chdir $dir or warn "chdir $dir failed";
         # Recursively add subdirectories to @dirs
