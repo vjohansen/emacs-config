@@ -63,7 +63,7 @@
                         helm-c-source-recentf
                         helm-c-source-buffers-list
  			helm-c-source-files-in-current-dir
-                       ;; helm-c-source-locate
+;;                        helm-c-source-locate
                         ))
 
 (defun vj-helm ()
