@@ -1,5 +1,6 @@
 (require 'helm-vps)
 (global-set-key (kbd "C-'") 'helm-vps-index-db)
+(global-set-key (kbd "C-x c o") 'helm-occur)
 
 (defface helm-selection
   '((((class color) (background light))
