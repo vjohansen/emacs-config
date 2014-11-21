@@ -67,8 +67,9 @@
 ; ------------------------------------------------------------
 
 (defun vj-csharp-mode-hook ()
-        (c-set-style "bsd")
-        (setq c-basic-offset 2))
+;;  (local-set-key (kbd "{") 'self-insert-command)
+  (c-set-style "bsd")
+  (setq c-basic-offset 2))
 
 (autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
 (setq auto-mode-alist (cons '("\\.cs\\'" . csharp-mode) auto-mode-alist))

@@ -124,13 +124,14 @@
 (add-hook 'prog-mode-hook 'vj-prog-auto-fill)
 
 
-(local-set-key (kbd "M-æ") 'forward-paragraph)
-(local-set-key (kbd "M-ø") 'backward-paragraph)
-
 (global-set-key (kbd "M-æ")  'backward-paragraph)
 (global-set-key (kbd "M-ø")  'forward-paragraph)
 (global-set-key (kbd "M-å")  'delete-horizontal-space)
 (global-set-key (kbd "C-M-å")  'just-one-space)
+
+(if (fboundp 'cycle-spacing)
+  (global-set-key (kbd "M-å")  'cycle-spacing))
+
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 ;;       to show the keybinding description

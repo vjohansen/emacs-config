@@ -31,6 +31,7 @@ EOD
 use strict;
 use Getopt::Std;
 use File::Find;
+use File::Glob ':glob';
 $|++; # auto-flush stdout
 
 my (%opt, $regexp_e, $pattern);
@@ -95,9 +96,10 @@ while (@dirs) {
         next;
     }
     $dir =~ s/[\/\\]$//;                          # remove trailing slash
-    ($bdir = $dir) =~ s/ /\\ /g;                  # add backslash before space
+#    ($bdir = $dir) =~ s/ /\\ /g; # add backslash before space 
+    $bdir = $dir;
     # FIXME don't apply $regexp to path in next line !
-    @filelist = map {basename($_)} grep { /$regexp/i && -f } glob("$bdir/*");
+    @filelist = map {basename($_)} grep { /$regexp/i && -f } bsd_glob("$bdir/*");
 #    print "bdir : $bdir (",(scalar @filelist),")\n";
     if (@filelist) {
 	    my $edir = $dir;
