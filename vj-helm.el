@@ -1,12 +1,14 @@
 (require 'helm-vps)
 (global-set-key (kbd "C-'") 'helm-vps-index-db)
 (global-set-key (kbd "C-x c o") 'helm-occur)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
-(defface helm-selection
-  '((((class color) (background light))
-      (:background "#ddddff" :bold t))
-     (t (:background "#000040" :foreground "white")))
-  "")
+;; (defface helm-selection
+;;   '((((class color) (background light))
+;;       (:background "#ddddff" :bold t))
+;;      (t (:background "#000040" :foreground "white")))
+;;   "")
 
 ;; (defface helm-ff-executable
 ;;   '((((class color) (background light))
@@ -14,20 +16,23 @@
 ;;      (t (:foreground "green")))
 ;;   "")
 
-(defface helm-ff-directory
-  '((((class color) (background light))
-      (:foreground "ForestGreen" :bold t))
-     (t (:inherit 'dired-header)))
-  "")
+;; (defface helm-ff-directory
+;;   '((((class color) (background light))
+;;       (:foreground "ForestGreen" :bold t))
+;;      (t (:inherit 'dired-header)))
+;;   "")
 
-(defface helm-selection
-  '((((class color) (background light))
-      (:foreground "white" :background "black" :bold t))
-     (t (:foreground "white" :background "#224" :bold t)))
-  "")
+;; (defface helm-selection
+;;   '((((class color) (background light))
+;;       (:foreground "white" :background "black" :bold t))
+;;      (t (:foreground "white" :background "#224" :bold t)))
+;;   "")
+
+(setq it "") ;; helm-aif macro sets `it´
 
 (require 'helm-config)
 (require 'helm-files)
+(require 'helm-command)
 (require 'helm-buffers)
 (require 'helm-misc) ;; enables C-r in minibuffer
 (require 'helm-grep) ;for grep to work
@@ -49,7 +54,7 @@
   (with-temp-buffer
     (when (and vj-fav-fn (file-exists-p vj-fav-fn))
       (insert-file-contents vj-fav-fn)
-      (split-string (buffer-string)))))
+      (mapcar 'expand-file-name (split-string (buffer-string))))))
 
 (defvar vj-helm-source-fav
   '((name . "Favorites")
@@ -61,9 +66,9 @@
 (defvar vj-helm-list '(
                         vj-helm-source-fav
  			helm-source-vps-files
-                        helm-c-source-recentf
-                        helm-c-source-buffers-list
- 			helm-c-source-files-in-current-dir
+                        helm-source-recentf
+                        helm-source-buffers-list
+ 			helm-source-files-in-current-dir
 ;;                        helm-c-source-locate
                         ))
 
