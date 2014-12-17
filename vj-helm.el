@@ -2,7 +2,7 @@
 (global-set-key (kbd "C-'") 'helm-vps-index-db)
 (global-set-key (kbd "C-x c o") 'helm-occur)
 (global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 ;; (defface helm-selection
 ;;   '((((class color) (background light))
