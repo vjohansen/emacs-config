@@ -1631,7 +1631,7 @@ your `csharp-mode-hook' function:
   ;;(message "csharp-maybe-insert-codedoc")
   (let (
         (cur-point (point))
-        (char last-command-char)
+        (char last-command-event)
         (cb0 (char-before (- (point) 0)))
         (cb1 (char-before (- (point) 1)))
         is-first-non-whitespace
