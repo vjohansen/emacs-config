@@ -51,6 +51,9 @@
 (defvar org-import-icalendar-filename nil
   "If set append to this file instead of copying to kill-ring")
 
+(defvar org-import-icalendar-deadline nil
+  "Set up DEADLINE tag instead of SCHEDULED")
+
 (defun org-import-icalendar-iso (datetime)
   "Convert a date retrieved via `icalendar--get-event-property' to ISO format."
   (if datetime
@@ -107,10 +110,12 @@
           (attendees (mapconcat (lambda (a) (format " - %s" a))
                        (icalendar--get-event-properties e 'ATTENDEE)
                        "\n"))
+		  (description (icalendar--convert-string-for-import
+                     (or (icalendar--get-event-property e 'DESCRIPTION) "")))
           (org-timestr (org-import-icalendar-get-org-timestring ical-element))
           ;;
-          (msg (format "** TODO %s\n%s\n Location: %s\nOrganizer: %s\nAttending:\n%s\n\n"
-                 summary org-timestr location (or organizer "n/a") (or attendees "n/a"))))
+          (msg (format "** TODO %s\n%s: %s\n Location: %s\nOrganizer: %s\nAttending:\n%s\n%s\n\n"
+                 summary (if org-import-icalendar-deadline "DEADLINE" "SCHEDULED") org-timestr location (or organizer "n/a") (or attendees "n/a") description)))
 
     (message "Added to kill-ring:\n %s" msg)
     (if (not org-import-icalendar-filename)
