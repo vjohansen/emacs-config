@@ -4,30 +4,6 @@
 (global-set-key (kbd "M-x") 'helm-M-x)
 ;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
-;; (defface helm-selection
-;;   '((((class color) (background light))
-;;       (:background "#ddddff" :bold t))
-;;      (t (:background "#000040" :foreground "white")))
-;;   "")
-
-;; (defface helm-ff-executable
-;;   '((((class color) (background light))
-;;       (:foreground "#206020"))
-;;      (t (:foreground "green")))
-;;   "")
-
-;; (defface helm-ff-directory
-;;   '((((class color) (background light))
-;;       (:foreground "ForestGreen" :bold t))
-;;      (t (:inherit 'dired-header)))
-;;   "")
-
-;; (defface helm-selection
-;;   '((((class color) (background light))
-;;       (:foreground "white" :background "black" :bold t))
-;;      (t (:foreground "white" :background "#224" :bold t)))
-;;   "")
-
 (setq it "") ;; helm-aif macro sets `it´
 
 (require 'helm-config)
@@ -112,5 +88,12 @@
         '(helm-c-source-locate)
         "*vj-helm-local-locate*"))))
 
+
+(helm-add-action-to-source
+  "kill-ring-save"
+  #'(lambda (_candidate)
+      (with-helm-buffer (kill-new _candidate)))
+  helm-source-recentf
+  1)
 
 ;; (setq helm-completion-window-scroll-margin 0)
