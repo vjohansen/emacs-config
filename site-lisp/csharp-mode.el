@@ -1,10 +1,11 @@
+
 ;;; csharp-mode.el --- C# mode derived mode
 
 ;; Author     : Dylan R. E. Moonfire (original)
-;; Maintainer : Jostein Kj�nigsen <jostein@gmail.com>
+;; Maintainer : Jostein Kjønigsen <jostein@gmail.com>
 ;; Created    : Feburary 2005
 ;; Modified   : November 2014
-;; Version    : 0.8.8
+;; Version    : 0.8.9
 ;; Keywords   : c# languages oop mode
 ;; X-URL      : https://github.com/josteink/csharp-mode
 ;; Last-saved : <2014-Nov-29 13:56:00>
@@ -270,6 +271,9 @@
 ;;          - Fix broken byte-compile.
 ;;          - Add extra C# keywords.
 ;;          - Call prog-mode hooks.
+;;
+;;    0.8.9 2015 March 15
+;;          - (Re)add compilation-mode support for msbuild and xbuild.
 ;;
 
 (require 'cc-mode)
@@ -4134,6 +4138,74 @@ The return value is meaningless, and is ignored by cc-mode.
 ;;                ;; nonexistence of a cpp pass and thus removing some
 ;;                ;; irrelevant menu alternatives.
 ;;                (cons "C#" (c-lang-const c-mode-menu csharp)))
+
+;;; Compilation regexps
+;; When invoked by MSBuild, csc’s errors look like this:
+;; subfolder\file.cs(6,18): error CS1006: Name of constructor must
+;; match name of class [c:\Users\user\project.csproj]
+
+(defun csharp--compilation-error-file-resolve ()
+  ;; http://stackoverflow.com/a/18049590/429091
+  (cons (match-string 1) (file-name-directory (match-string 4))))
+
+(defconst csharp-compilation-re-msbuild-error
+  (concat
+   "^[[:blank:]]*\\(?:[[:digit:]]+>\\)?"
+   "\\([^(\r\n)]+\\)(\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)?): "
+   "error [[:alnum:]]+: [^[\r\n]+\\[\\([^]\r\n]+\\)\\]$")
+  "Regexp to match compilation error from msbuild.")
+
+(defconst csharp-compilation-re-msbuild-warning
+  (concat
+   "^[[:blank:]]*\\(?:[[:digit:]]+>\\)?"
+   "\\([^(\r\n)]+\\)(\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)?): "
+   "warning [[:alnum:]]+: [^[\r\n]+\\[\\([^]\r\n]+\\)\\]$")
+  "Regexp to match compilation warning from msbuild.")
+
+(defconst csharp-compilation-re-xbuild-error
+  (concat
+   "^[[:blank:]]*"
+   "\\([^(\r\n)]+\\)(\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)?): "
+   "error [[:alnum:]]+: .+$")
+  "Regexp to match compilation error from xbuild.")
+
+(defconst csharp-compilation-re-xbuild-warning
+  (concat
+   "^[[:blank:]]*"
+   "\\([^(\r\n)]+\\)(\\([0-9]+\\)\\(?:,\\([0-9]+\\)\\)?): "
+   "warning [[:alnum:]]+: .+$")
+  "Regexp to match compilation warning from xbuild.")
+
+(eval-after-load 'compile
+  (lambda ()
+    (dolist
+        (regexp
+         `((xbuild-error
+            ,csharp-compilation-re-xbuild-error
+            1 2 3 2)
+           (xbuild-warning
+            ,csharp-compilation-re-xbuild-warning
+            1 2 3 1)
+           (msbuild-error
+            ,csharp-compilation-re-msbuild-error
+            csharp--compilation-error-file-resolve
+            2
+            3
+            2
+            nil
+            (1 compilation-error-face)
+            (4 compilation-error-face))
+           (msbuild-warning
+            ,csharp-compilation-re-msbuild-warning
+            csharp--compilation-error-file-resolve
+            2
+            3
+            1
+            nil
+            (1 compilation-warning-face)
+            (4 compilation-warning-face))))
+      (add-to-list 'compilation-error-regexp-alist-alist regexp)
+      (add-to-list 'compilation-error-regexp-alist (car regexp)))))
 
 ;;; Autoload mode trigger
 ;;;###autoload
