@@ -97,3 +97,39 @@
   1)
 
 ;; (setq helm-completion-window-scroll-margin 0)
+
+
+(defun vj-helm-simple-git-grep-candidates ()
+  (interactive)
+  (let*
+    ((root-nl (shell-command-to-string "git rev-parse --show-toplevel"))
+      (root (replace-regexp-in-string "[\015\012]+\\'" "" root-nl)))
+    (when (string-match "^\\(.:\\|/\\)" root)
+      (let ((default-directory root) result)
+        (setq result (shell-command-to-string
+                       (format "cd \"%s\" && git grep -ni %s" root helm-pattern)))
+        (if (string-match "^fatal:" result)
+          (progn
+            (message "git grep: %s %s" result root)
+            nil)
+          (split-string result "\n"))))))
+
+(defvar vj-helm-simple-git-grep
+  '((name . "Git files")
+     (candidates . vj-helm-simple-git-grep-candidates)
+     (action ("View" .
+               (lambda (line)
+                 (let ((fields (helm-grep-split-line line)))
+                   (find-file-other-window (nth 0 fields))
+                   (goto-line (string-to-int (nth 1 fields)))
+                   (when (fboundp 'etags-select-highlight)
+                     (etags-select-highlight (point-at-bol) (point-at-eol)))))))
+
+     (requires-pattern . 4))
+  "Source for git.")
+
+(defun vj-helm-git-grep ()
+    (interactive)
+    (helm-other-buffer '(vj-helm-simple-git-grep) "*helm git grep*"))
+
+(global-set-key (kbd "C-x g") 'vj-helm-git-grep)
