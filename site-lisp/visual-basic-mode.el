@@ -15,8 +15,10 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph M. Fritz <randolph@panix.com>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.13 (2013-06-29)
-;; Serial Version: %Id: 42%
+;;                https://github.com/vincentb1
+;;                http://www.emacswiki.org/Vincent%20Bela%c3%afche
+;; Version: 1.5 (2014-12-07)
+;; Serial Version: %Id: 47%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -142,6 +144,7 @@
 ;;                 - correct the implement of droping tailing comment in visual-basic-if-not-on-single-line
 ;; 1.4.12 VB1 - add visual-basic-propertize-attribute
 ;; 1.4.13 VB1 - set default indentation to 3 char to stick to http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards#White_Space_and_Indentation
+;; 1.5    VB1 - Make the indentation of defun's recursive, i.e. a Sub defined within a Class will be indented by one indentatiation. 
 
 ;;
 ;; Notes:
@@ -361,15 +364,19 @@ Note: shall not contain any \\( \\) (use \\(?: if need be)."
 ;; Is there a way to case-fold all regexp matches?
 ;; Change KJW Add enum, , change matching from 0 or more to zero or one for public etc.
 (eval-and-compile
-  (defconst visual-basic-defun-start-regexp
-    (concat
-     "^[ \t]*\\([Pp]ublic \\|[Pp]rivate \\|[Ss]tatic\\|[Ff]riend \\)?"
-     "\\([Ss]ub\\|[Ff]unction\\|[Pp]roperty +[GgSsLl]et\\|[Tt]ype\\|[Ee]num\\|[Cc]lass\\)"
-     "[ \t]+\\(\\w+\\)[ \t]*(?")))
+  (progn
+    (defconst visual-basic-defun-start-regexp-formatter
+      "^[ \t]*\\([Pp]ublic \\|[Pp]rivate \\|[Ss]tatic\\|[Ff]riend \\)?\\(%s\\)[ \t]+\\(\\w+\\)[ \t]*(?")
+    (defconst visual-basic-defun-start-regexp
+      (format visual-basic-defun-start-regexp-formatter "[Ss]ub\\|[Ff]unction\\|[Pp]roperty +[GgSsLl]et\\|[Tt]ype\\|[Ee]num\\|[Cc]lass"))))
 
+
+(defconst visual-basic-defun-end-regexp-formatter
+  "^[ \t]*[Ee]nd +\\(%s\\)")
 
 (defconst visual-basic-defun-end-regexp
-  "^[ \t]*[Ee]nd \\([Ss]ub\\|[Ff]unction\\|[Pp]roperty\\|[Tt]ype\\|[Ee]num\\|[Cc]lass\\)")
+  (format visual-basic-defun-end-regexp-formatter
+	  "[Ss]ub\\|[Ff]unction\\|[Pp]roperty\\|[Tt]ype\\|[Ee]num\\|[Cc]lass"))
 
 (defconst visual-basic-dim-regexp
   "^[ \t]*\\([Cc]onst\\|[Dd]im\\|[Pp]rivate\\|[Pp]ublic\\)\\_>"  )
@@ -593,7 +600,7 @@ Commands:
                 (setq font-lock-keywords visual-basic-font-lock-keywords)))
 
          (if visual-basic-winemacs-p
-             (font-lock-fontify-buffer)
+             (font-lock-ensure)
            (font-lock-mode 1)))))
 
 ;; KJW should add some odds and bobs here to cover "end if" one way
@@ -687,7 +694,7 @@ Commands:
       (zmacs-activate-region)))
 
 (defun visual-basic-indent-defun ()
-  "Indent the function within which the pointer is located.  This has a border on mark."
+  "Indent the function within which the pointer is located.  This has a border effect on mark."
   ;; VB1 to Lennart: is border effect on mark an issue ?
   (interactive)
   (save-excursion
@@ -823,7 +830,7 @@ changed files."
   "Perform `visual-basic-indent-line' on each line in region delimited by START and END."
   (interactive "r")
   (save-excursion
-    (goto-cFormatCurrencyhar start)
+    (goto-char start)
     (beginning-of-line)
     (while (and (not (eobp))
                 (< (point) end))
@@ -889,7 +896,7 @@ statifying CLOSE-P was visited before during this search."
    (lambda () (looking-at open-regexp))
    (lambda () (looking-at close-regexp))))
 
-(defun visual-bascic-at-line-contination ()
+(defun visual-basic-at-line-continuation ()
   (and  (looking-at  visual-basic-looked-at-continuation-regexp)
 	(save-excursion
 	  (or (bolp)
@@ -914,7 +921,7 @@ complete statement line, you have to call functions
       (end-of-line)
       (setq line-end (point))
       (if (search-backward "_" line-beg t)
-	  (if (visual-bascic-at-line-contination)
+	  (if (visual-basic-at-line-continuation)
 	      ;; folded line
 	      (progn
 		(setq line-end (1- (point))
@@ -1008,6 +1015,11 @@ be folded over several code lines."
         (progn (goto-char original-point)
                (visual-basic-previous-line-of-code)))))
 
+(defun visual-basic--make-keyword-re (keyword)
+  "Convert a KEYWORD to the regexp that makes first letter case
+  insensitive. For instance if KEYWORD is \"Class\", then
+  returned value is \"[Cc]lass\"."
+  (format "[%c%c]%s" (aref keyword 0) (logxor (aref keyword 0) 32) (substring keyword 1)))
 
 (defun visual-basic-calculate-indent ()
   "Return indent count for the line of code containing pointer."
@@ -1015,10 +1027,48 @@ be folded over several code lines."
     (save-excursion
       (beginning-of-line)
       ;; Some cases depend only on where we are now.
-      (cond ((or (looking-at visual-basic-defun-start-regexp)
-                 (looking-at visual-basic-label-regexp)
-                 (looking-at visual-basic-defun-end-regexp))
-             0)
+      (cond ((looking-at visual-basic-label-regexp) 0)
+
+	    ((looking-at visual-basic-defun-end-regexp)
+	     (let* ((keyword-re-list (mapcar 'visual-basic--make-keyword-re (split-string (match-string-no-properties 1))))
+		    (open-re (format visual-basic-defun-start-regexp-formatter (mapconcat 'identity keyword-re-list " +")))
+		    (close-re (format visual-basic-defun-end-regexp-formatter (car keyword-re-list))))
+	       (visual-basic-find-matching-stmt open-re close-re))
+	     (current-indentation))
+	    
+	    ((looking-at visual-basic-defun-start-regexp)
+	     (if (bobp)
+		 0
+	       ;; find the first opening defun if any
+	       (let ((p original-point) open-keyword keyword-re open-re close-re close-keyword p-open p-close indentation)
+		 (while
+		     (if (re-search-backward visual-basic-defun-start-regexp nil t)
+			 (progn
+			   (setq p-open (point)
+				 open-keyword (match-string-no-properties 2))
+			   (goto-char p)
+			   (if (and (re-search-backward visual-basic-defun-end-regexp nil t)
+				    (progn
+				      (setq p-close (point)
+					    close-keyword  (match-string-no-properties 1))
+				      (> p-close p-open)))
+			       (progn
+				 (setq keyword-re  (visual-basic--make-keyword-re close-keyword)
+				       open-re (format visual-basic-defun-start-regexp-formatter
+						       (if (string= (downcase close-keyword) "property")
+							   (concat keyword-re " +[SsGgLl]et")
+							 keyword-re))
+				       close-re (format visual-basic-defun-end-regexp-formatter keyword-re))
+				 (visual-basic-find-matching-stmt open-re close-re)
+				 (setq p (point)))
+			     (goto-char p-open)
+			     (setq indentation (+ (current-indentation) visual-basic-mode-indent))
+			     nil; stop iterating
+			     ))
+		       (setq indentation 0)
+		       nil; stop iterating
+		       ))
+		 indentation)))
 
             ;; The outdenting stmts, which simply match their original.
             ((or (looking-at visual-basic-else-regexp)
@@ -1206,7 +1256,7 @@ With' if the block is a `With ...', etc..."
 		  (when (string-match "\\`Prop" smt)
 		    (setq smt "Property"))
 		  (setq end-statement (concat "End " smt)
-			end-indent 0))
+			end-indent (current-indentation)))
 		nil)
 	       ((looking-at visual-basic-select-regexp)
 		(setq  end-statement "End Select"
@@ -1400,13 +1450,13 @@ Interting an item means:
                                      t))
 				 ;; continuation
 				 (and loop-again
-				      (visual-bascic-at-line-contination) ))
+				      (visual-basic-at-line-continuation) ))
                               (goto-char (setq tentative-split-point (match-end 0))))
 			    (when loop-again
 			      (when (looking-at "As\\s-+\\(?:\\sw\\|\\s_\\)+\\s-*")
 				(setq item-case ':dim-split-after)
 				(goto-char (setq tentative-split-point (match-end 0))))
-			      (when (visual-bascic-at-line-contination)
+			      (when (visual-basic-at-line-continuation)
 				(beginning-of-line 2))
 			      (if (looking-at ",")
 				  (goto-char (setq split-point (match-end 0)))
@@ -1704,8 +1754,7 @@ This function is under construction"
 	    (overlay-put hl-style-error 'face hl-line-face)
 	    (overlay-put hl-style-error 'window (selected-window))
 	    (dolist (x (buffer-list))
-	      (if (and (save-excursion
-			 (set-buffer x)
+	      (if (and (with-current-buffer x
 			 (derived-mode-p 'visual-basic-mode))
 		       (null (eq x (current-buffer))))
 		  (push x vb-other-buffers-list)))
@@ -1720,7 +1769,7 @@ This function is under construction"
 			(save-excursion
 			  (when
 			      (and
-			       (Propertyre-search-forward (aref se 0) nil t)
+			       (re-search-forward (aref se 0) nil t)
 			       (progn
 				 (goto-char  (funcall (aref se 2)
 						      (aref se 3)))
@@ -1759,11 +1808,4 @@ This function is under construction"
 
 (provide 'visual-basic-mode)
 
-
-
 ;;; visual-basic-mode.el ends here
-
-
-;External Links
-;[http://visualbasic.freetutes.com/ Visual Basic tutorials]
-;[http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards]
