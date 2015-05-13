@@ -99,11 +99,24 @@
 ;; (setq helm-completion-window-scroll-margin 0)
 
 
+(defvar vj-helm-simple-git-grep-root nil)
+
 (defun vj-helm-simple-git-grep-candidates ()
   (interactive)
-  (let*
-    ((root-nl (shell-command-to-string "git rev-parse --show-toplevel"))
-      (root (replace-regexp-in-string "[\015\012]+\\'" "" root-nl)))
+  (let (
+         (old-root vj-helm-simple-git-grep-root)
+         (root
+           (replace-regexp-in-string "[\015\012]+\\'" ""
+             (shell-command-to-string "git rev-parse --show-toplevel")))
+         )
+    (if (string-match "^fatal:" root)
+      (setq root nil))
+
+    (unless root
+      ;; reuse previous root
+      (setq root old-root))
+    (setq vj-helm-simple-git-grep-root root)
+
     (when (string-match "^\\(.:\\|/\\)" root)
       (let ((default-directory root) result)
         (setq result (shell-command-to-string
@@ -115,12 +128,16 @@
           (split-string result "\n"))))))
 
 (defvar vj-helm-simple-git-grep
-  '((name . "Git files")
+  '((name . "Git grep")
      (candidates . vj-helm-simple-git-grep-candidates)
      (action ("View" .
                (lambda (line)
                  (let ((fields (helm-grep-split-line line)))
-                   (find-file-other-window (nth 0 fields))
+                   (message "View file: \"%s\" \"%s\""
+                     vj-helm-simple-git-grep-root (nth 0 fields))
+                   (find-file-other-window (format "%s/%s"
+                                             vj-helm-simple-git-grep-root
+                                             (nth 0 fields)))
                    (goto-line (string-to-int (nth 1 fields)))
                    (when (fboundp 'etags-select-highlight)
                      (etags-select-highlight (point-at-bol) (point-at-eol)))))))
