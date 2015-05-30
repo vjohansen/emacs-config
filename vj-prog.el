@@ -523,3 +523,13 @@ foo.cpp and in the same directory as the current header file, foo.h."
     (flymake-mode)))
 
 (add-hook 'ruby-mode-hook 'vj-ruby-setup)
+
+; ------------------------------------------------------------
+
+
+
+(setq auto-mode-alist
+  (append '(("\\.md\\'" . markdown-mode))
+    auto-mode-alist))
+
+(autoload 'markdown-mode "markdown-mode" "markdown-mode*" t)
