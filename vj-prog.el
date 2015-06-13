@@ -263,6 +263,7 @@ that file will need to be in your path."
 (add-to-list 'auto-mode-alist '("\\.csproj\\'" . nxml-mode))
 (add-to-list 'auto-mode-alist '("\\.proj\\'" . nxml-mode))
 (add-to-list 'auto-mode-alist '("\\.snippet\\'" . nxml-mode))
+(add-to-list 'auto-mode-alist '("\\.xaml\\'" . nxml-mode))
 
 
 ; ------------------------------------------------------------

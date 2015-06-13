@@ -1,4 +1,3 @@
-                                               ;; -*- auto-recompile: t -*-
 ;; This is a way to hook tempo into cc-mode
 
 (defvar c-tempo-tags nil
@@ -229,10 +228,10 @@
 
 (tempo-define-template "c++-class"
   '(> "class " (P "class " var) n>
-     "{" > n> 
-     "public:" > n> 
-     > (s var) "(" p  ");" n> 
-     > "virtual ~" (s var) "();" n> 
+     "{" > n>
+     "public:" > n>
+     > (s var) "(" p  ");" n>
+     > "virtual ~" (s var) "();" n>
      "private:" > p n>
      "};" > n> p
      )
@@ -244,7 +243,7 @@
   '(> "class " (P "class " var) n>
      "{" > n>
      "public:" > n>
-     "virtual ~" (s var) "() {};" n> 
+     "virtual ~" (s var) "() {};" n>
      p n>
      "}:" > n>
      )
@@ -254,10 +253,10 @@
 
 (tempo-define-template "c++-class-noncopyable"
   '(> "class " (P "class " var) n>
-     "{" > n> 
-     "public:" > n> 
-     > (s var) "(" p  ");" n> 
-     > "virtual ~" (s var) "();" n> 
+     "{" > n>
+     "public:" > n>
+     > (s var) "(" p  ");" n>
+     > "virtual ~" (s var) "();" n>
      "private:" > p n>
      > (s var) "(const " (s var) " &);" n>
      > "void operator=(const " (s var) " &);"  n>
@@ -291,7 +290,7 @@
 (tempo-define-template "c++-for-iter"
 		       '(> "for (" (P "Iterator: " iter)  "="
                            (P "Container: " cont) ".begin(); "
-                           (s iter) "!=" (s cont) ".end(); " 
+                           (s iter) "!=" (s cont) ".end(); "
                            "++" (s iter) ")" >  n>
 			   "{" > n> r n
 			   "}" > n>
@@ -302,7 +301,7 @@
 
 (tempo-define-template "c++-for-reverse-iter"
 		       '(> "for (" (P "iterator: " iter) ".rbegin(); "
-                           (s iter) "!=" (s iter) ".rend(); " 
+                           (s iter) "!=" (s iter) ".rend(); "
                            (s iter) "++)" >  n>
 			   "{" > n> r n
 			   "}" > n>
@@ -313,7 +312,7 @@
 
 
 (tempo-define-template "c++-for_each"
-  '(> "for_each(" 
+  '(> "for_each("
      (P "Container: " cont) ".begin(), "
      (s cont) ".end(), &" p
      (P "Method: " method) ");" >
@@ -337,7 +336,7 @@
      p
      "}" >
      n>
-     ) 
+     )
   "catch"
   "Insert C++ catch statement"
   'c++-tempo-tags)
@@ -393,20 +392,13 @@
 
 
 
-
-
-
-
-
-
-
 ;;;C#-Mode Templates
 
 
 (tempo-define-template "csharp-class"
   '(> "class " (P "class " var) n>
-     "{" > n> 
-     "public " (s var) "(" p  ") {}" n> 
+     "{" > n>
+     "public " (s var) "(" p  ") {}" n>
      "}" > n> p
      )
   "class"
@@ -416,8 +408,8 @@
 
 (tempo-define-template "csharp-interface"
   '(> "interface " (P "interface " var) n>
-     "{" > n> 
-     p n> 
+     "{" > n>
+     p n>
      "}" > n> p
      )
   "interface"
@@ -434,9 +426,9 @@
 
 (tempo-define-template "csharp-property"
   '(> "public " (P "Type: " type) " " (vj-tempo-csharp-property-read) p n>
-     "{" > n> 
-     "get { return " 'vj-tempo-csharp-property-varname "; }" n> 
-     "set { " 'vj-tempo-csharp-property-varname " = value; }" n> 
+     "{" > n>
+     "get { return " 'vj-tempo-csharp-property-varname "; }" n>
+     "set { " 'vj-tempo-csharp-property-varname " = value; }" n>
      "}" > n>
      "private " (s type) " " 'vj-tempo-csharp-property-varname ";" n>
      )
@@ -502,13 +494,13 @@
 (tempo-define-template "csharp-main-class"
   '(
      "class "
-     (capitalize 
+     (capitalize
        (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
      p  > n>
      "{" > n>
      "  static void Main() " > n>
      "  {" > n>
-     p n> 
+     p n>
      "    Console.WriteLine(\"done\");" > n> ;
      "    return; " > n>
      "  }" > n>
@@ -518,14 +510,11 @@
   'csharp-tempo-tags)
 
 
-
-
-
 (tempo-define-template "csharp-doc-summary"
   '(>
      "/// <summary>" > n>
      "/// " p > n>
-     "/// </summary> " > 
+     "/// </summary> " >
      )
   "summary"
   "Insert summary XML"
@@ -535,7 +524,7 @@
   '(>
      "/// <summary>" > n>
      "/// " p > n>
-     "/// <exception cref=\"" p "\"" n> > 
+     "/// <exception cref=\"" p "\"" n> >
      "/// " p > n>
      "/// </exception> " > n>
      "/// </summary> " > n>

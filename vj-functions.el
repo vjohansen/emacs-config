@@ -368,7 +368,7 @@ With a prefix arg, insert the N characters above point.
           ((equal from "/") (setq to "\\"))
           ((equal from "\\") (setq to "\\\\"))
           ((equal from "\\\\") (setq to "/"))
-          (t (message "error")))))      ;never happens
+          (t (message "No slash found")))))      ;never happens
     (if to
       (save-excursion
         (replace-string from to nil beg end)))))
