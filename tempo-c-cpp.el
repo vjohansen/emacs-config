@@ -444,6 +444,20 @@
   "New csharp property"
   'csharp-tempo-tags)
 
+(tempo-define-template "csharp-p"
+  '(> "public " (P "Type: " type) " " p " { get; set; } " n>
+     )
+  "p"
+  "New csharp property 2015"
+  'csharp-tempo-tags)
+
+(tempo-define-template "csharp-pp"
+  '(> "public " (P "Type: " type) " " p " { get; private set; } " n>
+     )
+  "pp"
+  "New csharp private property 2015"
+  'csharp-tempo-tags)
+
 
 (tempo-define-template "csharp-console-writeline"
   '(> "Console.WriteLine(\"" p "\");" n>
