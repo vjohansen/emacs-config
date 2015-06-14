@@ -73,8 +73,6 @@
 
 (require 'anything-vps)
 
-(add-to-list 'anything-sources 'anything-source-vps-files)
-
 ;; Generate a vps project based on all elisp files in `load-path'
 
 (vps-add-project "load-path" `((dirs ,load-path) (ext ("el"))))
