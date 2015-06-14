@@ -40,17 +40,6 @@
 
 ;; --- vj-load-packages ---
 
-;; (load "help-mode") ; help-xref-following issue
-(require 'auto-complete-config)
-(ac-config-default)
-(require 'auto-complete-etags)
-(setq ac-delay 0.3)
-
-;; (require 'anything)
-;; (require 'anything-config)
-;; (setq anything-enable-digit-shortcuts t)
-;; (global-set-key (kbd "C-å") 'anything)
-
 (require 'bm)
 (global-set-key (kbd "<C-f2>") 'bm-toggle)
 (global-set-key (kbd "<f2>")   'bm-next)
