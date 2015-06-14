@@ -4,8 +4,8 @@
 ;; Author     : Dylan R. E. Moonfire (original)
 ;; Maintainer : Jostein Kjønigsen <jostein@gmail.com>
 ;; Created    : Feburary 2005
-;; Modified   : November 2014
-;; Version    : 0.8.9
+;; Modified   : May 2015
+;; Version    : 0.8.10
 ;; Keywords   : c# languages oop mode
 ;; X-URL      : https://github.com/josteink/csharp-mode
 ;; Last-saved : <2014-Nov-29 13:56:00>
@@ -274,6 +274,9 @@
 ;;
 ;;    0.8.9 2015 March 15
 ;;          - (Re)add compilation-mode support for msbuild and xbuild.
+;;
+;;    0.8.10 2015 May 31th
+;;          - Imenu: Correctly handle support for default-values in paramlist.
 ;;
 
 (require 'cc-mode)
@@ -785,85 +788,6 @@ a square parentasis block [ ... ]."
            ;; Fontify all keywords except the primitive types.
            ,`(,(concat "\\<" (c-lang-const c-regular-keywords-regexp))
               1 font-lock-keyword-face)
-
-
-           ;; Fontify leading identifiers as a reference? in fully
-           ;; qualified names like "Foo.Bar".
-           ,@(when (c-lang-const c-opt-identifier-concat-key)
-               `((,(byte-compile
-                    `(lambda (limit)
-                       (csharp-log 3 "bmb reference? p(%d) L(%d)" (point) limit)
-                       (while (re-search-forward
-                               ,(concat "\\(\\<" ;; 1
-                                        "\\("  ;; 2
-                                        ;;"[A-Z]";; uppercase - assume upper = classname
-                                        "[A-Za-z_]"  ;; any old
-                                        "[A-Za-z0-9_]*" ;; old: (c-lang-const c-symbol-key)
-                                        "\\)"
-                                        "[ \t\n\r\f\v]*"
-                                        "\\."   ;;(c-lang-const c-opt-identifier-concat-key)
-                                        "[ \t\n\r\f\v]*"
-                                        "\\)" ;; 1 ends
-                                        "\\("
-                                        "[[:alpha:]_][A-Za-z0-9_]*" ;; start of another symbolname
-                                        "\\)"  ;; 3 ends
-                                        )
-                               limit t)
-                         (csharp-log 3 "bmb ref? B(%d)" (match-beginning 0))
-                         (unless (progn
-                                   (goto-char (match-beginning 0))
-                                   (c-skip-comments-and-strings limit))
-                           (let* ((prefix  (match-string 2))
-                                  (me1 (match-end 1))
-                                  (first-char (string-to-char prefix))
-                                  (is-upper (and (>= first-char 65)
-                                                 (<= first-char 90))))
-                             (csharp-log 3 "  - class/intf ref (%s)" prefix)
-                             ;; only put face if not there already
-                             (or (get-text-property (match-beginning 2) 'face)
-                                 (c-put-font-lock-face (match-beginning 2)
-                                                       (match-end 2)
-                                                       (if is-upper
-                                                           font-lock-type-face ;; it's a type!
-                                                         font-lock-variable-name-face)))
-
-                             (goto-char (match-end 3))
-                             (c-forward-syntactic-ws limit)
-
-                             ;; now, maybe fontify the thing afterwards, too
-                             (let ((c (char-after)))
-                               (csharp-log 3 "  - now lkg at c(%c)" c)
-
-                               (cond
-
-                                ((= c 40) ;; open paren
-                                 (or (get-text-property (match-beginning 3) 'face)
-                                     (c-put-font-lock-face (match-beginning 3)
-                                                           (match-end 3)
-                                                           font-lock-function-name-face))
-                                 (goto-char (match-end 3)))
-
-                                ;;  these all look like variables or properties
-                                ((or (= c 59)  ;; semicolon
-                                     (= c 91)  ;; open sq brack
-                                     (= c 41)  ;; close paren
-                                     (= c 44)  ;; ,
-                                     (= c 33)  ;; !
-                                     (= c 124) ;; |
-                                     (= c 61)  ;; =
-                                     (= c 43)  ;; +
-                                     (= c 45)  ;; -
-                                     (= c 42)  ;; *
-                                     (= c 47)) ;; /
-                                 (or (get-text-property (match-beginning 3) 'face)
-                                     (c-put-font-lock-face (match-beginning 3)
-                                                           (match-end 3)
-                                                           font-lock-variable-name-face))
-                                 (goto-char (match-end 3)))
-
-                                (t
-                                 (goto-char (match-end 1)))))))))))))
-
            ))
 
 
@@ -1060,88 +984,6 @@ a square parentasis block [ ... ]."
                              )))
                        nil))
                   )))
-
-
-           ;; Case 3: declaration of constructor
-           ;;
-           ;; Example:
-           ;;
-           ;; private Foo(...) {...}
-           ;;
-           ,@(when t
-               `((,(byte-compile
-                    `(lambda (limit)
-                       (let ((parse-sexp-lookup-properties
-                              (cc-eval-when-compile
-                                (boundp 'parse-sexp-lookup-properties)))
-                             (found-it nil))
-                         (while (re-search-forward
-                                 ,(concat
-                                   "^[ \t\n\r\f\v]*"
-                                   "\\(\\<\\(public\\|private\\|protected\\)\\)?[ \t\n\r\f\v]+"
-                                   "\\(@?[[:alpha:]_][[:alnum:]_]*\\)" ;; name of constructor
-                                   "[ \t\n\r\f\v]*"
-                                   "\\("
-                                   "("
-                                   "\\)")
-                                 limit t)
-
-                           (unless
-                               (progn
-                                 (goto-char (match-beginning 0))
-                                 (c-skip-comments-and-strings limit))
-
-                             (goto-char (match-end 0))
-
-                             (csharp-log 3 "ctor decl? L(%d) B(%d) E(%d)"
-                                         limit (match-beginning 0) (point))
-
-                             (backward-char 1) ;; just left of the open paren
-                             (save-match-data
-                               ;; Jump over the parens, safely.
-                               ;; If it's an unbalanced paren, no problem,
-                               ;; do nothing.
-                               (if (c-safe (c-forward-sexp 1) t)
-                                   (progn
-                                     (c-forward-syntactic-ws)
-                                     (cond
-
-                                      ;; invokes base or this constructor.
-                                      ((re-search-forward
-                                        ,(concat
-                                          "\\(:[ \t\n\r\f\v]*\\(base\\|this\\)\\)"
-                                          "[ \t\n\r\f\v]*"
-                                          "("
-                                          )
-                                        limit t)
-                                       (csharp-log 3 " - ctor with dependency?")
-
-                                       (goto-char (match-end 0))
-                                       (backward-char 1) ;; just left of the open paren
-                                       (csharp-log 3 " - before paren at %d" (point))
-
-                                       (if (c-safe (c-forward-sexp 1) t)
-                                           (progn
-                                             (c-forward-syntactic-ws)
-                                             (csharp-log 3 " - skipped over paren pair %d" (point))
-                                             (if (eq (char-after) ?{)
-                                                 (setq found-it t)))))
-
-                                      ;; open curly. no depedency on other ctor.
-                                      ((eq (char-after) ?{)
-                                       (csharp-log 3 " - no dependency, curly at %d" (point))
-                                       (setq found-it t)))
-
-                                     )))
-
-                             (if found-it
-                                 ;; fontify the constructor symbol
-                                 (c-put-font-lock-face (match-beginning 3)
-                                                       (match-end 3)
-                                                       'font-lock-function-name-face))
-                             (goto-char (match-end 0)))))
-                       nil)))))
-
 
            ;; Case 4: using clause. Without this, using (..) gets fontified as a fn.
            ,@(when t
@@ -1422,7 +1264,7 @@ a square parentasis block [ ... ]."
 (c-lang-defconst c-modifier-kwds
   csharp '("public" "partial" "private" "const" "abstract" "sealed"
            "protected" "ref" "out" "static" "virtual"
-           "override" "params" "internal"))
+           "override" "params" "internal" "async"))
 
 
 ;; Thu, 22 Apr 2010  23:02
@@ -1440,11 +1282,9 @@ a square parentasis block [ ... ]."
   csharp '("struct" "class" "interface" "is" "as"
            "delegate" "event" "set" "get" "add" "remove"))
 
-
-;; This allows the classes after the : in the class declartion to be
-;; fontified.
+;; Handle typeless variable declaration
 (c-lang-defconst c-typeless-decl-kwds
-  csharp '(":"))
+  csharp '("var"))
 
 ;; Sets up the enum to handle the list properly, and also the new
 ;; keyword to handle object initializers.  This requires a modified
@@ -1457,7 +1297,7 @@ a square parentasis block [ ... ]."
 ;; Statement keywords followed directly by a substatement.
 ;; catch is not one of them, because catch has a paren (typically).
 (c-lang-defconst c-block-stmt-1-kwds
-  csharp '("do" "try" "finally" "unsafe"))
+  csharp '("do" "else" "try" "finally" "unsafe"))
 
 
 ;; Statement keywords followed by a paren sexp and then by a substatement.
@@ -1491,7 +1331,7 @@ a square parentasis block [ ... ]."
 (c-lang-defconst c-other-kwds
   csharp '("sizeof" "typeof" "is" "as" "yield" "extern"
            "where" "select" "in" "from" "let" "orderby" "ascending" "descending"
-	   "await" "async" "var"))
+           "await" "async"))
 
 (c-lang-defconst c-overloadable-operators
   ;; EMCA-344, S14.2.1
@@ -2232,6 +2072,7 @@ Upon entry, it's assumed that the parens included in S.
              (state 0)  ;; 0 => ws, 1=>slurping param...
              c
              cs
+	     quoting
              nesting
              need-type
              ix2
@@ -2248,9 +2089,14 @@ Upon entry, it's assumed that the parens included in S.
            ;; backing over whitespace "after" the param
            ((= state 0)
             (cond
-             ;; more ws
-             ((string-match "[ \t\f\v\n\r]" cs)
+             ;; more ws. = is equal to whitespace in the sense that its follows a param-name.
+             ((string-match "[ \t\f\v\n\r=]" cs)
               t)
+	     ((string-match "[\"']" cs)
+	      ;; a quote means we're probably dealing with a stringy default-value
+	      ;; back out until we're back into unquoted context
+	      (setq quoting cs
+		    state 5))
              ;; a legal char for an identifier
              ((string-match "[A-Za-z_0-9]" cs)
               (setq state 1))
@@ -2264,8 +2110,13 @@ Upon entry, it's assumed that the parens included in S.
              ;; ws signifies the end of the param
              ((string-match "[ \t\f\v\n\r]" cs)
               (setq state 2))
+	     ((string-match "[=]" cs)
+	      ;; = means what we slurped was a default-value for a param
+	      ;; go back to slurping param-name
+	      (setq state 0))
              ;; a legal char for an identifier
-             ((string-match "[A-Za-z_0-9]" cs)
+	     ;; (or . for object-access in default value)
+             ((string-match "[A-Za-z_0-9\.]" cs)
               t)
              (t
               (error "unexpected char (B)"))))
@@ -2276,6 +2127,10 @@ Upon entry, it's assumed that the parens included in S.
             (cond
              ((string-match "[ \t\f\v\n\r]" cs)
               t)
+	     ((string-match "[=]" cs)
+	      ;; = means what we slurped was a default-value for a param
+	      ;; go back to slurping param-name
+	      (setq state 0))
              ;; non-ws indicates the type spec is beginning
              (t
               (incf i)
@@ -2343,6 +2198,16 @@ Upon entry, it's assumed that the parens included in S.
 
              (t
               (error "unexpected char (C)"))))
+
+	   ;; in a quoted context of a default-value.
+	   ;; we're basically waiting for a matching quote, to go back to slurping param-name
+	   ((= state 5)
+	    (cond
+	     ((equal quoting cs)
+	      ;; we're back to unquoted! slurp param-name!
+	      (setq state 0))
+	     (t
+	      t)))
            )
 
           (decf i))
