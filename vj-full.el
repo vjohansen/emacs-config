@@ -57,9 +57,6 @@
 (autoload 'fnexpand-complete "fnexpand" "*Expand the file name, env var or command near point" t)
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
-;;(global-set-key "\361	" 'fnexpand-complete) ; M-q TAB
-(global-set-key (kbd "M-q TAB") 'fnexpand-complete) ; M-q TAB
-
 
 (load "vj-grep")
 (global-set-key "\C-\M-g" 'vgrep)       ;FIXME rename to grep vj-lgrep

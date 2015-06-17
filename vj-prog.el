@@ -345,6 +345,7 @@ that file will need to be in your path."
 ;;                                         ; (message "VJO C++")
 ;;   )
 
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . c-or-c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-or-c++-mode))
 (defun c-or-c++-mode ()
   (if (save-excursion
