@@ -66,21 +66,6 @@
 
 ; ------------------------------------------------------------
 
-(defun vj-csharp-mode-hook ()
-;;  (local-set-key (kbd "{") 'self-insert-command)
-  (c-set-style "bsd")
-  (setq c-basic-offset 2))
-
-(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
-(setq auto-mode-alist (cons '("\\.cs\\'" . csharp-mode) auto-mode-alist))
-
-(eval-after-load "csharp-mode"
-  '(progn
-     (add-hook 'csharp-mode-hook 'vj-csharp-mode-hook)))
-
-; ------------------------------------------------------------
-
-
 ;; See also "Perl Development Environment in emacs"
 ;; http://cpansearch.perl.org/src/YEWENBIN/Emacs-PDE-0.2.16/lisp/doc/QuickStartEn.html
 
@@ -289,7 +274,9 @@ that file will need to be in your path."
   (local-set-key "\C-c\C-f" 'tempo-forward-mark)
   (local-set-key "\C-c\C-e" 'tempo-complete-tag)
   (local-set-key "\C-c\C-c" 'comment-region)
-  (local-set-key "\C-t" 'vjo-toggle-h-cpp-file)
+  (if (equal major-mode 'csharp-mode)
+    (local-set-key "\C-t" 'vjo-toggle-csharp-file)
+    (local-set-key "\C-t" 'vjo-toggle-h-cpp-file))
   (local-set-key "\C-ch" 'hs-hide-block)
   (local-set-key "\C-cs" 'hs-show-block)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
@@ -345,7 +332,7 @@ that file will need to be in your path."
 ;;                                         ; (message "VJO C++")
 ;;   )
 
-(add-to-list 'auto-mode-alist '("\\.cu\\'" . c-or-c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cuh?\\'" . c-or-c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-or-c++-mode))
 (defun c-or-c++-mode ()
   (if (save-excursion
@@ -382,6 +369,26 @@ that file will need to be in your path."
              (find-file hname)))
       ))
     )
+
+(defun vj-nxml-xaml ()
+  (local-set-key (kbd "C-t") 'vjo-toggle-csharp-file))
+
+(add-hook 'nxml-mode-hook 'vj-nxml-xaml)
+
+(defun vjo-toggle-csharp-file ()
+  "Switch buffer from cc to h and vice versa depending on current buffer"
+  (interactive)
+ (let*
+   ((fn (buffer-file-name)) basename ext)
+  (when (string-match "^\\([^.]+\\)\\(\\..*\\)$" fn)
+    (setq basename (match-string 1 fn))
+    (setq ext (downcase (match-string 2 fn)))
+    (if (equal ext ".xaml.cs")
+      (find-file (concat basename ".xaml"))
+      (if (equal ext ".xaml")
+        (find-file (concat basename ".xaml.cs"))
+;;        (message "Dunno about %s %s" basename ext)
+    )))))
 
 
 
@@ -528,10 +535,11 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 ; ------------------------------------------------------------
 
-
-
 (setq auto-mode-alist
   (append '(("\\.md\\'" . markdown-mode))
     auto-mode-alist))
 
 (autoload 'markdown-mode "markdown-mode" "markdown-mode*" t)
+
+
+; ------------------------------------------------------------

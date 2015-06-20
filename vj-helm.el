@@ -42,8 +42,8 @@
   "Source for favorites.")
 
 (defvar vj-helm-list '(
-                        vj-helm-source-fav
  			helm-source-vps-files
+                        vj-helm-source-fav
                         helm-source-recentf
                         helm-source-buffers-list
  			helm-source-files-in-current-dir
