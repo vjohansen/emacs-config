@@ -97,7 +97,7 @@
          ("Dired" . helm-apps-dired)
          ))
 
-     (requires-pattern . 2))
+     (requires-pattern . 0))
   "Source for applications.")
 
 (defun vj-w32-launch (app-and-parms)

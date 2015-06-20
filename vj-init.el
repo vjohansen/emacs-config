@@ -45,7 +45,8 @@
 (set-register ?s `(file . ,vj-system-type-specific-elisp-file)) ;; C-x r j s
 (if (file-exists-p vj-system-type-specific-elisp-file)
     (load vj-system-type-specific-elisp-file)
-  (message "*** Create the file: %s ***" vj-system-type-specific-elisp-file))
+  (message "*** Please create the file: %s ***"
+    vj-system-type-specific-elisp-file))
 
 
 (defvar vj-machine-specific-elisp-file
