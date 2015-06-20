@@ -72,7 +72,7 @@
   (load "vj-compilation-find-file-not-found-hook"))
 
 (eval-after-load "helm"
-  (require 'helm-vps))
+  '(require 'helm-vps))
 
 ;; Generate a vps project based on all elisp files in `load-path'
 
