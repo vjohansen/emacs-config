@@ -27,7 +27,7 @@ If not in a git repo use the root of the previously used git repo"
       (setq root vj-helm-simple-git-grep-root))
     (setq vj-helm-simple-git-grep-root root)
 
-    (with-current-buffer (helm-candidate-buffer)
+    (with-temp-buffer
       (shell-command (format "cd \"%s\" && git grep -n -i %s" root
                        helm-pattern) t)
       (if vj-helm-simple-git-grep-colors

@@ -14,19 +14,20 @@
 ;;
 ;;
 
-
 (require 'helm-grep)
 (require 'vps)
 
+(defun helm-source-vps-files-candidates ()
+  (with-current-buffer (helm-candidate-buffer 'local)
+    (when (and vps-project-name
+            (file-exists-p (vps-filelist-filename)))
+      (insert-file-contents (vps-filelist-filename))
+      (split-string (buffer-string) "\n"))))
+
 (defvar helm-source-vps-files
   '((name . "Project Files")
-     (init . (lambda ()
-	       (with-current-buffer (helm-candidate-buffer)
-		 (when (and vps-project-name
-			 (file-exists-p (vps-filelist-filename)))
-		   (insert-file-contents (vps-filelist-filename))))))
+     (candidates . helm-source-vps-files-candidates)
      (requires-pattern . 3)
-     (candidates-in-buffer)
      (candidate-number-limit . 999)
      (type . file)))
 
