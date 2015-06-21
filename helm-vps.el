@@ -21,7 +21,7 @@
 (defvar helm-source-vps-files
   '((name . "Project Files")
      (init . (lambda ()
-	       (with-current-buffer (helm-candidate-buffer 'global)
+	       (with-current-buffer (helm-candidate-buffer)
 		 (when (and vps-project-name
 			 (file-exists-p (vps-filelist-filename)))
 		   (insert-file-contents (vps-filelist-filename))))))
