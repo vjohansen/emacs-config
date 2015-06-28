@@ -14,7 +14,7 @@
 (defvar bin-detect-git nil)
 
 (defun bin-detect-windows-paths ()
-  "DOCSTRING"
+  "Return a list of typical program paths"
   (interactive)
   (let (result try)
     (setq try bin-detect-tools-dir)

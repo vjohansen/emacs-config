@@ -89,25 +89,14 @@
     (setq cperl-lazy-help-time 2)
     (cperl-lazy-install)))
 
-(safe-load "perl-completion")
-
-
 (defun vj-cperl-mode-hook ()
   "VJOs Perl mode hook for cperl-mode"
-
-  ;; (make-local-variable 'compile-command)
-  ;; (setq compile-command
-  ;;   (concat
-  ;;     (if (equal vj-env 'home-mac) "/opt/local/bin/perl" "perl")
-  ;;     " -w " (file-name-nondirectory (buffer-file-name))))
-  ;; (message "vj-perl: set compile-command to \"%s\"" compile-command)
 
   (make-local-variable 'compile-command)
   (setq compile-command
     (concat "perl -w " (file-name-nondirectory (buffer-file-name))))
   (message "vj-perl: set compile-command to \"%s\"" compile-command)
 
-;;  (add-hook 'ac-sources 'ac-source-perl-completion)
   (if (boundp 'ac-source-perl-completion)
     (when (not (equal system-type 'windows-nt))
       (perl-completion-mode)
@@ -311,12 +300,19 @@ that file will need to be in your path."
 (defun vjo-cout-watch-current-word ()
   "(VJO Jan 2002)"
   (interactive)
-  (let ( (cw (vjo-current-symbol)) )
+  (let ( (cw (vjo-current-symbol)) cs-prefix)
     (when cw
       (end-of-line)
       (newline-and-indent)
       (if (memq major-mode '(csharp-mode))
-        (insert (concat "Console.WriteLine" "(\"" cw "={0}\"," cw ");"))
+        (progn
+          (setq cs-prefix
+            (or (save-excursion
+                  (if (re-search-backward "\\b\\(\\sw+\\)\\.WriteLine" nil t)
+                    (match-string-no-properties 1)))
+              "Console"))
+          (insert (concat cs-prefix ".WriteLine" "(\"" cw "={0}\"," cw ");")))
+        ;; not c#
         (if (memq major-mode '(c-mode))
           (insert (concat "printf(\"" cw "= %s\\n\"," cw ");"))
           (insert (concat "cout << \"" cw "=\" << " cw " << endl;"))))

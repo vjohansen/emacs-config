@@ -1,4 +1,3 @@
-
 ;;
 ;; TO LOAD THIS FILE ADD THE FOLLOWING TO .emacs or ~.emacs.d/init.el
 ;;
@@ -9,12 +8,6 @@
 
 (setq debug-on-error t
       debug-on-quit t)
-
-
-(defvar vj-background-color-old nil)
-(when (< emacs-major-version 24)
-  (setq vj-background-color-old (frame-parameter nil 'background-color))
-  (set-background-color "#d8f0f0"))
 
 (defvar my-lisp-dir "~/elisp")
 
@@ -32,11 +25,21 @@
 (set-register ?c `(file . ,custom-file))
 (load custom-file t)
 
+
+(message "vj-load: system-type=%s system-name=%s LOGONSERVER=%s"
+  system-type (system-name) (getenv "LOGONSERVER"))
+
+(defvar vj-emacs-config-dir
+  (file-name-directory (locate-file "vj-load.el" load-path)))
+
+(add-to-list 'load-path (concat vj-emacs-config-dir "site-lisp"))
+
+(defvar vj-load-site-lisp-path
+  (expand-file-name (concat vj-emacs-config-dir "/..")))
+
+(set-register ?l `(file . ,vj-load-site-lisp-path))
+
 (load "vj-load")
-
-(when (< emacs-major-version 24)
-  (set-background-color "#ffeedd"))
-
 (defvar vj-system-type-specific-elisp-file
   (format "%s/system-type-%s.el"
     my-lisp-dir

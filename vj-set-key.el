@@ -37,6 +37,14 @@
 (global-set-key (kbd "M-q +") 'my-increment-number-at-point)
 (global-set-key (kbd "M-q M-+") 'copy-and-inc-line)
 
+(autoload 'bm-toggle "bm" "*Toggle bookmark at point.")
+(global-set-key (kbd "<C-f2>") 'bm-toggle)
+(global-set-key (kbd "<f2>")   'bm-next)
+(global-set-key (kbd "<S-f2>") 'bm-previous)
+
+;; You can now use M-s . instead
+(define-key isearch-mode-map (kbd "C-S-w") 'isearch-yank-symbol-or-char)
+
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
   (lambda (&optional member)
@@ -57,7 +65,6 @@
        (forward-char 1))
      (point))))
 
-(define-key isearch-mode-map (kbd "C-S-w") 'isearch-yank-symbol-or-char)
 
 
 (defun vj-switch-to-buffer-hook ()
