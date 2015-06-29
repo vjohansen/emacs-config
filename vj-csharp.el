@@ -7,11 +7,22 @@
 
 (defun my-csharp-mode-hook ()
   (c-set-style "c#")
+  ;;  (setq case-replace nil)
+  (c-set-offset 'arglist-cont-nonempty '+) ;; Imitate VS
+;;  (c-set-offset 'arglist-intro '+) ;; Imitate VS
   (setq c-basic-offset 4))
 
 (add-hook 'csharp-mode-hook 'my-csharp-mode-hook)
 
 (defun my-csharp-omni-mode-hook ()
+  (local-set-key (kbd "M-r M-r") 'omnisharp-rename)
+  (local-set-key (kbd "M-r t") 'omnisharp-unit-test-single)
+  (local-set-key (kbd "M-r M-a") 'omnisharp-unit-test-fixture)
+  (local-set-key (kbd "M-r a") 'omnisharp-unit-test-all)
+  (local-set-key (kbd "M-r u") 'omnisharp-fix-usings)
+  (local-set-key (kbd "M-r i") 'omnisharp-find-implementations) ;Find *interface* implementations
+  (local-set-key (kbd "<f12>") 'omnisharp-go-to-definition)
+  (local-set-key (kbd "S-<f12>") 'omnisharp-find-usages)
   (local-set-key (kbd "M-<f2>") 'omnisharp-build-in-emacs)
   ;; Only enable omnisharp-mode if server is running
   (let ((server-running nil))
