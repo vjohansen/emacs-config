@@ -393,3 +393,22 @@ With a prefix arg, insert the N characters above point.
   (let ((grep-use-null-device)
          (dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
     (grep (format "cd %s && git --no-pager grep -n %s" dir (current-word)))))
+
+
+;; ------------------------------------------------------------
+
+(defun vj-line-at-point ()
+  (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+
+(defun vj-mark-paragraph ()
+  (interactive)
+  (if (string-match "^[ \\t]*$" (vj-line-at-point))
+    (re-search-forward "[^ \t\n]" nil t)
+    ;;
+    (end-of-line)
+    (re-search-backward "^[ \\t]*$" nil t)
+    (next-line 1))
+  (beginning-of-line)
+  (set-mark-command nil)
+  (re-search-forward "^[ \\t]*$" nil t)
+  (exchange-point-and-mark))
