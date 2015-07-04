@@ -412,3 +412,24 @@ With a prefix arg, insert the N characters above point.
   (set-mark-command nil)
   (re-search-forward "^[ \\t]*$" nil t)
   (exchange-point-and-mark))
+
+;; ------------------------------------------------------------
+
+(setq vj-package-list '( json-reformat
+                         company
+                         company-statistics
+                         helm
+                         guide-key
+                         gitconfig-mode
+                         gitignore-mode))
+
+(defun vj-install-missing-packages ()
+  (interactive)
+  ;; Refresh
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+  ;; Install the missing packages
+  (dolist (package vj-package-list)
+    (unless (package-installed-p package)
+      (package-install package))))
