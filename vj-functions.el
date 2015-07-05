@@ -433,3 +433,23 @@ With a prefix arg, insert the N characters above point.
   (dolist (package vj-package-list)
     (unless (package-installed-p package)
       (package-install package))))
+
+;; ------------------------------------------------------------
+
+;; based on code from https://github.com/magit/magit/issues/1972
+
+(require 'color)
+(defun adjust-fg-colors (percent face-list)
+  (interactive)
+  (dolist (face face-list)
+    (if (face-foreground face)
+      (set-face-foreground face
+        (color-lighten-name (face-foreground face) percent)))))
+
+(defun adjust-bg-colors (percent face-list)
+  (interactive)
+  (dolist (face face-list)
+    (if (face-background face)
+      (set-face-background face
+        (color-lighten-name (face-background face) percent)))))
+
