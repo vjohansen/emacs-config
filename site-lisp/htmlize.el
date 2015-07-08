@@ -4,7 +4,7 @@
 
 ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
 ;; Keywords: hypermedia, extensions
-;; Version: 1.43
+;; Version: 1.47
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@
   (defvar font-lock-support-mode)
   (defvar global-font-lock-mode))
 
-(defconst htmlize-version "1.43")
+(defconst htmlize-version "1.47")
 
 (defgroup htmlize nil
   "Convert buffer text and faces to HTML."
@@ -336,8 +336,7 @@ output.")
       (next-property-change pos nil (or limit (point-max)))))
   (defun htmlize-next-face-change (pos &optional limit)
     (htmlize-next-change pos 'face limit)))
- ((fboundp 'next-single-char-property-change)
-  ;; GNU Emacs 21+
+ (t
   (defun htmlize-next-change (pos prop &optional limit)
     (if prop
         (next-single-char-property-change pos prop nil limit)
@@ -848,7 +847,7 @@ This is used to protect mailto links without modifying their meaning."
   (goto-char (point-min))
   (while (search-forward "Local Variables:" nil t)
     (replace-match "Local Variables&#58;" nil t)))
-  
+
 
 ;;; Color handling.
 
@@ -938,19 +937,7 @@ If no rgb.txt file is found, return nil."
   ;; `default' and the color is unspecified, look up the color in
   ;; frame parameters.
   (let* ((function (if fg #'face-foreground #'face-background))
-	 color)
-    (if (>= emacs-major-version 22)
-	;; For GNU Emacs 22+ set INHERIT to get the inherited values.
-	(setq color (funcall function face nil t))
-      (setq color (funcall function face))
-      ;; For GNU Emacs 21 (which has `face-attribute'): if the color
-      ;; is nil, recursively check for the face's parent.
-      (when (and (null color)
-		 (fboundp 'face-attribute)
-		 (face-attribute face :inherit)
-		 (not (eq (face-attribute face :inherit) 'unspecified)))
-	(setq color (htmlize-face-color-internal
-		     (face-attribute face :inherit) fg))))
+	 (color (funcall function face nil t)))
     (when (and (eq face 'default) (null color))
       (setq color (cdr (assq (if fg 'foreground-color 'background-color)
 			     (frame-parameters)))))
@@ -1043,7 +1030,7 @@ If no rgb.txt file is found, return nil."
   css-name				; CSS name of face
   )
 
-(defun htmlize-face-emacs21-attr (fstruct attr value)
+(defun htmlize-face-set-from-keyword-attr (fstruct attr value)
   ;; For ATTR and VALUE, set the equivalent value in FSTRUCT.
   (case attr
     (:foreground
@@ -1072,13 +1059,25 @@ If no rgb.txt file is found, return nil."
 (defun htmlize-face-size (face)
   ;; The size (height) of FACE, taking inheritance into account.
   ;; Only works in Emacs 21 and later.
-  (let ((size-list
-	 (loop
-	  for f = face then (face-attribute f :inherit)
-	  until (or (not f) (eq f 'unspecified))
-	  for h = (face-attribute f :height)
-	  collect (if (eq h 'unspecified) nil h))))
-    (reduce 'htmlize-merge-size (cons nil size-list))))
+  (let* ((face-list (list face))
+         (head face-list)
+         (tail face-list))
+    (while head
+      (let ((inherit (face-attribute (car head) :inherit)))
+        (cond ((listp inherit)
+               (setcdr tail (copy-list inherit))
+               (setq tail (last tail)))
+              ((eq inherit 'unspecified))
+              (t
+               (setcdr tail (list inherit))
+               (setq tail (cdr tail)))))
+      (pop head))
+    (let ((size-list
+           (loop
+            for f in face-list
+            for h = (face-attribute f :height)
+            collect (if (eq h 'unspecified) nil h))))
+      (reduce 'htmlize-merge-size (cons nil size-list)))))
 
 (defun htmlize-face-css-name (face)
   ;; Generate the css-name property for the given face.  Emacs places
@@ -1128,19 +1127,9 @@ If no rgb.txt file is found, return nil."
                 (face-underline-p face)))
       ;; GNU Emacs
       (dolist (attr '(:weight :slant :underline :overline :strike-through))
-        (let ((value (if (>= emacs-major-version 22)
-                         ;; Use the INHERIT arg in GNU Emacs 22.
-                         (face-attribute face attr nil t)
-                       ;; Otherwise, fake it.
-                       (let ((face face))
-                         (while (and (eq (face-attribute face attr)
-                                         'unspecified)
-                                     (not (eq (face-attribute face :inherit)
-                                              'unspecified)))
-                           (setq face (face-attribute face :inherit)))
-                         (face-attribute face attr)))))
+        (let ((value (face-attribute face attr nil t)))
           (when (and value (not (eq value 'unspecified)))
-            (htmlize-face-emacs21-attr fstruct attr value))))
+            (htmlize-face-set-from-keyword-attr fstruct attr value))))
       (let ((size (htmlize-face-size face)))
         (unless (eql size 1.0) 	; ignore non-spec
           (setf (htmlize-fstruct-size fstruct) size))))
@@ -1214,7 +1203,7 @@ If no rgb.txt file is found, return nil."
 	     (let ((attr (pop attrlist))
 		   (value (pop attrlist)))
 	       (when (and value (not (eq value 'unspecified)))
-		 (htmlize-face-emacs21-attr fstruct attr value))))))
+		 (htmlize-face-set-from-keyword-attr fstruct attr value))))))
     (setf (htmlize-fstruct-css-name fstruct) "ATTRLIST")
     fstruct))
 
@@ -1354,7 +1343,9 @@ property and by buffer overlays that specify `face'."
 	 (let (all-faces)
 	   ;; Faces from text properties.
 	   (let ((face-prop (get-text-property (point) 'face)))
-	     (setq all-faces (htmlize-decode-face-prop face-prop)))
+             ;; we need to reverse the `face' prop because we want
+             ;; more specific faces to come later
+	     (setq all-faces (nreverse (htmlize-decode-face-prop face-prop))))
 	   ;; Faces from overlays.
 	   (let ((overlays
 		  ;; Collect overlays at point that specify `face'.
@@ -1399,7 +1390,7 @@ property and by buffer overlays that specify `face'."
 ;; `insert-head', `body-tag', and `text-markup'.  Not all output types
 ;; define all methods.
 ;;
-;; Methods are called either with (htmlize-method METHOD ARGS...) 
+;; Methods are called either with (htmlize-method METHOD ARGS...)
 ;; special form, or by accessing the function with
 ;; (htmlize-method-function 'METHOD) and calling (funcall FUNCTION).
 ;; The latter form is useful in tight loops because `htmlize-method'
@@ -1559,7 +1550,7 @@ it's called with the same value of KEY.  All other times, the cached
     (format "<body text=\"%s\" bgcolor=\"%s\">"
 	    (htmlize-fstruct-foreground fstruct)
 	    (htmlize-fstruct-background fstruct))))
-       
+
 (defun htmlize-font-text-markup (fstruct-list buffer)
   ;; In `font' mode, we use the traditional HTML means of altering
   ;; presentation: <font> tag for colors, <b> for bold, <u> for
