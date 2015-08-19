@@ -7,9 +7,9 @@
 
 (defun my-csharp-mode-hook ()
   (c-set-style "c#")
-  ;;  (setq case-replace nil)
+  (setq dabbrev-case-replace nil)
   (c-set-offset 'arglist-cont-nonempty '+) ;; Imitate VS
-;;  (c-set-offset 'arglist-intro '+) ;; Imitate VS
+  ;;  (c-set-offset 'arglist-intro '+) ;; Imitate VS
   (setq c-basic-offset 4))
 
 (add-hook 'csharp-mode-hook 'my-csharp-mode-hook)

@@ -42,9 +42,9 @@
   "Source for favorites.")
 
 (defvar vj-helm-list '(
+                        helm-source-recentf
  			helm-source-vps-files
                         vj-helm-source-fav
-                        helm-source-recentf
                         helm-source-buffers-list
  			helm-source-files-in-current-dir
 ;;                        helm-c-source-locate
@@ -99,4 +99,3 @@
   1)
 
 ;; (setq helm-completion-window-scroll-margin 0)
-

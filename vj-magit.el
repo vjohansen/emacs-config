@@ -3,8 +3,8 @@
 
 (setq magit-last-seen-setup-instructions "1.4.0")
 
-(when (equal magit-log-format-graph-function 'magit-log-format-unicode-graph)
-  (setcdr (assoc ?* magit-log-format-unicode-graph-alist) ?●))
+;; (when (equal magit-log-format-graph-function 'magit-log-format-unicode-graph)
+;;   (setcdr (assoc ?* magit-log-format-unicode-graph-alist) ?●))
 
 
 (define-key magit-log-mode-map (kbd "TAB") 'vj-git-diff)
@@ -25,5 +25,3 @@
       (with-current-buffer "*vj-git-diff*"
         (diff-mode)))
     (setq vj-git-diff-last-commit nil)))
-
-

@@ -539,3 +539,15 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 
 ; ------------------------------------------------------------
+
+(defun vj-python-setup ()
+  (local-set-key (kbd "<f9>") 'python-shell-send-region)
+  (company-mode t)
+  (eldoc-mode t)
+;;  (flycheck-mode t)
+  )
+
+(add-hook 'python-mode-hook 'vj-python-setup)
+
+
+; ------------------------------------------------------------
