@@ -418,7 +418,7 @@ With a prefix arg, insert the N characters above point.
 (setq vj-package-list '( json-reformat
                          company
                          company-statistics
-                         helm
+                         helm iedit
                          guide-key
                          gitconfig-mode
                          gitignore-mode))
@@ -452,4 +452,6 @@ With a prefix arg, insert the N characters above point.
     (if (face-background face)
       (set-face-background face
         (color-lighten-name (face-background face) percent)))))
+
+
 

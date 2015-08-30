@@ -31,7 +31,7 @@
 (global-set-key "\M-\C-y" 'kill-ring-search)
 
 
-(autoload 'iedit-mode "iedit" nil t)
+;;(autoload 'iedit-mode "iedit" nil t)
 (define-key global-map (kbd "C-;") 'iedit-mode)
 
 

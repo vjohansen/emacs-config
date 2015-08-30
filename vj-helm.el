@@ -99,3 +99,8 @@
   1)
 
 ;; (setq helm-completion-window-scroll-margin 0)
+
+
+;; (setq helm-echo-input-in-header-line t)
+;; (helm-autoresize-mode -1)
+;; (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)

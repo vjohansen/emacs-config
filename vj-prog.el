@@ -315,7 +315,8 @@ that file will need to be in your path."
         ;; not c#
         (if (memq major-mode '(c-mode))
           (insert (concat "printf(\"" cw "= %s\\n\"," cw ");"))
-          (insert (concat "cout << \"" cw "=\" << " cw " << endl;"))))
+          (if (memq major-mode '(python-mode))
+            (insert (concat "print(\"" cw " =\", " cw ")")))))
       )))
 
 ;; (defun vjo-c++-mode-hook ()
@@ -542,9 +543,10 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 (defun vj-python-setup ()
   (local-set-key (kbd "<f9>") 'python-shell-send-region)
-  (company-mode t)
-  (eldoc-mode t)
-;;  (flycheck-mode t)
+  ;; (company-mode t)
+  ;; (eldoc-mode t)
+  (auto-fill-mode -1)
+  (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
   )
 
 (add-hook 'python-mode-hook 'vj-python-setup)
