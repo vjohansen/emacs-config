@@ -488,21 +488,21 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 ; ------------------------------------------------------------
 
-(require 'flymake)
+;; (require 'flymake)
 
-;; Invoke ruby with '-c' to get syntax checking
-(defun flymake-ruby-init ()
-  (let* ((temp-file   (flymake-init-create-temp-buffer-copy
-                        'flymake-create-temp-inplace))
-          (local-file  (file-relative-name
-                         temp-file
-                         (file-name-directory buffer-file-name))))
-    (list "ruby" (list "-c" local-file))))
+;; ;; Invoke ruby with '-c' to get syntax checking
+;; (defun flymake-ruby-init ()
+;;   (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+;;                         'flymake-create-temp-inplace))
+;;           (local-file  (file-relative-name
+;;                          temp-file
+;;                          (file-name-directory buffer-file-name))))
+;;     (list "ruby" (list "-c" local-file))))
 
-(push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
-(push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks)
+;; (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
+;; (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks)
 
-(push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
+;; (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
 
 (defun vj-ruby-indent-defun ()
   ""
