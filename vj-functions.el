@@ -417,6 +417,7 @@ With a prefix arg, insert the N characters above point.
 
 (setq vj-package-list '( json-reformat
                          company
+                         company-quickhelp
                          company-statistics
                          helm iedit
                          guide-key

@@ -98,6 +98,14 @@
   helm-source-recentf
   1)
 
+
+(defun my-no-helm-M-x ()
+  (interactive)
+  (let
+    ((helm-completing-read-handlers-alist '((execute-extended-command . nil))))
+    (call-interactively 'execute-extended-command)))
+(global-set-key (kbd "ESC x") 'my-no-helm-M-x)
+
 ;; (setq helm-completion-window-scroll-margin 0)
 
 
