@@ -1,4 +1,4 @@
-(require 'helm-vps)
+;;(require 'helm-vps) <--- outcomment fixes the problem
 (require 'vj-helm-simple-git-grep)
 (global-set-key (kbd "C-x g") 'vj-helm-git-grep)
 (global-set-key (kbd "C-'") 'helm-vps-index-db)
@@ -28,24 +28,18 @@
 
 
 (defvar vj-fav-fn "~/.fav")
-;; (defvar vj-fav-list
-;;   (with-temp-buffer
-;;     (when (and vj-fav-fn (file-exists-p vj-fav-fn))
-;;       (insert-file-contents vj-fav-fn)
-;;       (mapcar 'expand-file-name (split-string (buffer-string))))))
-
-;; (defvar vj-helm-source-fav
-;;   '((name . "Favorites")
-;;      (candidates . (lambda () vj-fav-list))
-;;      (type . file)
-;;      (requires-pattern . 3))
-;;   "Source for favorites.")
+(defvar vj-fav-list
+  (with-temp-buffer
+    (when (and vj-fav-fn (file-exists-p vj-fav-fn))
+      (insert-file-contents vj-fav-fn)
+      (mapcar 'expand-file-name (split-string (buffer-string))))))
 
 (defun vj-fav-fn2 () vj-fav-fn)
 (defclass helm-test-fav (helm-source-in-file helm-type-file)
   ((candidates-file :initform (vj-fav-fn2))))
 
-;; (helm :sources (helm-make-source "test" 'helm-test-fav) :buffer "*helm test*")
+;; (helm :sources (helm-make-source "fav" 'helm-test-fav) :buffer "*helm test*")
+
 (defvar vj-helm-source-fav (helm-make-source "Favorites2" 'helm-test-fav))
 
 (defvar vj-helm-list '(
