@@ -44,6 +44,7 @@
 
 (display-time)
 ;; (add-hook 'diary-hook 'appt-make-list)
+(appt-activate 1)
 ;; (diary 0)
 (if (< emacs-major-version 23)
    (european-calendar)

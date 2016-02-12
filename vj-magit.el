@@ -8,6 +8,7 @@
 
 
 (define-key magit-log-mode-map (kbd "TAB") 'vj-git-diff)
+(define-key magit-log-mode-map (kbd "<f2>") 'vj-git-diff-gui)
 
 (defvar vj-git-diff-last-commit nil)
 
@@ -25,3 +26,13 @@
       (with-current-buffer "*vj-git-diff*"
         (diff-mode)))
     (setq vj-git-diff-last-commit nil)))
+
+(defun vj-git-diff-gui ()
+  (interactive)
+  (if (thing-at-point-looking-at "\\b[0-9a-z]\\{7\\}\\b")
+    (shell-command
+      ;; show_commit.bat contains:
+      ;;   "C:\Program Files (x86)\Git\cmd\gitk" --select-commit=%1
+      ;;
+      (format "c:/temp/show_commit.bat %s &" (match-string-no-properties 0))
+        "*vj-git-diff-gui*")))

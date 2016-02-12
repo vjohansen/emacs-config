@@ -7,6 +7,8 @@
 
 (defun my-csharp-mode-hook ()
   (c-set-style "c#")
+  (local-set-key (kbd "C-t") 'vjo-toggle-csharp-file)
+  (local-set-key (kbd "M-q m") 'magit-status)
   (setq dabbrev-case-replace nil)
   (c-set-offset 'arglist-cont-nonempty '+) ;; Imitate VS
   ;;  (c-set-offset 'arglist-intro '+) ;; Imitate VS
