@@ -17,26 +17,18 @@
 (require 'helm-grep)
 (require 'vps)
 
-;; (defun helm-source-vps-files-candidates ()
-;;   (with-current-buffer (helm-candidate-buffer 'local)
-;;     (when (and vps-project-name
-;;             (file-exists-p (vps-filelist-filename)))
-;;       (insert-file-contents (vps-filelist-filename))
-;;       (split-string (buffer-string) "\n"))))
+(defun helm-source-vps-files-candidates ()
+  (with-temp-buffer
+    (when (and vps-project-name
+            (file-exists-p (vps-filelist-filename)))
+      (insert-file-contents (vps-filelist-filename))
+      (split-string (buffer-string) "\n"))))
 
-;; (defvar helm-source-vps-files
-;;   '((name . "Project Files")
-;;      (candidates . helm-source-vps-files-candidates)
-;;      (requires-pattern . 3)
-;;      (candidate-number-limit . 999)
-;;      (type . file)))
-
-(defclass vj-helm-vps (helm-source-in-file helm-type-file)
-  ((candidates-file :initform (vps-filelist-filename))))
-
-;; (helm :sources (helm-make-source "vps" 'vj-helm-vps) :buffer "*VPS*")
-(defvar helm-source-vps-files (helm-make-source "Projects" 'vj-helm-vps))
-
+(defvar helm-source-vps-files
+  (helm-build-sync-source "Project"
+    :candidates 'helm-source-vps-files-candidates
+    :action 'helm-find-files-actions))
+;; (helm :sources 'helm-source-vps-files :buffer "*VPS*")
 
 ;; Supports spaces in the pattern. First word is prefix and the remaining are
 ;; substrings
