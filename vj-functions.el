@@ -392,7 +392,7 @@ With a prefix arg, insert the N characters above point.
   (interactive)
   (let ((grep-use-null-device)
          (dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
-    (grep (format "cd %s && git --no-pager grep -n %s" dir (current-word)))))
+    (grep (format "cd %s && git --no-pager grep -n %s" dir (thing-at-point 'symbol)))))
 
 
 ;; ------------------------------------------------------------
@@ -453,6 +453,3 @@ With a prefix arg, insert the N characters above point.
     (if (face-background face)
       (set-face-background face
         (color-lighten-name (face-background face) percent)))))
-
-
-

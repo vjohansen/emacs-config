@@ -8,7 +8,8 @@
 
 
 (define-key magit-log-mode-map (kbd "TAB") 'vj-git-diff)
-(define-key magit-log-mode-map (kbd "<f2>") 'vj-git-diff-gui)
+(define-key magit-log-mode-map (kbd "<f2>") 'vj-git-diff-gitk-gui)
+(define-key magit-mode-map (kbd "<f2>") 'vj-git-diff-gitk-gui)
 
 (defvar vj-git-diff-last-commit nil)
 
@@ -27,7 +28,7 @@
         (diff-mode)))
     (setq vj-git-diff-last-commit nil)))
 
-(defun vj-git-diff-gui ()
+(defun vj-git-diff-gitk-gui ()
   (interactive)
   (if (thing-at-point-looking-at "\\b[0-9a-z]\\{7\\}\\b")
     (shell-command
