@@ -40,16 +40,20 @@
 
 ;; (helm :sources (helm-make-source "fav" 'helm-test-fav) :buffer "*helm test*")
 
-(defvar vj-helm-source-fav (helm-make-source "Favorites2" 'helm-test-fav))
+(defvar vj-helm-source-fav (helm-make-source "Favorites" 'helm-test-fav))
 
-(defvar vj-helm-list '(
-                        helm-source-recentf
- 			helm-source-vps-files
-                        vj-helm-source-fav
-                        helm-source-buffers-list
- 			helm-source-files-in-current-dir
-;;                        helm-c-source-locate
-                        ))
+(require 'helm-for-files)
+
+
+(defvar vj-helm-list
+  '(
+     helm-source-recentf
+     helm-source-vps-files
+     ;;                        vj-helm-source-fav
+     helm-source-buffers-list
+     ;; 			helm-source-files-in-current-dir
+     ;;                        helm-c-source-locate
+     ))
 
 (defun vj-helm ()
   (interactive)
