@@ -32,10 +32,14 @@
 ;;
 ;; (vps-add-project "Emacs_load-path" `((dirs ,load-path) (ext ("el"))))
 ;; (vps-add-project "C++" '((rdirs ("/src/project-root" "/usr/include"))))
-
+;;
+;;
 
 ;;; History:
 ;;
+;; Added python version of vgrep22.pl
+;;   Use (setq vps-vgrep-call (locate-library "vgrep.py"))
+
 
 ;;; Code:
 
