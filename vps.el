@@ -38,7 +38,8 @@
 ;;; History:
 ;;
 ;; Added python version of vgrep22.pl
-;;   Use (setq vps-vgrep-call (locate-library "vgrep.py"))
+;;   Use (setq vps-vgrep-call (concat "python " (locate-library "vgrep.py")))
+;;       (setq null-device nil) ;; Do not append NUL to grep command calls
 
 
 ;;; Code:
@@ -731,12 +732,12 @@ call \\[find-file-at-point]"
   (let ((dirs (vps-dirs)) dir len)
     (setq len (length dirs))
     (dotimes-with-progress-reporter (i len) "Reading directories.."
-      (progn 
+      (progn
         (setq dir (nth i dirs))
         ;;    (dolist (dir dirs)
         (if (not (file-directory-p dir))
           (insert "* " dir " (n/a)\n")
-          ;; else: 
+          ;; else:
           (insert "* " dir "\n")
           (dolist (file (directory-files dir t nil  t))
             (if (string-match
@@ -955,4 +956,3 @@ Note that (require 'midnight) may install clean-buffer-list in midnight-hook"
 (provide 'vps)
 
 ;;; vps.el ends here
-
