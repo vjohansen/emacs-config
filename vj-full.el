@@ -68,7 +68,7 @@
 (global-set-key [S-down] 'my-scroll-up-hook)
 
 
-;; (global-set-key [M-f2] (lambda () (interactive) (vps-grep (current-word))))
+(global-set-key [M-f2] (lambda () (interactive) (vps-grep (current-word))))
 (global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
 
 (if (equal system-type 'windows-nt)

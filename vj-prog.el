@@ -316,7 +316,7 @@ that file will need to be in your path."
         (if (memq major-mode '(c-mode))
           (insert (concat "printf(\"" cw "= %s\\n\"," cw ");"))
           (if (memq major-mode '(python-mode))
-            (insert (concat "print(\"" cw " =\", " cw ")")))))
+            (insert (concat "print('" cw "', " cw ")")))))
       )))
 
 ;; (defun vjo-c++-mode-hook ()

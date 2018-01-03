@@ -6,6 +6,7 @@ import glob
 import argparse
 import re
 import subprocess
+import chardet
 
 parser = argparse.ArgumentParser(description='Grep directories.')
 parser.add_argument('-e', default=':code')
@@ -40,8 +41,14 @@ def grep(dir_):
     shell_args.extend(filenames)
     sys.stdout.flush()
     try:
-        output = subprocess.check_output(shell_args, shell=True).decode('utf-8')
-    except:
+        rawdata = subprocess.check_output(shell_args, shell=True)
+        output = rawdata.decode('ascii', 'ignore')
+    except subprocess.CalledProcessError:
+        return count
+    except UnicodeEncodeError as ex:
+        print('UnicodeEncodeError Exception', dir_, ex)
+    except UnicodeDecodeError as ex:
+        print('UnicodeDecodeError Exception', dir_, ex)
         return count
 
     # python 3.5 can use

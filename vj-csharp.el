@@ -25,7 +25,7 @@
   (local-set-key (kbd "M-r i") 'omnisharp-find-implementations) ;Find *interface* implementations
   (local-set-key (kbd "<f12>") 'omnisharp-go-to-definition)
   (local-set-key (kbd "S-<f12>") 'omnisharp-find-usages)
-  (local-set-key (kbd "M-<f2>") 'omnisharp-build-in-emacs)
+  (local-set-key (kbd "M-<f3>") 'omnisharp-build-in-emacs)
   ;; Only enable omnisharp-mode if server is running
   (let ((server-running nil))
     (dolist (pid (list-system-processes))
