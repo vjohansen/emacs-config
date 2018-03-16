@@ -49,7 +49,7 @@
   '(
      helm-source-recentf
      helm-source-vps-files
-     ;;                        vj-helm-source-fav
+     vj-helm-source-fav
      helm-source-buffers-list
      ;; 			helm-source-files-in-current-dir
      ;;                        helm-c-source-locate

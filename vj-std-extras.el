@@ -9,11 +9,12 @@
       comint-input-ignoredups      t
       make-pointer-invisible       nil)
 
-(setq inhibit-splash-screen t
-      max-lisp-eval-depth 1000
-      garbage-collection-messages nil
-      gc-cons-threshold (* 8 400000))
-
+(setq
+  inhibit-splash-screen t
+  ;; max-lisp-eval-depth 1000
+  ;; garbage-collection-messages nil
+  ;; gc-cons-threshold (* 511 1024 1024)
+  )
 
 (setq default-major-mode 'text-mode)
 (setq initial-major-mode 'emacs-lisp-mode)
