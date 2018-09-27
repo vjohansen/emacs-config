@@ -39,6 +39,7 @@ def grep(dir_):
         return 0
     count += len(filenames)
     shell_args = ['grep','-{}nH'.format(args.i), word]
+    filenames = list(map(lambda fn: fn.replace('{','\{').replace('}','\}'), filenames))
     shell_args.extend(filenames)
     sys.stdout.flush()
     try:
