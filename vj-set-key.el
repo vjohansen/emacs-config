@@ -1,4 +1,4 @@
-
+ï»¿
 (global-set-key [M-f1] 'recompile)
 (global-set-key [f5] 'compile)
 (global-set-key [C-tab] 'hippie-expand)
@@ -27,6 +27,8 @@
 (global-set-key "\M-q\M-q" 'fill-paragraph)
 (global-set-key "\M-q\M-l" 'vj-insert-local-variables-section)
 (global-set-key "\M-qc" 'indent-region)
+(global-set-key "\M-qd" 'dumb-jump-go)
+(global-set-key "\M-q\M-d" 'dumb-jump-quick-look)
 (global-set-key "\M-qp" 'find-file-at-point)
 (global-set-key "\M-q\M-s" 'slash-replace-on-region)
 (global-set-key "\M-qr" 'insert-char-above)
@@ -110,15 +112,15 @@
 
 
 (defun vj-prog-keys-setup ()
-  "Bind æ -> {,  M-æ -> forward-paragraph, etc."
+  "Bind Ã¦ -> {,  M-Ã¦ -> forward-paragraph, etc."
   (interactive)
-  (local-set-key (kbd "æ") '(lambda () (interactive) (insert "[")))
-  (local-set-key (kbd "ø") '(lambda () (interactive) (insert "]")))
-  (local-set-key (kbd "å") '(lambda () (interactive) (insert "\\")))
+  (local-set-key (kbd "Ã¦") '(lambda () (interactive) (insert "[")))
+  (local-set-key (kbd "Ã¸") '(lambda () (interactive) (insert "]")))
+  (local-set-key (kbd "Ã¥") '(lambda () (interactive) (insert "\\")))
 
-  (local-set-key (kbd "Æ") '(lambda () (interactive) (insert "{")))
-  (local-set-key (kbd "Ø") '(lambda () (interactive) (insert "}")))
-  (local-set-key (kbd "Å") '(lambda () (interactive) (insert "\\n")))
+  (local-set-key (kbd "Ã†") '(lambda () (interactive) (insert "{")))
+  (local-set-key (kbd "Ã˜") '(lambda () (interactive) (insert "}")))
+  (local-set-key (kbd "Ã…") '(lambda () (interactive) (insert "\\n")))
 
   (setq show-trailing-whitespace t)
   )
@@ -131,13 +133,13 @@
 (add-hook 'prog-mode-hook 'vj-prog-auto-fill)
 
 
-(global-set-key (kbd "M-æ")  'backward-paragraph)
-(global-set-key (kbd "M-ø")  'forward-paragraph)
-(global-set-key (kbd "M-å")  'delete-horizontal-space)
-(global-set-key (kbd "C-M-å")  'just-one-space)
+(global-set-key (kbd "M-Ã¦")  'backward-paragraph)
+(global-set-key (kbd "M-Ã¸")  'forward-paragraph)
+(global-set-key (kbd "M-Ã¥")  'delete-horizontal-space)
+(global-set-key (kbd "C-M-Ã¥")  'just-one-space)
 
 (if (fboundp 'cycle-spacing)
-  (global-set-key (kbd "M-å")  'cycle-spacing))
+  (global-set-key (kbd "M-Ã¥")  'cycle-spacing))
 
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC

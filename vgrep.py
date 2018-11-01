@@ -30,7 +30,7 @@ exitcode = 1
 def grep(dir_):
     if dir_ == 'NUL':
         return 0
-    dir_ = dir_.replace('~', os.getenv("HOME"))
+    dir_ = dir_.replace('~', os.getenv("HOME") or os.getenv("HOMEPATH") or "~")
     global exitcode
     count = 0
     os.chdir(dir_)
