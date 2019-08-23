@@ -27,10 +27,14 @@ ext_re = '|'.join(exts.split(','))
 ext_re = '\.('+ext_re+')$'
 exitcode = 1
 
+homepath = None
+if os.getenv("HOMEPATH"):
+    homepath = (os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH"))
+
 def grep(dir_):
     if dir_ == 'NUL':
         return 0
-    dir_ = dir_.replace('~', os.getenv("HOME") or os.getenv("HOMEPATH") or "~")
+    dir_ = dir_.replace('~', os.getenv("HOME") or homepath or "~")
     global exitcode
     count = 0
     os.chdir(dir_)
