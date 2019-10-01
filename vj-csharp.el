@@ -5,6 +5,7 @@
 (setq csharp-want-imenu nil)
 (defvar vj-curl-path "curl")
 
+
 (defun my-csharp-mode-hook ()
   (c-set-style "c#")
   (local-set-key (kbd "C-t") 'vjo-toggle-csharp-file)
@@ -36,14 +37,14 @@
       (omnisharp-mode)))
   (company-mode t))
 
-(when (file-exists-p omnisharp-server-executable-path)
-  (require 'omnisharp)
-  (setq omnisharp--curl-executable-path
-    (if (file-exists-p vj-curl-path) vj-curl-path "curl"))
-  (global-set-key (kbd "C-.") 'company-complete)
-  (add-hook 'csharp-mode-hook 'my-csharp-omni-mode-hook)
-  (eval-after-load 'company
-    '(add-to-list 'company-backends 'company-omnisharp)))
+;; (when (file-exists-p omnisharp-server-executable-path)
+;;   (require 'omnisharp)
+;;   (setq omnisharp--curl-executable-path
+;;     (if (file-exists-p vj-curl-path) vj-curl-path "curl"))
+;;   (global-set-key (kbd "C-.") 'company-complete)
+;;   (add-hook 'csharp-mode-hook 'my-csharp-omni-mode-hook)
+;;   (eval-after-load 'company
+;;     '(add-to-list 'company-backends 'company-omnisharp)))
 
 (defun vj-add-omnisharp-vps-project ()
   ""
@@ -56,3 +57,14 @@
       (vps-auto-change-project t)
       (vps-make-tags)
       (message "Created %s" name))))
+
+
+(add-hook 'csharp-mode-hook 'omnisharp-mode)
+
+;; (eval-after-load
+;;  'company
+;;  '(add-to-list 'company-backends 'company-omnisharp))
+
+;; https://github.com/Omnisharp/omnisharp-emacs
+;; (add-hook 'csharp-mode-hook #'company-mode)
+;; (add-hook 'csharp-mode-hook #'flycheck-mode)
