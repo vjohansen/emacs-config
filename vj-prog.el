@@ -313,10 +313,13 @@ that file will need to be in your path."
               "Console"))
           (insert (concat cs-prefix ".WriteLine" "(\"" cw "={0}\"," cw ");")))
         ;; not c#
+        
         (if (memq major-mode '(c-mode))
           (insert (concat "printf(\"" cw "= %s\\n\"," cw ");"))
           (if (memq major-mode '(python-mode))
-            (insert (concat "print('" cw "', " cw ")")))))
+            (insert (concat "print('" cw "', " cw ")"))
+            (if (memq major-mode '(c++-mode))
+              (insert (concat "cout << \"" cw "=\" << " cw " << endl;"))))))
       )))
 
 ;; (defun vjo-c++-mode-hook ()

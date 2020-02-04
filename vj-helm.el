@@ -117,3 +117,25 @@
 ;; (setq helm-echo-input-in-header-line t)
 ;; (helm-autoresize-mode -1)
 ;; (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+
+
+(setq cppref-dir "c:\\temp\\src\\cppreference\\reference\\en\\cpp\\")
+
+(defvar cppref-files
+  (mapcar
+    (lambda (f)
+      (substring f (length cppref-dir )))
+    (directory-files-recursively cppref-dir "")))
+
+(defun cppref-action (name)
+  (interactive)
+;;  (eww-open-file (concat cppref-dir name))
+  (browse-url (concat cppref-dir name)))
+
+(defun vj-cppref-2019 ()
+  (interactive)
+  (helm :sources
+    (helm-build-sync-source "cppref"
+      :candidates  (lambda () cppref-files)
+      ;;    :filtered-candidate-transformer #'helm-kill-ring-transformer
+      :action (list (cons "Do it" #'cppref-action)))))
