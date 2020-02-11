@@ -115,6 +115,7 @@ Useful for removing build filenames from the list:
 
 (defvar vps-project-dir "~/.emacs.d/vps")
 (defvar vps-perl-program "perl")
+(defvar vps-etags-program "etags")
 
 (defvar vps-default-setting-alist
   '(
@@ -681,7 +682,7 @@ Optional argument GREP-IGNORE-CASE when non-nil ignore case in search."
     (insert-file-contents (vps-filelist-filename))
     (mark-whole-buffer)
     (shell-command-on-region (point-min) (point-max)
-      (format "%s --members --output=%s -" "etags"
+      (format "%s --members --output=%s -" vps-etags-program
         (shell-quote-argument (vps-tags-filename))))))
 
 (defun vps-make-ectags ()
