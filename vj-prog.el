@@ -265,7 +265,7 @@ that file will need to be in your path."
   (local-set-key "\C-c\C-c" 'comment-region)
   (if (equal major-mode 'csharp-mode)
     (local-set-key "\C-t" 'vjo-toggle-csharp-file)
-    (local-set-key "\C-t" 'vjo-toggle-h-cpp-file))
+    (local-set-key "\C-t" 'vjo-toggle-h-cpp-file));; use M-o?
   (local-set-key "\C-ch" 'hs-hide-block)
   (local-set-key "\C-cs" 'hs-show-block)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
@@ -348,12 +348,13 @@ that file will need to be in your path."
         (name (file-name-sans-extension (buffer-file-name)))
         (hname (concat name ".h"))
         (hhname (concat name ".hh"))
+        (hppname (concat name ".hpp"))
         (cname (concat name ".c"))
         (cppname (concat name ".cpp"))
         (cxxname (concat name ".cxx"))
         (ccname (concat name ".cc"))
         )
-    (if (string-match "\\.hh?$" (buffer-file-name))
+    (if (string-match "\\.h.?.?$" (buffer-file-name))
         (or
          (and (file-exists-p ccname) (find-file ccname))
          (and (file-exists-p cppname) (find-file cppname))
@@ -365,6 +366,7 @@ that file will need to be in your path."
         (or
          (and (file-exists-p hhname) (find-file hhname))
          (and (file-exists-p hname) (find-file hname))
+         (and (file-exists-p hppname) (find-file hppname))
          (if (y-or-n-p "Create hh-file ")
              (find-file hname)))
       ))
