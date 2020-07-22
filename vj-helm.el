@@ -49,6 +49,7 @@
   '(
      helm-source-recentf
      helm-source-vps-files
+     helm-source-files-in-current-dir
      vj-helm-source-fav
      helm-source-buffers-list
      ;; 			helm-source-files-in-current-dir
@@ -121,16 +122,21 @@
 
 (setq cppref-dir "c:\\temp\\src\\cppreference\\reference\\en\\cpp\\")
 
-(defvar cppref-files
-  (mapcar
-    (lambda (f)
-      (substring f (length cppref-dir )))
-    (directory-files-recursively cppref-dir "")))
+(defun set-cppref-files ()
+  (if (file-exists-p cppref-dir)
+    (mapcar
+      (lambda (f)
+        (substring f (length cppref-dir )))
+      (directory-files-recursively cppref-dir ""))))
+
+(defvar cppref-files 'set-cppref-files)
 
 (defun cppref-action (name)
   (interactive)
 ;;  (eww-open-file (concat cppref-dir name))
-  (browse-url (concat cppref-dir name)))
+  (browse-url (concat "https://en.cppreference.com/w/cpp" name)) ;; TODO remove .html
+;;  (browse-url (concat cppref-dir name))
+  )
 
 (defun vj-cppref-2019 ()
   (interactive)
