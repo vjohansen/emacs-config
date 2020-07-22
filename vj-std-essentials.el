@@ -22,7 +22,7 @@
 (setq compilation-ask-about-save nil)   ; Just save files before compile
 (setq find-file-existing-other-name t)
 
-(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+;; (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)

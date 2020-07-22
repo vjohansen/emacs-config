@@ -121,3 +121,16 @@
 
 ;; Type unicode numbers with C-q
 (setq read-quoted-char-radix 16)
+
+(defvar vj-journal-filename "~/Documents/notes.txt")
+
+(defun vj-journal ()
+  (interactive)
+  (find-file vj-journal-filename)
+  (goto-char (point-max))
+  (insert "\n")
+  (org-meta-return)
+  (org-insert-time-stamp (current-time))
+  (insert " "))
+
+(global-set-key (kbd "M-q j") 'vj-journal)
