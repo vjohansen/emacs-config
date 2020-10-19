@@ -20,7 +20,7 @@ word = args.dirs.pop(0)
 
 exts = re.sub(':code','c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java' +
               ',cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml',args.e)
-exts = re.sub(':text','org,txt,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,' +
+exts = re.sub(':text','org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,' +
               'config,xslt,xsl,css,asp,xml,xsl,xslt,sql', exts)
 
 ext_re = '|'.join(exts.split(','))
@@ -35,6 +35,9 @@ def grep(dir_):
     if dir_ == 'NUL':
         return 0
     dir_ = dir_.replace('~', os.getenv("HOME") or homepath or "~")
+    if not os.path.isdir(dir_):
+        print('Directory does not exists:', dir_)
+        return 0
     global exitcode
     count = 0
     os.chdir(dir_)

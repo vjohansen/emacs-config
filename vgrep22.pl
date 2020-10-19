@@ -43,7 +43,7 @@ getopt('efrmgp', \%opt); # -e, -f, -r, -m, -g and -p takes arg.
 my $regexp ||= $opt{f};
 if ($opt{e}) {
   $opt{e} =~ s/:code/c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java,cls,bas,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml/;
-  $opt{e} =~ s/:text/org,txt,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql/;
+  $opt{e} =~ s/:text/org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql/;
   $opt{e} =~ s/,/\|/g;
   $regexp_e .= '(\.(?:'.$opt{e}.')$)';
 } else {
