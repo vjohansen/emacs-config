@@ -79,6 +79,7 @@ for dir_ in args.dirs:
 
 if args.r is not None:
     for rdir in args.r:
+        rdir = rdir.replace("%20"," ")
         for root, dirs, files in os.walk(rdir, topdown=True):
             dirs[:] = [d for d in dirs if d != '.git']
             count += grep(root)
