@@ -38,9 +38,9 @@
 (autoload 'etags-select-find-tag-at-point "etags-select" "*Do a find-tag-at-point, and display all exact matches." t)
 (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
+(require 'avy)
+(define-key global-map (kbd "C-c SPC") 'avy-goto-word-or-subword-1)
+(setq avy-style 'words)
 
 (autoload 'align-regexp2 "align-regexp2" "*Align region according to regular expressions..." t)
 
