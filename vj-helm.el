@@ -122,14 +122,12 @@
 
 (setq cppref-dir "c:\\temp\\src\\cppreference\\reference\\en\\cpp\\")
 
-(defun set-cppref-files ()
+(defvar cppref-files
   (if (file-exists-p cppref-dir)
     (mapcar
       (lambda (f)
         (substring f (length cppref-dir )))
       (directory-files-recursively cppref-dir ""))))
-
-(defvar cppref-files 'set-cppref-files)
 
 (defun cppref-action (name)
   (interactive)
