@@ -39,7 +39,7 @@
 (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 
 (require 'avy)
-(define-key global-map (kbd "C-c SPC") 'avy-goto-word-or-subword-1)
+(define-key global-map (kbd "C-c SPC") 'avy-goto-word-1)
 (setq avy-style 'words)
 
 (autoload 'align-regexp2 "align-regexp2" "*Align region according to regular expressions..." t)
@@ -110,11 +110,21 @@
 
 
 (defun google ()
-  "Googles a query or region if any."
+  "Search the web for a query or region if any."
   (interactive)
   (browse-url
    (concat
     "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    (if mark-active
+        (url-hexify-string (buffer-substring (region-beginning) (region-end)))
+      (read-string "Query: ")))))
+
+(defun wsearch ()
+  "Search the web for a query or region if any."
+  (interactive)
+  (browse-url
+   (concat
+    "https://duckduckgo.com/?q="
     (if mark-active
         (url-hexify-string (buffer-substring (region-beginning) (region-end)))
       (read-string "Query: ")))))

@@ -1,14 +1,10 @@
-;;; -*- Emacs-Lisp -*-
-;;; A front-end program to mpg123/ogg123
-;;; (c)1999-2011 by HIROSE Yuuji [yuuji@gentei.org]
-;;; $Id: mpg123.el,v 1.58 2011/01/13 23:02:27 yuuji Exp $
-;;; Last modified Fri Jan 14 08:01:00 2011 on firestorm
-;;; Update count: 1380
+;;; mpg123.el --- A front-end program to mpg123/ogg123 -*- coding: euc-jp -*-
+;;; (c)1999-2019 by HIROSE Yuuji [yuuji>at<gentei.org]
+;;; $Id: mpg123.el,v 1.61 2017/02/21 08:06:31 yuuji Exp yuuji $
+;;; Last modified Fri Jan 17 18:29:21 2020 on firestorm
+;;; Update count: 1390
 
-;;[News]
-;;	Calling mpg123 when playing switches buffer to mpg123 buffer.
-;;	
-;;[Commentary]
+;;; Commentary:
 ;;	
 ;;	This package is a front-end program to mpg123/ogg123 audio player.
 ;;	mpg123/ogg123 の再生フロントエンドです。
@@ -281,7 +277,7 @@
 ;;	ん。コメントやバグレポートはおおいに歓迎しますので御気軽に御連絡
 ;;	ください。またプログラムに対する個人的な修正は自由にして頂いて構
 ;;	いませんが、それを公開したい場合は私まで御連絡ください。連絡は以
-;;	下のアドレスまでお願いします(2011/1現在)。
+;;	下のアドレスまでお願いします(2015/12現在)。
 ;;							yuuji@gentei.org
 ;;[Acknowledgements]
 ;;	
@@ -364,6 +360,15 @@
 ;;
 ;;[History]
 ;; $Log: mpg123.el,v $
+;; Revision 1.61  2017/02/21 08:06:31  yuuji
+;; Summary: string-to-int -> string-to-number
+;;
+;; Revision 1.60  2015/12/04 10:05:43  yuuji
+;; Fix error when ogg3info returns no music length.
+;;
+;; Revision 1.59  2012/12/02 23:00:26  yuuji
+;; Change header and section tags.  Nothing changed in codes.
+;;
 ;; Revision 1.58  2011/01/13 23:02:27  yuuji
 ;; Fix calculation overflow(int) in mpg123:time2frame. (thanks to vj)
 ;;
@@ -571,6 +576,8 @@
 ;; 日本語ファイル名対応(たぶん)
 ;; \C-d (mpg123-delete-file)
 ;;
+
+;;; Code:
 
 ;; Linux users still using OSS rather than ALSA may wish to use
 ;; (setq mpg123-mixer-type 'aumix) before loading mpg123.el
@@ -819,6 +826,12 @@ MP3ファイルかどうか調べるためにファイル名だけで済ます場合は
 	  'buffer-substring-no-properties
 	'buffer-substring))
 
+(fset 'mpg123:str2int
+      (if (fboundp 'string-to-number)
+	  (function(lambda (string &optional base)
+		     (ceiling (string-to-number string base))))
+	'string-to-int))
+
 (defun mpg123:match-string (n &optional m)
   "Return (buffer-substring (match-beginning N) (match-beginning (or M N)))."
   (if (match-beginning n)
@@ -887,10 +900,10 @@ whether mpg123 functions can be called."
 
 (defun mpg123-mpg123-convert-frame (time filename)
   "Return frame itself"
-  (string-to-int time))
+  (mpg123:str2int time))
 (defun mpg123-ogg123-convert-frame (time filename)
   "Return (mpg123:time2frame TIME FILENAME)"
-  (string-to-int (mpg123:time2frame time filename)))
+  (mpg123:str2int (mpg123:time2frame time filename)))
 
 ;;;
 ;; Functions related to sound file format inspection
@@ -1411,7 +1424,7 @@ if slider is already visible.
     (erase-buffer))
   (beginning-of-line)
   (if (and mpg123-introduction-quiz-mode
-	   (or (null startframe) (= (string-to-int startframe) 0)))
+	   (or (null startframe) (= (mpg123:str2int startframe) 0)))
       (setq mpg123-introduction-quiz-mode t)) ;if t, stop at marked position
   (if (and mpg123*cur-play-marker
 	   (markerp mpg123*cur-play-marker))
@@ -1478,7 +1491,7 @@ if slider is already visible.
 		  (if frames
 		      (setq istart
 			    (+ istart
-			       (/ (* (string-to-int mpg123*cur-start-frame)
+			       (/ (* (mpg123:str2int mpg123*cur-start-frame)
 				     (mpg123:window-width))
 				  frames))))
 		  (overlay-put (setq mpg123*slider-overlay
@@ -1609,7 +1622,7 @@ percentage in the length of the song etc.
       (setq frames (mpg123:time2frame
 		    (mpg123:get-music-info mpg123*cur-music-number 'length)
 		    (mpg123:get-music-info mpg123*cur-music-number 'filename))
-	    target (/ (* (string-to-int frames) c) w))
+	    target (/ (* (mpg123:str2int frames) c) w))
       (message "new = %d" target)
       (save-excursion
 	;;set buffer in my responsibility
@@ -1666,7 +1679,7 @@ percentage in the length of the song etc.
   "Mark the playing position now."
   (interactive)
   (let ((f (max 0 (- mpg123*cur-playframe ;more 1.5sec back
-		     (/ (string-to-int (mpg123:time2frame "00:02")) 3)))))
+		     (/ (mpg123:str2int (mpg123:time2frame "00:02")) 3)))))
     (mpg123:set-music-info mpg123*cur-music-number 'mark (format "%d" f))
     (mpg123:set-music-info
      mpg123*cur-music-number 'marktime mpg123*cur-playtime)
@@ -1725,9 +1738,9 @@ percentage in the length of the song etc.
 
 (defun mpg123:add-time-string (time seconds)
   (if (string-match "\\([0-9]+\\):\\([0-9]+\\)" time)
-      (let ((m (string-to-int
+      (let ((m (mpg123:str2int
 		(substring time (match-beginning 1) (match-end 1))))
-	    (s (string-to-int
+	    (s (mpg123:str2int
 		(substring time (match-beginning 2) (match-end 2))))
 	    tm)
 	(setq tm (mpg123:add-time m s -1))
@@ -1756,13 +1769,13 @@ percentage in the length of the song etc.
     (if (and (looking-at "\\([0-9]+\\):\\([0-9]+\\)/\\([0-9]+\\):\\([0-9]+\\)")
 	     (match-beginning 3)
 	     (match-beginning 4))
-	(let*((m (string-to-int (mpg123:match-string 1)))
-	      (s (string-to-int (mpg123:match-string 2)))
+	(let*((m (mpg123:str2int (mpg123:match-string 1)))
+	      (s (mpg123:str2int (mpg123:match-string 2)))
 	      (n (mpg123:get-music-number))
 	      (c (current-column))
 	      time M S T)
-	  (setq M (string-to-int (mpg123:match-string 3))
-		S (string-to-int (mpg123:match-string 4))
+	  (setq M (mpg123:str2int (mpg123:match-string 3))
+		S (mpg123:str2int (mpg123:match-string 4))
 		T (+ (* 60 M) S))
 	  (if (and (= m 0) (= s 0) (< arg 0)
 		   ;;Already rewind to 00:00 and arg is negative
@@ -1939,7 +1952,7 @@ percentage in the length of the song etc.
       (unwind-protect
 	  (and
 	   (looking-at "[0-9]+")
-	   (string-to-int
+	   (mpg123:str2int
 	    (mpg123:match-string 0)))
 	(store-match-data md)))))
 
@@ -2429,7 +2442,7 @@ Optional 4th arg OFFSET is added to BEGIN and END."
 	(process-coding-system-alist
 	 (list (cons mpg123-program-ogginfo (cons eucjp eucjp))))
 	(buf (get-buffer-create " *mpg123tmp"))
-	title artist
+	(title "") (artist "")
 	(oldenv (getenv "LC_CTYPE")))
     (unwind-protect
 	(progn
@@ -2445,12 +2458,12 @@ Optional 4th arg OFFSET is added to BEGIN and END."
 		   (mpg123:match-string 3)))
 	    ;; Get Music Length here :)
 	    (if (re-search-backward
-		 "length: \\([0-9]+\\)m.\\([0-9]+\\)s"
+		 "length: \\([0-9]+\\)m.\\([.0-9]+\\)s"
 		 nil t)
 		(put 'mpg123:add-musiclist-to-point 'length
 		     (format "%02d:%02d"
-			     (string-to-int (mpg123:match-string 1))
-			     (string-to-int (mpg123:match-string 2)))))
+			     (mpg123:str2int (mpg123:match-string 1))
+			     (mpg123:str2int (mpg123:match-string 2)))))
 	    (if (string-match "[Uu]nknown [Aa]rtist" artist)
 		(setq artist ""))
 	    (if (string< "" artist)
@@ -2640,7 +2653,7 @@ the music will immediately move to that position."
 	    (if m (fset 'm m) (fmakunbound 'm))))))
 
 (defun mpg123:format-line (n)
-  (if (stringp n) (setq n (string-to-int n)))
+  (if (stringp n) (setq n (mpg123:str2int n)))
   (if (mpg123:get-music-info n 'name)
       (format "%2d --:--/%s\t %s\n"
 	      n
@@ -2832,7 +2845,7 @@ the music will immediately move to that position."
 	  (if (re-search-forward "set to *\\([0-9]+\\):\\([0-9]+\\)" nil t)
 	      (let ((left (mpg123:match-string 1))
 		    (right (mpg123:match-string 2)))
-		(setq vol (cons (string-to-int left) (string-to-int right))))
+		(setq vol (cons (mpg123:str2int left) (mpg123:str2int right))))
 	    (setq vol "unknown"))
 	  (setq mpg123*cur-volume vol)))
        ((eq mpg123-mixer-type 'mixerctl)
@@ -2846,7 +2859,7 @@ the music will immediately move to that position."
 	  (if (re-search-forward "=*\\([0-9]+\\),\\([0-9]+\\)" nil t)
 	      (let ((left (mpg123:match-string 1))
 		    (right (mpg123:match-string 2)))
-		(setq vol (cons (string-to-int left) (string-to-int right))))
+		(setq vol (cons (mpg123:str2int left) (mpg123:str2int right))))
 	    (setq vol "unknown"))
 	  (setq mpg123*cur-volume vol)))
        ((eq mpg123-mixer-type 'aumix)
@@ -2859,7 +2872,7 @@ the music will immediately move to that position."
 	  (if (re-search-forward "pcm *\\([0-9]+\\), *\\([0-9]+\\)" nil t)
 	      (let ((left (mpg123:match-string 1))
 		    (right (mpg123:match-string 2)))
-		(setq vol (cons (string-to-int left) (string-to-int right))))
+		(setq vol (cons (mpg123:str2int left) (mpg123:str2int right))))
 	    (setq vol "unknown"))
 	  (setq mpg123*cur-volume vol)))
        ((eq mpg123-mixer-type 'alsa)
@@ -2872,7 +2885,7 @@ the music will immediately move to that position."
           (if (re-search-forward "Left: Playback \\([0-9]+\\).*\n.*Right: Playback \\([0-9]+\\)" nil t)
 	      (let ((left (mpg123:match-string 1))
 		    (right (mpg123:match-string 2)))
-		(setq vol (cons (string-to-int left) (string-to-int right))))
+		(setq vol (cons (mpg123:str2int left) (mpg123:str2int right))))
 	    (setq vol "unknown"))
 	  (setq mpg123*cur-volume vol)))
        ((eq mpg123-mixer-type 'mixer.exe)
@@ -2885,7 +2898,7 @@ the music will immediately move to that position."
 	  (if (re-search-forward "\\([0-9]+\\):\\([0-9]+\\)" nil t)
 	      (let ((left (mpg123:match-string 1))
 		    (right (mpg123:match-string 2)))
-		(setq vol (cons (string-to-int left) (string-to-int right))))
+		(setq vol (cons (mpg123:str2int left) (mpg123:str2int right))))
 	    (setq vol "unknown"))
 	  (setq mpg123*cur-volume vol)))
        ((eq mpg123-mixer-type 'audioctl)

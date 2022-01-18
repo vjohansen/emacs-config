@@ -130,7 +130,7 @@
 
 (require 'prog-mode)
 (add-hook 'prog-mode-hook 'vj-prog-keys-setup)
-(add-hook 'prog-mode-hook 'vj-prog-auto-fill)
+;;(add-hook 'prog-mode-hook 'vj-prog-auto-fill)
 
 
 (global-set-key (kbd "M-æ")  'backward-paragraph)

@@ -269,7 +269,8 @@ that file will need to be in your path."
   (local-set-key "\C-ch" 'hs-hide-block)
   (local-set-key "\C-cs" 'hs-show-block)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
-  (local-set-key "\C-ci" 'ewd-insert-new-method)
+  (local-set-key "\C-c\C-i" 'ewd-insert-new-method)
+  (local-set-key "\C-ci" 'vjo-using-fix)
 
   (require 'if-jump)
   (local-set-key [C-home]'(lambda() (interactive) (if-jump-jump 'backward)))
@@ -558,3 +559,32 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 
 ; ------------------------------------------------------------
+
+
+
+
+(defun vjo-buffer-contains (text)
+  (interactive "sFind: ")
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward text nil t)))
+
+(defun vjo-maybe-insert (typename)
+  (when (and (not (vjo-buffer-contains (concat "^using +" typename)))
+          (vjo-buffer-contains typename))
+    (insert (concat "using " typename ";"))
+    (newline)))
+
+(defun vjo-using-fix ()
+  "2021 Sep"
+  (interactive)
+  (goto-char (point-max))
+  (re-search-backward "^#include")
+  (beginning-of-line)
+  (forward-line 1)
+  (vjo-maybe-insert "std::string")
+  (vjo-maybe-insert "std::wstring")
+  (vjo-maybe-insert "std::vector")
+  (vjo-maybe-insert "std::map")
+  (vjo-maybe-insert "std::shared_ptr")
+  )
