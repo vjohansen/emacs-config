@@ -4,57 +4,59 @@
 
 (deftheme gnome2 "Based on color-theme-gnome2")
 
-(let ((class '((class color) (min-colors 89))))
+(custom-theme-set-faces
+ 'gnome2
 
-  (custom-theme-set-faces
-    'gnome2
+ '(default ((t (:foreground "wheat" :background "darkslategrey"))))
+ '(cursor ((t (:foreground "LightGray"))))
+ '(mouse-color ((t (:foreground "Grey"))))
+ '(border-color ((t (:foreground "black"))))
+ '(fringe ((t (:background "grey20"))))
+ '(highlight ((t (:background "#224" :foreground nil))))
+ '(region ((t (:background "blue4"))))
+ '(isearch ((t (:foreground "white" :background "#448"))))
+ '(lazy-highlight ((t (:background "#264" :foreground "white"))))
+ '(trailing-whitespace ((t (:background "#600"))))
 
-    `(default ((,class (:foreground "wheat" :background "darkslategrey"))))
-    `(cursor ((,class (:foreground "LightGray"))))
-    `(mouse-color ((,class (:foreground "Grey"))))
-    `(border-color ((,class (:foreground "black"))))
-;;        '(background-mode . dark)
-    ;; Highlighting faces
-    `(fringe ((,class (:background "grey20"))))
+ '(escape-glyph ((t (:foreground "grey"))))
+ ;; Font lock faces
+ '(font-lock-builtin-face ((t (:bold t :foreground "PaleGreen"))))
+ '(font-lock-comment-face ((t (:foreground "LightBlue"))))
+ '(font-lock-constant-face ((t (:foreground "Aquamarine"))))
+ '(font-lock-doc-string-face ((t (:foreground "LightSalmon"))))
+ '(font-lock-function-name-face ((t (:bold t :foreground "Aquamarine"
+					   :height 1.0))))
+ '(font-lock-keyword-face ((t (:foreground "Salmon"))))
+ '(font-lock-preprocessor-face ((t (:foreground "Salmon"))))
+ '(font-lock-reference-face ((t (:foreground "pale green"))))
+ '(font-lock-string-face ((t (:foreground "LightSalmon"))))
+ '(font-lock-type-face ((t (:bold t :foreground "YellowGreen"))))
+ '(font-lock-variable-name-face ((t (:bold t :foreground "Aquamarine"))))
+ ;;    '(font-lock-warning-face ((t (:bold t :foreground "red")))))))
 
-    `(highlight ((,class (:background "#224" :foreground nil))))
-    `(region ((,class (:background "blue4"))))
-    ;;   `(secondary-selection ((,class (:background ,blue-0))))
-    `(isearch ((,class (:foreground "white" :background "#448"))))
-    `(lazy-highlight ((,class (:background "#264" :foreground "white"))))
-    `(trailing-whitespace ((,class (:background "#600"))))
+ ;; '(font-lock-variable-name-face ((t (:foreground "LightGoldenrod"))))
+ ;; '(font-lock-warning-face ((t (:foreground "Pink" :weight bold))))
+ '(link ((t (:underline t :foreground "cyan2"))))
+ '(link-visited ((t (:underline t :foreground "violet"))))
 
-    ;; Escape and prompt faces
-    ;;   `(minibuffer-prompt ((,class (:foreground "cyan"))))
-    `(escape-glyph ((,class (:foreground "grey"))))
-    ;; Font lock faces
-    `(font-lock-builtin-face ((,class (:bold t :foreground "PaleGreen"))))
-    `(font-lock-comment-face ((,class (:foreground "LightBlue"))))
-    `(font-lock-constant-face ((,class (:foreground "Aquamarine"))))
-    `(font-lock-doc-string-face ((,class (:foreground "LightSalmon"))))
-    `(font-lock-function-name-face ((,class (:bold t :foreground "Aquamarine"
-					      :height 1.0))))
-    `(font-lock-keyword-face ((,class (:foreground "Salmon"))))
-    `(font-lock-preprocessor-face ((,class (:foreground "Salmon"))))
-    `(font-lock-reference-face ((,class (:foreground "pale green"))))
-    `(font-lock-string-face ((,class (:foreground "LightSalmon"))))
-    `(font-lock-type-face ((,class (:bold t :foreground "YellowGreen"))))
-    `(font-lock-variable-name-face ((,class (:bold t :foreground "Aquamarine"))))
-    ;;    `(font-lock-warning-face ((,class (:bold t :foreground "red")))))))
+ ;; git-like colors
+ '(diff-added ((t (:foreground "PaleGreen"))))
+ '(diff-removed ((t (:foreground "tomato"))))
+ '(diff-changed ((t (:foreground "magenta"))))
 
-    ;; `(font-lock-variable-name-face ((,class (:foreground "LightGoldenrod"))))
-    ;; `(font-lock-warning-face ((,class (:foreground "Pink" :weight bold))))
-    `(link ((,class (:underline t :foreground "cyan2"))))
-    `(link-visited ((,class (:underline t :foreground "violet"))))
+ '(mode-line ((t (:background "dark olive green" :foreground "wheat"))))
+;;  '(mode-line-buffer-id ((t (:background "dark olive green" :foreground "beige"))))
+ ;; '(modeline-mousable ((t (:background "dark olive green" :foreground "yellow green"))))
+ ;; '(modeline-mousable-minor-mode ((t (:background "dark olive green" :foreground "wheat"))))
 
-    `(flymake-errline ((,class (:background nil :underline "red"))))
-    `(flymake-warnline ((,class (:background nil :underline "magenta3"))))
+ )
 
-    ;; ;; git-like colors
-    `(diff-added ((,class (:foreground "PaleGreen"))))
-    `(diff-removed ((,class (:foreground "tomato"))))
-    `(diff-changed ((,class (:foreground "magenta"))))
 
-    ))
+;;;###autoload
+(when load-file-name
+  (add-to-list 'custom-theme-load-path
+               (file-name-as-directory (file-name-directory load-file-name))))
 
 (provide-theme 'gnome2)
+
+;;; gnome2-theme.el ends here
