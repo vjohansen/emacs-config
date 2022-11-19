@@ -60,21 +60,6 @@ With prefix argument, kill that many lines from point."
     (kill-region beg (point)))
   )
 
-(defun copy-line-as-kill ()
-  "Save the entire line as if killed, but keep it in buffer."
-  (interactive)
-  (let ((org (point)))
-    (beginning-of-line)
-    (let ((beg (point)))
-      (end-of-line)
-      (forward-line 1)
-      (copy-region-as-kill beg (point)))
-    (goto-char org))
-  )
-
-
-
-
 
 (defun vj-insert-local-variables-section ()
   ""
@@ -86,18 +71,6 @@ With prefix argument, kill that many lines from point."
   (previous-line 2)
   (end-of-line)
   (backward-word 1))
-
-
-
-(defun list-buffers-change-window ( )
-  "Display a list of names of existing buffers and
-   jumps to that window."
-  (interactive)
-  (list-buffers)
-  (other-window 1)
-  (next-line 2)
-  )
-
 
 
 
@@ -252,62 +225,6 @@ This should probably be generalized in the future."
 
 ;; ------------------------------------------------------------
 
-
-
-
-(defun vjo-forward-current-word-keep-offset ()
-  " (VJO 1999)"
-  (interactive)
-  (let ((re-curword) (curword) (offset (point))
-        (old-case-fold-search case-fold-search) )
-    (setq curword (thing-at-point 'symbol))
-    (setq re-curword (concat "\\<" (thing-at-point 'symbol) "\\>") )
-    (beginning-of-thing 'symbol)
-    (setq offset (- offset (point)))    ; offset from start of symbol/word
-    (setq offset (- (length curword) offset)) ; offset from end
-    ;;    (message "VJO-SEARCH-FWD: %s %d" curword  offset)
-    (forward-char)
-    (setq case-fold-search nil)
-    (if (re-search-forward re-curword nil t)
-        (backward-char offset)
-      ;; else
-      (progn (goto-char (point-min))
-             (if (re-search-forward re-curword nil t)
-                 (progn (message "Searching from top. %s" (what-line))
-                        (backward-char offset))
-               ;; else
-               (message "Searching from top: Not found"))
-             ))
-    (setq case-fold-search old-case-fold-search)
-    ))
-
-
-(defun vjo-backward-current-word-keep-offset ()
-  " (VJO 2002)"
-  (interactive)
-  (let ((re-curword) (curword) (offset (point))
-        (old-case-fold-search case-fold-search) )
-    (setq curword (thing-at-point 'symbol))
-    (setq re-curword (concat "\\<" curword "\\>") )
-    (beginning-of-thing 'symbol)
-    (setq offset (- offset (point)))    ; offset from start of symbol/word
-;;    (message "VJO-SEARCH-BACK: %s %d" curword  offset)
-    (forward-char)
-    (setq case-fold-search nil)
-    (if (re-search-backward re-curword nil t)
-        (forward-char offset)
-      ;; else
-      (progn (goto-char (point-max))
-             (if (re-search-backward re-curword nil t)
-                 (progn (message "Searching from bottom. %s" (what-line))
-                        (forward-char offset))
-               ;; else
-               (message "Searching from bottom: Not found"))
-             ))
-    (setq case-fold-search old-case-fold-search)
-    ))
-
-
 (defun insert-char-above (&optional n)
   "Insert the character above point.
 With a prefix arg, insert the N characters above point.
@@ -453,3 +370,12 @@ With a prefix arg, insert the N characters above point.
     (if (face-background face)
       (set-face-background face
         (color-lighten-name (face-background face) percent)))))
+
+;; ------------------------------------------------------------
+
+(defun vjo-clear-buffer ()
+  (interactive)
+  (mark-whole-buffer)
+  (kill-region (point-min) (point-max))
+  (let ((buffer-modified-p nil)) ;; ignore changes
+    (save-buffer)))

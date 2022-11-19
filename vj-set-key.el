@@ -50,11 +50,11 @@
 
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
-  (lambda (&optional member)
-    (interactive "p")
-    (if (equal member 4)
-      (tags-apropos (concat "::" (current-word) "\\>"))
-      (tags-apropos (concat "\\<" (current-word) "\\>")))))
+  '(lambda (&optional member)
+     (interactive "p")
+     (if (equal member 4)
+       (tags-apropos (concat "::" (current-word) "\\>"))
+       (tags-apropos (concat "\\<" (current-word) "\\>")))))
 
 (defun isearch-yank-symbol-or-char ()
   "Pull next character or symbol from buffer into search string."
