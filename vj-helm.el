@@ -1,4 +1,4 @@
-;;(require 'helm-vps) <--- outcomment fixes the problem
+
 (require 'vj-helm-simple-git-grep)
 (global-set-key (kbd "C-x g") 'vj-helm-git-grep)
 (global-set-key (kbd "C-'") 'helm-vps-index-db)
@@ -16,6 +16,11 @@
 (require 'helm-grep) ;for grep to work
 
 (require 'helm-vps) ;; NOT in helm git repo
+
+;; Overwrite binding for helm-execute-persistent-action
+;; "Perform the associated action ATTR without quitting helm."
+(define-key helm-map (kbd "C-j") #'helm-maybe-exit-minibuffer)
+(define-key helm-map (kbd "C-<return>") #'helm-execute-persistent-action)
 
 ;; Added to helm-locate.el
 ;;     (define-key map (kbd "M-]")     'helm-ff-run-toggle-basename)

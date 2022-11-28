@@ -45,6 +45,7 @@
 
 (display-time)
 ;; (add-hook 'diary-hook 'appt-make-list)
+;; (setq appt-display-diary nil)
 (appt-activate 1)
 ;; (diary 0)
 (if (< emacs-major-version 23)
