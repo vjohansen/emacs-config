@@ -277,9 +277,13 @@ With a prefix arg, insert the N characters above point.
   "(VJO 2012)"
   (interactive "r")
   (let (from to)
+    (unless (use-region-p) ;; If there is no region use current line
+      (setq
+        beg (point-at-bol)
+        end (point-at-eol)))
     (save-excursion
       (goto-char beg)
-      (when (search-forward-regexp "[/\\]+")
+      (when (search-forward-regexp "[/\\]+" end)
         (setq from (match-string-no-properties 0))
         (cond
           ((equal from "/") (setq to "\\"))
@@ -288,7 +292,8 @@ With a prefix arg, insert the N characters above point.
           (t (message "No slash found")))))      ;never happens
     (if to
       (save-excursion
-        (replace-string from to nil beg end)))))
+        (replace-string from to nil beg end)
+        ))))
 
 (defvar vj-perl-history
   '("perl -MText::Autoformat -e 'autoformat'"
