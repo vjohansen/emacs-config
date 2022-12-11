@@ -379,3 +379,22 @@ With a prefix arg, insert the N characters above point.
   (kill-region (point-min) (point-max))
   (let ((buffer-modified-p nil)) ;; ignore changes
     (save-buffer)))
+
+
+
+
+(defun vj-path-component (dir)
+  (if (file-exists-p dir)
+    (concat dir path-separator)
+    ;; else
+    nil))
+
+(defun vj-add-to-path (add-to-exec-path dirs)
+  ;; 2022 Dec
+  (if add-to-exec-path
+    (dolist (dir dirs)
+      (add-to-list 'exec-path dir)))
+  (setenv "PATH"
+    (concat
+      (apply 'concat (mapcar (lambda (dir) (vj-path-component dir)) dirs))
+      (getenv "PATH"))))
