@@ -135,8 +135,6 @@
 
 (global-set-key (kbd "M-æ")  'backward-paragraph)
 (global-set-key (kbd "M-ø")  'forward-paragraph)
-(global-set-key (kbd "M-å")  'delete-horizontal-space)
-(global-set-key (kbd "C-M-å")  'just-one-space)
 
 (if (fboundp 'cycle-spacing)
   (global-set-key (kbd "M-å")  'cycle-spacing))

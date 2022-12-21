@@ -111,6 +111,11 @@ Useful for removing build filenames from the list:
   :type 'integer
   :group 'vps)
 
+(defcustom vps-skip-dir-regexp "\\(node_modules\\)$"
+  "When generating directory lists from rdir setting then prune directory tree
+if they match this setting."
+  :type 'string
+  :group 'vps)
 
 
 (defvar vps-project-dir "~/.emacs.d/vps")
@@ -124,7 +129,8 @@ Useful for removing build filenames from the list:
      (file-cache-add nil)
      (setup-function nil)
      (filename-pregexp nil)
-     ) "Fallback values for projects. Update with vps-add-default-setting")
+     )
+  "Fallback values for projects. Update with vps-add-default-setting")
 
 (defvar vps-vgrep-call
   (concat vps-perl-program " "
@@ -199,7 +205,9 @@ Optional argument ARGS is the list of possible completions."
                          t              ; FULL
                          "^[^\\.]"      ; Ignore ^\.*
                          ))
-      (when (file-directory-p maybe-dir)
+
+      (when (and (file-directory-p maybe-dir)
+              (not (string-match vps-skip-dir-regexp maybe-dir)))
         (add-to-list 'sub-dirs maybe-dir)
         (setq sub-dirs (append sub-dirs (vps-all-sub-directories maybe-dir)))))
     sub-dirs))

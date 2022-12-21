@@ -38,6 +38,8 @@
   (expand-file-name (concat vj-emacs-config-dir "/..")))
 
 (set-register ?l `(file . ,vj-load-site-lisp-path))
+(set-register ?L `(file . ,vj-emacs-config-dir))
+(set-register ?U `(file . ,user-emacs-directory))
 
 (load "vj-load")
 (defvar vj-system-type-specific-elisp-file

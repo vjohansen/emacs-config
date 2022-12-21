@@ -29,7 +29,10 @@
     :candidates 'helm-source-vps-files-candidates
     :filtered-candidate-transformer 'helm-highlight-files
     :action 'helm-find-files-actions))
-;; (helm :sources 'helm-source-vps-files :buffer "*VPS*")
+
+(defun helm-vps ()
+  (interactive)
+  (helm :sources 'helm-source-vps-files :buffer "*VPS*" :ff-transformer-show-only-basename t))
 
 ;; Supports spaces in the pattern. First word is prefix and the remaining are
 ;; substrings
