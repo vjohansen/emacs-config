@@ -455,6 +455,9 @@ KEYS is the path from the root of `avy-tree' to LEAF."
 (defvar avy-action nil
   "Function to call at the end of select.")
 
+(defvar avy-action-oneshot nil
+  "Function to call once at the end of select.")
+
 (defun avy-handler-default (char)
   "The default handler for a bad CHAR."
   (let (dispatch)
@@ -494,8 +497,8 @@ KEYS is the path from the root of `avy-tree' to LEAF."
   "Store the current incomplete path during `avy-read'.")
 
 (defun avy-mouse-event-window (char)
-  "If CHAR is a mouse event, return the window of the event if any or the selected window.
-Return nil if not a mouse event."
+  "Return the window of mouse event CHAR if any or the selected window.
+Return nil if CHAR is not a mouse event."
   (when (mouse-event-p char)
     (cond ((windowp (posn-window (event-start char)))
            (posn-window (event-start char)))
@@ -890,10 +893,11 @@ multiple OVERLAY-FN invocations."
       (t
        (funcall avy-pre-action res)
        (setq res (car res))
-       (funcall (or avy-action 'avy-action-goto)
-                (if (consp res)
-                    (car res)
-                  res))
+       (let ((action (or avy-action avy-action-oneshot 'avy-action-goto)))
+         (funcall action
+                  (if (consp res)
+                      (car res)
+                    res)))
        res))))
 
 (define-obsolete-function-alias 'avy--process 'avy-process
@@ -1015,10 +1019,11 @@ COMPOSE-FN is a lambda that concatenates the old string at BEG with STR."
              (os-line-prefix (get-text-property 0 'line-prefix old-str))
              (os-wrap-prefix (get-text-property 0 'wrap-prefix old-str))
              other-ol)
-        (when os-line-prefix
-          (add-text-properties 0 1 `(line-prefix ,os-line-prefix) str))
-        (when os-wrap-prefix
-          (add-text-properties 0 1 `(wrap-prefix ,os-wrap-prefix) str))
+        (unless (= (length str) 0)
+          (when os-line-prefix
+            (add-text-properties 0 1 `(line-prefix ,os-line-prefix) str))
+          (when os-wrap-prefix
+            (add-text-properties 0 1 `(wrap-prefix ,os-wrap-prefix) str)))
         (when (setq other-ol (cl-find-if
                               (lambda (o) (overlay-get o 'goto-address))
                               (overlays-at beg)))
@@ -1607,7 +1612,8 @@ Which one depends on variable `subword-mode'."
 (defvar visual-line-mode)
 
 (defcustom avy-indent-line-overlay nil
-  "When non-nil, `avy-goto-line' will display the line overlay next to the first non-whitespace character of each line."
+  "When non-nil, display line overlay next to the first non-whitespace character.
+This affects `avy-goto-line'."
   :type 'boolean)
 
 (defun avy--line-cands (&optional arg beg end bottom-up)
@@ -2177,6 +2183,22 @@ The window scope is determined by `avy-all-windows' (ARG negates it)."
             (goto-char (car res))))
       (error
        (set-mark-command 4)))))
+
+;;;###autoload
+(defun avy-transpose-lines-in-region ()
+  "Transpose lines in the active region."
+  (interactive)
+  (when (and (use-region-p) (> (count-lines (region-beginning) (region-end)) 1))
+    (let ((avy-all-windows nil)
+          (fst-line-point (avy--line nil (region-beginning) (region-end))))
+      (when fst-line-point
+        (let ((snd-line-point (avy--line nil (region-beginning) (region-end))))
+          (when snd-line-point
+            (save-mark-and-excursion
+              (push-mark fst-line-point)
+              (goto-char snd-line-point)
+              (transpose-lines 0))
+            (avy-transpose-lines-in-region)))))))
 
 ;; ** Org-mode
 (defvar org-reverse-note-order)

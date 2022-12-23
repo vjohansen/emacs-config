@@ -13,7 +13,7 @@
  '(border-color ((t (:foreground "black"))))
  '(fringe ((t (:background "grey20"))))
  '(highlight ((t (:background "#224" :foreground nil))))
- '(region ((t (:background "blue4"))))
+ '(region ((t (:background "blue3"))))
  '(isearch ((t (:foreground "white" :background "#448"))))
  '(lazy-highlight ((t (:background "#264" :foreground "white"))))
  '(trailing-whitespace ((t (:background "#600"))))
@@ -33,6 +33,8 @@
  '(font-lock-type-face ((t (:bold t :foreground "YellowGreen"))))
  '(font-lock-variable-name-face ((t (:bold t :foreground "Aquamarine"))))
  ;;    '(font-lock-warning-face ((t (:bold t :foreground "red")))))))
+ '(org-level-2 ((t (:bold t :foreground "#fce94f")))) ;~yellow
+ '(org-level-3 ((t (:bold t :foreground "YellowGreen")))) ;; LightSalmon
 
  ;; '(font-lock-variable-name-face ((t (:foreground "LightGoldenrod"))))
  ;; '(font-lock-warning-face ((t (:foreground "Pink" :weight bold))))
