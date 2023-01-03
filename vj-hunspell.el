@@ -52,7 +52,9 @@
  (require 'ispell)
 
 ;; M-x ispell-change-dictionary
-(setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist)
+(setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist
+  ispell-silently-savep t)
+
 
 (provide 'vj-hunspell)
 ;; hting

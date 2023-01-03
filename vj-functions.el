@@ -310,12 +310,21 @@ With a prefix arg, insert the N characters above point.
     (shell-command-on-region (mark) (point)
       (format "perl -pe %s" (shell-quote-argument command)) nil t)))
 
+(defun vj-git-root ()
+  (let ((dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
+    (if (string-match "^[a-zA-Z]:" dir)
+      dir)))
+
 (defun vj-git-grep ()
   (interactive)
   (let ((grep-use-null-device)
-         (dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
+         (dir (vj-git-root)))
     (grep (format "cd %s && git --no-pager grep -n %s" dir (thing-at-point 'symbol)))))
 
+(defun vj-git-ag (word)
+  (interactive (list (read-string "Search Term: " (current-word))))
+  (let ((dir (vj-git-root)))
+    (grep (format "c:/tools/ag --vimgrep %s %s" word dir))))
 
 ;; ------------------------------------------------------------
 

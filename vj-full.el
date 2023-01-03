@@ -52,6 +52,7 @@
                       (number-sequence ?1 ?9)
                       '(?0)))
 (setq avy-style 'at-full)
+(avy-setup-default) ;; C-' in search mode
 
 (autoload 'align-regexp2 "align-regexp2" "*Align region according to regular expressions..." t)
 
