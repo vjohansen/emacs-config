@@ -1,10 +1,7 @@
 ;;; psvn.el --- Subversion interface for emacs
-;; Copyright (C) 2002-2012 by Stefan Reichoer
+;; Copyright (C) 2002-2015 by Stefan Reichoer
 
 ;; Author: Stefan Reichoer <stefan@xsteve.at>
-;; URL: http://www.xsteve.at/prg/emacs/psvn.el
-;; VERSION: 1.1.1
-;; Note: Version is not 1.1.1, this is a dummy for Marmalade.
 ;; Note: This version is currently not under svn control
 ;; For the revision date see svn-psvn-revision below
 
@@ -244,7 +241,7 @@
 
 ;;; Code:
 
-(defconst svn-psvn-revision "2012-03-26, 21:23:49" "The revision date of psvn.")
+(defconst svn-psvn-revision "2015-07-20, 21:42:00" "The revision date of psvn.")
 
 
 (require 'easymenu)
@@ -674,7 +671,7 @@ See psvn.el for an example function.")
 (defvar svn-process-cmd nil)
 (defvar svn-status-info nil)
 (defvar svn-status-filename-to-buffer-position-cache (make-hash-table :test 'equal :weakness t))
-(defvar svn-status-base-info nil "The parsed result from the svn info command.")
+(defvar svn-status-base-info nil "The parsed result from the svn info command as a plist.")
 (defvar svn-status-initial-window-configuration nil)
 (defvar svn-status-default-column 23)
 (defvar svn-status-default-revision-width 4)
@@ -706,13 +703,14 @@ This is nil if the log entry is for a new commit.")
 (defvar svn-pre-run-mode-line-process nil)
 (defvar svn-arg-file-content nil)
 (defvar svn-status-temp-dir
-  (expand-file-name
-   (or
-    (when (boundp 'temporary-file-directory) temporary-file-directory) ;emacs
-    ;; XEmacs 21.4.17 can return "/tmp/kalle" from (temp-directory).
-    ;; `file-name-as-directory' adds a slash so we can append a file name.
-    (when (fboundp 'temp-directory) (file-name-as-directory (temp-directory)))
-    "/tmp/")) "The directory that is used to store temporary files for psvn.")
+  (file-name-as-directory
+   (expand-file-name
+    (or
+     (when (boundp 'temporary-file-directory) temporary-file-directory) ;emacs
+     ;; XEmacs 21.4.17 can return "/tmp/kalle" from (temp-directory).
+     ;; `file-name-as-directory' adds a slash so we can append a file name.
+     (when (fboundp 'temp-directory) (temp-directory))
+     "/tmp/"))) "The directory that is used to store temporary files for psvn.")
 ;; Because `temporary-file-directory' is not a risky local variable in
 ;; GNU Emacs 22.0.51, we don't mark `svn-status-temp-dir' as such either.
 (defvar svn-temp-suffix (make-temp-name "."))
@@ -1121,11 +1119,17 @@ inside loops."
 (defun svn-checkout (repos-url path)
   "Run svn checkout REPOS-URL PATH."
   (interactive (list (read-string "Checkout from repository Url: ")
-                     (svn-read-directory-name "Checkout to directory: ")))
+                     (expand-file-name
+                      (svn-read-directory-name "Checkout to directory: "))))
   (svn-run t t 'checkout "checkout" repos-url (expand-file-name path)))
 
 ;;;###autoload (defalias 'svn-examine 'svn-status)
 (defalias 'svn-examine 'svn-status)
+
+;;;###autoload
+(defun svn-version-controlled-dir-p (dir)
+  "Return t if DIR is part of a Subversion workarea."
+  (= 0 (call-process svn-status-svn-executable nil nil nil "info" dir)))
 
 ;;;###autoload
 (defun svn-status (dir &optional arg)
@@ -1136,20 +1140,17 @@ For every other non nil ARG pass the -u argument to `svn status', which
 asks svn to connect to the repository and check to see if there are updates
 there.
 
-If there is no .svn directory, examine if there is CVS and run
+If DIR is not an SVN working copy, examine if there is CVS and run
 `cvs-examine'. Otherwise ask if to run `dired'."
-  (interactive (list (svn-read-directory-name "SVN status directory: "
-                                              nil default-directory nil)
+  (interactive (list (expand-file-name
+                      (svn-read-directory-name "SVN status directory: "
+                                              nil default-directory nil))
                      current-prefix-arg))
-  (let ((svn-dir (format "%s%s"
-                         (file-name-as-directory dir)
-                         (svn-wc-adm-dir-name)))
-        (cvs-dir (format "%sCVS" (file-name-as-directory dir))))
     (cond
-     ((file-directory-p svn-dir)
+     ((svn-version-controlled-dir-p (expand-file-name dir))
       (setq arg (svn-status-possibly-negate-meaning-of-arg arg 'svn-status))
       (svn-status-1 dir arg))
-     ((and (file-directory-p cvs-dir)
+     ((and (file-directory-p (concat (file-name-as-directory dir) "CVS"))
            (fboundp 'cvs-examine))
       (cvs-examine dir nil))
      (t
@@ -1162,7 +1163,7 @@ If there is no .svn directory, examine if there is CVS and run
                "Run dired instead? ")
               dir
               (svn-wc-adm-dir-name)))
-        (dired dir))))))
+        (dired dir)))))
 
 (defvar svn-status-display-new-status-buffer nil)
 (defun svn-status-1 (dir &optional arg)
@@ -1198,7 +1199,6 @@ If there is no .svn directory, examine if there is CVS and run
       (set-buffer proc-buf)
       (setq default-directory dir
             svn-status-remote (when arg t))
-      (set-buffer cur-buf)
       (if want-edit
           (let ((svn-status-edit-svn-command t))
             (svn-run t t 'status "status" svn-status-default-status-arguments status-option))
@@ -3092,32 +3092,27 @@ non-interactive use."
 (defun svn-status-parse-info-result ()
   "Parse the result from the svn info command.
 Put the found values in `svn-status-base-info'."
-  (let ((url)
-        (repository-root)
-        (last-changed-author))
-    (save-excursion
-      (set-buffer svn-process-buffer-name)
-      (goto-char (point-min))
-      (let ((case-fold-search t))
-        (search-forward "url: ")
-        (setq url (buffer-substring-no-properties (point) (svn-point-at-eol)))
-        (when (search-forward "repository root: " nil t)
-          (setq repository-root (buffer-substring-no-properties (point) (svn-point-at-eol))))
-        (when (search-forward "last changed author: " nil t)
-          (setq last-changed-author (buffer-substring-no-properties (point) (svn-point-at-eol))))))
-    (setq svn-status-base-info `((url ,url) (repository-root ,repository-root) (last-changed-author ,last-changed-author)))))
+  (save-excursion
+    (setq svn-status-base-info ())
+    (set-buffer svn-process-buffer-name)
+    (goto-char (point-min))
+    (let ((case-fold-search t)
+          (key)
+          (val))
+      (loop while (looking-at "\\(.*?\\)\\s-*:\\s-*\\(.*\\)$")
+        do (setq key (intern (concat ":" (downcase (subst-char-in-string ?\  ?- (match-string 1))))))
+        (setq val (match-string 2))
+        (setq svn-status-base-info (plist-put svn-status-base-info
+                                              key val))
+        until (< 0 (forward-line))))))
 
 (defun svn-status-base-info->url ()
   "Extract the url part from `svn-status-base-info'."
-  (if svn-status-base-info
-      (cadr (assoc 'url svn-status-base-info))
-    ""))
+  (plist-get svn-status-base-info :url))
 
 (defun svn-status-base-info->repository-root ()
   "Extract the repository-root part from `svn-status-base-info'."
-  (if svn-status-base-info
-      (cadr (assoc 'repository-root svn-status-base-info))
-    ""))
+  (plist-get svn-status-base-info :repository-root))
 
 (defun svn-status-checkout-prefix-path ()
   "When only a part of the svn repository is checked out, return the file path for this checkout."
@@ -4060,9 +4055,10 @@ user can enter a new file name, or an existing directory: this is used as the ar
                     (svn-status-line-info->full-path (car marked-files))))
       ;;TODO: (when file-exists-p but-no-dir-p dest (error "%s already exists" dest))
       ;;multiple files selected, so prompt for existing directory to mv them into.
-      (setq dest (svn-read-directory-name
-                  (format "%s %d files to directory: " manyprompt num-of-files)
-                  (svn-status-directory-containing-point t) nil t))
+      (setq dest (expand-file-name
+                  (svn-read-directory-name
+                   (format "%s %d files to directory: " manyprompt num-of-files)
+                   (svn-status-directory-containing-point t) nil t)))
       (unless (file-directory-p dest)
         (error "%s is not a directory" dest)))
     (when (string= dest "")
@@ -5816,9 +5812,6 @@ Currently is the output from the svn update command known."
   "Toggle svn blame minor mode.
 With ARG, turn svn blame minor mode on if ARG is positive, off otherwise.
 
-Note: This mode does not yet work on XEmacs...
-It is probably because the revisions are in 'before-string properties of overlays
-
 Key bindings:
 \\{svn-blame-mode-map}"
   (interactive "P")
@@ -5848,12 +5841,12 @@ The current buffer must contain a valid output from svn blame"
       ;;   (when (overlay-get ov 'svn-blame-line-info)
       ;;     (delete-overlay ov)))
       (while (and (not (eobp)) (< (point) limit))
+        (setq s (buffer-substring-no-properties (svn-point-at-bol) (+ (svn-point-at-bol) info-end-col)))
+        (delete-region (svn-point-at-bol) (+ (svn-point-at-bol) info-end-col))
         (setq ov (make-overlay (point) (point)))
         (overlay-put ov 'svn-blame-line-info t)
-        (setq s (buffer-substring-no-properties (svn-point-at-bol) (+ (svn-point-at-bol) info-end-col)))
         (overlay-put ov 'before-string (propertize s 'face 'svn-status-blame-rev-number-face))
         (overlay-put ov 'rev-info (delete "" (split-string s " ")))
-        (delete-region (svn-point-at-bol) (+ (svn-point-at-bol) info-end-col))
         (forward-line)
         (setq line (1+ line)))))
   (let* ((buf-name (format "*svn-blame: %s <%s>*"
@@ -6023,18 +6016,12 @@ You can send raw data to the process via \\[svn-process-send-string]."
     (with-current-buffer (get-buffer-create svn-process-buffer-name)
       (setq old-process-default-dir default-directory)
       (setq default-directory directory)) ;; update the default-directory for the *svn-process* buffer
-  (svn-run nil t 'parse-info "info" ".")
-  (with-current-buffer svn-process-buffer-name
-    ;; (message "svn-status-repo-for-path: %s: default-directory: %s directory: %s old-process-default-dir: %s" svn-process-buffer-name default-directory directory old-process-default-dir)
-    (setq default-directory old-process-default-dir)
-    (goto-char (point-min))
-    (let ((case-fold-search t))
-      (if (search-forward "repository root: " nil t)
-          (buffer-substring-no-properties (point) (svn-point-at-eol))
-        (when (search-forward "repository uuid: " nil t)
+    (svn-status-parse-info t)
+    (or (plist-get svn-status-base-info :repository-root)
+        (if (plist-get svn-status-base-info :repository-uuid)
+            (concat "Svn Repo UUID: " (plist-get svn-status-base-info :repository-uuid))
           (message "psvn.el: Detected an old svn working copy in '%s'. Please check it out again to get a 'Repository Root' entry in the svn info output."
-                   default-directory)
-          (concat "Svn Repo UUID: " (buffer-substring-no-properties (point) (svn-point-at-eol)))))))))
+                   default-directory)))))
 
 (defun svn-status-base-dir (&optional start-directory)
   "Find the svn root directory for the current working copy.
@@ -6046,29 +6033,60 @@ Return nil, if not in a svn working copy."
         base-dir
       ;; (message "calculating base-dir for %s" start-dir)
       (svn-compute-svn-client-version)
-      (let* ((base-dir start-dir)
-             (repository-root (svn-status-repo-for-path base-dir))
-             (dot-svn-dir (concat base-dir (svn-wc-adm-dir-name)))
-             (in-tree (and repository-root (file-exists-p dot-svn-dir)))
-             (dir-below (expand-file-name base-dir)))
-        ;; (message "repository-root: %s start-dir: %s" repository-root start-dir)
-        (if (and (<= (car svn-client-version) 1) (< (cadr svn-client-version) 3))
-            (setq base-dir (svn-status-base-dir-for-ancient-svn-client start-dir)) ;; svn version < 1.3
-          (while (when (and dir-below (file-exists-p dot-svn-dir))
-                   (setq base-dir (file-name-directory dot-svn-dir))
-                   (string-match "\\(.+/\\).+/" dir-below)
-                   (setq dir-below
-                         (and (string-match "\\(.*/\\)[^/]+/" dir-below)
-                              (match-string 1 dir-below)))
-                   ;; (message "base-dir: %s, dir-below: %s, dot-svn-dir: %s in-tree: %s" base-dir dir-below dot-svn-dir in-tree)
-                   (when dir-below
-                     (if (string= (svn-status-repo-for-path dir-below) repository-root)
-                         (setq dot-svn-dir (concat dir-below (svn-wc-adm-dir-name)))
-                       (setq dir-below nil)))))
-          (setq base-dir (and in-tree base-dir)))
-        (svn-puthash start-dir base-dir svn-status-base-dir-cache)
-        (svn-status-message 7 "svn-status-base-dir %s => %s" start-dir base-dir)
-        base-dir))))
+      ;; (message "repository-root: %s start-dir: %s" repository-root start-dir)
+      (cond
+       ((and (<= (car svn-client-version) 1) (< (cadr svn-client-version) 3))
+        (setq base-dir (svn-status-base-dir-for-ancient-svn-client start-dir))) ;; svn version < 1.3
+       ((and (<= (car svn-client-version) 1) (< (cadr svn-client-version) 7))
+        (setq base-dir (svn-status-base-dir-for-old-svn-client start-dir))) ;; svn version < 1.7
+       (t
+        (setq base-dir (svn-status-base-dir-1 start-dir))))
+      (when base-dir
+        (svn-puthash start-dir base-dir svn-status-base-dir-cache))
+      (svn-status-message 7 "svn-status-base-dir %s => %s" start-dir base-dir)
+      base-dir)))
+
+(defun svn-status-base-dir-1 (&optional start-directory)
+  "Find the svn root directory for the current working copy.
+Return nil, if not in a svn working copy.
+This function is used for svn clients version 1.7 and up."
+  (let ((default-directory (if start-directory
+                               (expand-file-name start-directory)
+                             (symbol-value 'default-directory)))
+        parent
+        wc-root)
+    (when (svn-version-controlled-dir-p default-directory)
+      (svn-status-parse-info t)
+      (setq wc-root (file-name-as-directory (plist-get svn-status-base-info :working-copy-root-path)))
+      (when wc-root
+        ;; traversing up the hierarchy shortens the path name. Stop if
+        ;; it doesn't, e.g we reached / already.
+        (setq parent (expand-file-name (concat wc-root "..")))
+        (or (and (< (length parent) (length wc-root))
+                 (svn-status-base-dir-1 (expand-file-name (concat wc-root ".."))))
+            wc-root)))))
+
+(defun svn-status-base-dir-for-old-svn-client (&optional start-directory)
+  "Find the svn root directory for the current working copy.
+Return nil, if not in a svn working copy.
+This function is used for svn clients version 1.6 and below."
+  (let* ((base-dir (expand-file-name (or start-directory default-directory)))
+         (repository-root (svn-status-repo-for-path base-dir))
+         (dot-svn-dir (concat base-dir (svn-wc-adm-dir-name)))
+         (in-tree (and repository-root (file-exists-p dot-svn-dir)))
+         (dir-below (expand-file-name base-dir)))
+    (while (when (and dir-below (file-exists-p dot-svn-dir))
+             (setq base-dir (file-name-directory dot-svn-dir))
+             (string-match "\\(.+/\\).+/" dir-below)
+             (setq dir-below
+                   (and (string-match "\\(.*/\\)[^/]+/" dir-below)
+                        (match-string 1 dir-below)))
+             ;; (message "base-dir: %s, dir-below: %s, dot-svn-dir: %s in-tree: %s" base-dir dir-below dot-svn-dir in-tree)
+             (when dir-below
+               (if (string= (svn-status-repo-for-path dir-below) repository-root)
+                   (setq dot-svn-dir (concat dir-below (svn-wc-adm-dir-name)))
+                 (setq dir-below nil)))))
+    (and in-tree base-dir)))
 
 (defun svn-status-base-dir-for-ancient-svn-client (&optional start-directory)
   "Find the svn root directory for the current working copy.

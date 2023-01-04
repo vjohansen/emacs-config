@@ -50,10 +50,12 @@
 (setq european-calendar-style 'european)
 
 ;; Date format
-(setq calendar-date-display-form
-      '((if dayname
-            (concat dayname ", "))
-        day " " monthname " " year))
+
+;; do not miss diary insert
+;; (setq calendar-date-display-form
+;;       '((if dayname
+;;             (concat dayname ", "))
+;;         day " " monthname " " year))
 
 ;; 24 hour clock format
 (setq calendar-time-display-form
@@ -153,7 +155,7 @@
 
 (setq general-holidays
       '((holiday-fixed 1 1 "Nytårsdag")
-	(holiday-fixed 1 6 "Hellige 3 konger")
+;;	(holiday-fixed 1 6 "Hellige 3 konger")
 
 	;; Easter and Pentecost
 	(holiday-filter-visible-calendar
@@ -179,15 +181,15 @@
 	(holiday-fixed 12 31 "Nytårsaften")))
 
 (setq other-holidays
-  '(
-     ;;(holiday-fixed 3 8 "Kvindernes internationale kampdag")
+      '(;;(holiday-fixed 3 8 "Kvindernes internationale kampdag")
 	(holiday-fixed 5 1 "Arbejdernes internationale kampdag")
-	(holiday-fixed 5 4 "Danmarks befrielse")
+	;;(holiday-fixed 5 4 "Danmarks befrielse")
 	(holiday-float 5 0 2 "Mors dag")
 	(holiday-fixed 6 5 "Grundlovsdag")
-	(holiday-fixed 6 5 "Fars dag")
-	(holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
-	(holiday-fixed 6 24 "Skt. Hans dag")))
+	;;(holiday-fixed 6 5 "Fars dag")
+	;;(holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
+	 ;;(holiday-fixed 6 24 "Skt. Hans dag")
+         ))
 
 (setq calendar-holidays
       (append general-holidays other-holidays))
