@@ -412,3 +412,15 @@ With a prefix arg, insert the N characters above point.
     (concat
       (apply 'concat (mapcar (lambda (dir) (vj-path-component dir)) dirs))
       (getenv "PATH"))))
+
+(defun vj-open-files (days lst)
+  "Opens log files in LST newer than DAYS in different windows"
+  (interactive)
+  (delete-other-windows)
+  (dolist (fn lst)
+    (when (< (/ (vps-file-last-modified-duration fn) (* 24 60 60)) days) ;; in days
+      (find-file fn)
+      (split-window-vertically)
+      (other-window 1)))
+  (delete-window)
+  (balance-windows))

@@ -550,13 +550,21 @@ If no project name is supplied, use the current project name."
     ))
 
 
+(add-hook 'compilation-mode-hook 'vps-compilation-mode-setup)
+
+(defun vps-compilation-mode-setup ()
+  (if (equal (buffer-name) "*vps grep*")
+    (face-remap-add-relative 'compilation-error
+      :foreground (or (face-foreground 'success) "green1"))))
 
 (defun vps-grep-invisible (command args)
-    "Call grep with visible COMMAND string and invisible ARGS string."
-    (let* ((cmd (progn
-                  (set-text-properties 0 (length args) '(invisible t) args)
-                  (format "%s %s" command args))))
-        (grep cmd)))
+  "Call grep with visible COMMAND string and invisible ARGS string."
+  (setq vps-buffer-name (buffer-name))
+  (let* ((cmd (progn
+                (set-text-properties 0 (length args) '(invisible t) args)
+                (format "%s %s" command args)))
+          (compilation-buffer-name-function (lambda (mode) (concat "*vps grep*"))))
+    (compile cmd)))
 
 (defun vps-read-from-minibuffer (prompt &optional default-value hist)
   "Simple version of read-from-minibuffer that returns default value on empty input."

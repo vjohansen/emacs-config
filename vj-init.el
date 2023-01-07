@@ -40,6 +40,7 @@
 (set-register ?l `(file . ,vj-load-site-lisp-path))
 (set-register ?L `(file . ,vj-emacs-config-dir))
 (set-register ?U `(file . ,user-emacs-directory))
+(set-register ?I `(file . ,vj-load-site-lisp-path))
 
 (load "vj-load")
 (defvar vj-system-type-specific-elisp-file

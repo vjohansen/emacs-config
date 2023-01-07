@@ -13,7 +13,7 @@
 
 (require 'vj-grep)
 
-(when (>= emacs-major-version 24)
+(when (and (>= emacs-major-version 24) (< emacs-major-version 28))
   ;; Redefine compilation-find-file! Needed by vps
   (load "vj-compilation-find-file-not-found-hook"))
 
