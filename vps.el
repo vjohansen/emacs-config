@@ -559,7 +559,6 @@ If no project name is supplied, use the current project name."
 
 (defun vps-grep-invisible (command args)
   "Call grep with visible COMMAND string and invisible ARGS string."
-  (setq vps-buffer-name (buffer-name))
   (let* ((cmd (progn
                 (set-text-properties 0 (length args) '(invisible t) args)
                 (format "%s %s" command args)))

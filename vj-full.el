@@ -43,9 +43,6 @@
 (define-key global-map (kbd "C-;") 'iedit-mode)
 
 
-(autoload 'etags-select-find-tag-at-point "etags-select" "*Do a find-tag-at-point, and display all exact matches." t)
-(global-set-key "\M-?" 'etags-select-find-tag-at-point)
-
 (require 'avy)
 (define-key global-map (kbd "C-c SPC") 'avy-goto-word-1)
 (setq avy-keys (nconc (number-sequence ?a ?z) ; avy-style myst be 'at-full not 'words

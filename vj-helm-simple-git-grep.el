@@ -54,8 +54,7 @@ If not in a git repo use the root of the previously used git repo"
                                              vj-helm-simple-git-grep-root
                                              (nth 0 fields)))
                    (goto-line (string-to-number (nth 1 fields)))
-                   (when (fboundp 'etags-select-highlight)
-                     (etags-select-highlight (point-at-bol) (point-at-eol)))))))
+                   (pulse-momentary-highlight-region (point-at-bol) (point-at-eol))))))
 
      (requires-pattern . 3))
   "Source for git.")
