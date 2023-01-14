@@ -19,6 +19,13 @@
                  (concat "Ent" "ering directory `\\([^']*\\)'") nil t)
 	       (concat (match-string-no-properties 1) "/"
 		       filename)))))
+    (if (not result)
+      (save-excursion
+        (if (re-search-backward
+              (concat "^\\(" (replace-regexp-in-string "[/\\]" "." default-directory) "[^.]*\\.[a-z][a-z]*\\)")
+              nil t)
+          (setq result (match-string-no-properties 1)))))
+
     (if (and result (file-exists-p result))
 	(progn
 	  (message "vj: found \"%s\"" result)
@@ -44,7 +51,8 @@ attempts to find a file whose name is produced by (format FMT FILENAME)."
                       (expand-file-name directory)
                     default-directory))
         buffer thisdir fmts name)
-    (if (file-name-absolute-p filename)
+    (if (and filename
+             (file-name-absolute-p filename))
         ;; The file name is absolute.  Use its explicit directory as
         ;; the first in the search path, and strip it from FILENAME.
         (setq filename (abbreviate-file-name (expand-file-name filename))
@@ -56,26 +64,53 @@ attempts to find a file whose name is produced by (format FMT FILENAME)."
             fmts formats)
       ;; For each directory, try each format string.
       (while (and fmts (null buffer))
-        (setq name (expand-file-name (format (car fmts) filename) thisdir)
+        (setq name (file-truename
+                    (file-name-concat thisdir (format (car fmts) filename)))
               buffer (and (file-exists-p name)
                           (find-file-noselect name))
               fmts (cdr fmts)))
       (setq dirs (cdr dirs)))
+    ;; If we haven't found it, this might be a parallel build.
+    ;; Search the directories further up the buffer.
+    (when (and (null buffer)
+               compilation-search-all-directories)
+      (with-current-buffer (marker-buffer marker)
+        (save-excursion
+          (goto-char (marker-position marker))
+          (when-let ((prev (compilation--previous-directory (point))))
+            (goto-char prev))
+          (setq dirs (cdr (or (get-text-property
+                               (1- (point)) 'compilation-directory)
+                              (get-text-property
+                               (point) 'compilation-directory))))))
+      (while (and dirs (null buffer))
+        (setq thisdir (car dirs)
+              fmts formats)
+        (while (and fmts (null buffer))
+          (setq name (file-truename
+                      (file-name-concat thisdir (format (car fmts) filename)))
+                buffer (and (file-exists-p name)
+                            (find-file-noselect name))
+                fmts (cdr fmts)))
+        (setq dirs (cdr dirs))))
 
     (when (and (null buffer) compilation-find-file-hook)
       (message "Look for %s" filename)
-      (setq buffer (run-hook-with-args-until-success
-		    'compilation-find-file-hook filename)))
+      (setq buffer (run-hook-with-args-until-success 'compilation-find-file-hook filename)))
 
     (while (null buffer)    ;Repeat until the user selects an existing file.
       ;; The file doesn't exist.  Ask the user where to find it.
       (save-excursion            ;This save-excursion is probably not right.
-        (let ((pop-up-windows t))
-          (compilation-set-window (display-buffer (marker-buffer marker))
-                                  marker)
+        (let ((w (let ((pop-up-windows t))
+		   (display-buffer (marker-buffer marker)
+				   '(nil (allow-no-window . t))))))
+          (with-current-buffer (marker-buffer marker)
+	    (goto-char marker)
+	    (and w (progn (compilation-set-window w marker)
+                          (compilation-set-overlay-arrow w))))
           (let* ((name (read-file-name
-                        (format "Find this %s in (default %s): "
-                                compilation-error filename)
+                        (format-prompt "Find this %s in"
+                                       filename compilation-error)
                         spec-dir filename t nil
                         ;; The predicate below is fine when called from
                         ;; minibuffer-complete-and-exit, but it's too
@@ -101,7 +136,8 @@ attempts to find a file whose name is produced by (format FMT FILENAME)."
               (ding) (sit-for 2))
              ((and (file-directory-p name)
                    (not (file-exists-p
-                         (setq name (expand-file-name filename name)))))
+                         (setq name (file-truename
+                                     (file-name-concat name filename))))))
               (message "No `%s' in directory %s" filename origname)
               (ding) (sit-for 2))
              (t
