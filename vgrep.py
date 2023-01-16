@@ -11,6 +11,8 @@ import chardet
 parser = argparse.ArgumentParser(description='Grep directories.')
 parser.add_argument('-e', default=':code')
 parser.add_argument('-m')
+parser.add_argument('-A', type=int)
+parser.add_argument('-B', type=int)
 parser.add_argument('-i', action='store_const', const='i', default='')
 parser.add_argument('-r', action='append')
 parser.add_argument('dirs', nargs='*')
@@ -46,6 +48,12 @@ def grep(dir_):
         return 0
     count += len(filenames)
     shell_args = ['grep','-{}nH'.format(args.i), word]
+    if args.A:
+        shell_args.append('-A')
+        shell_args.append(str(args.A))
+    if args.B:
+        shell_args.append('-B')
+        shell_args.append(str(args.A))
     filenames = list(map(lambda fn: fn.replace('{','\{').replace('}','\}'), filenames))
     shell_args.extend(filenames)
     sys.stdout.flush()
