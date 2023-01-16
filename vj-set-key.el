@@ -2,10 +2,12 @@
 (global-set-key [M-f1] 'recompile)
 (global-set-key [f5] 'compile)
 (global-set-key [C-tab] 'hippie-expand)
-(global-set-key [pause]   '(lambda() (interactive) (kill-buffer nil)))
+(global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
 
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
+(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-+") 'delete-horizontal-space)
 
 ;; Easier to type on danish keyboard than M-/
 (global-set-key (kbd "M-\'") 'dabbrev-expand)
@@ -50,7 +52,7 @@
 
 ;; tags-apropos current word. Use C-u for C++ members (prepends ::)
 (global-set-key "\M-qt"
-  '(lambda (&optional member)
+  #'(lambda (&optional member)
      (interactive "p")
      (if (equal member 4)
        (tags-apropos (concat "::" (current-word) "\\>"))
@@ -60,7 +62,7 @@
   "Pull next character or symbol from buffer into search string."
   (interactive)
   (isearch-yank-internal
-   (lambda ()
+    #'(lambda ()
      (if (or (memq (char-syntax (or (char-after) 0)) '(?w ?_))
              (memq (char-syntax (or (char-after (1+ (point))) 0)) '(?w ?_)))
          (forward-symbol 1)
@@ -105,7 +107,7 @@
 
 ;; Locally set tab-width to 4. Usually used when reading files made in VS
 ;; where the default is tabs with an indent that is 4.
-(global-set-key [C-f9] (lambda ()
+(global-set-key [C-f9] #'(lambda ()
                          (interactive)
                          (setq tab-width 4)
                          (recenter)))

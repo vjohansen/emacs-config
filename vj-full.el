@@ -109,7 +109,7 @@
   :group 'vj-global-keys)
 
 (define-globalized-minor-mode vj-global-keys-global-mode vj-global-keys-mode
-  (lambda ()
+  '(lambda ()
     (if (not (minibufferp (current-buffer)))
         (vj-global-keys-mode 1))))
 

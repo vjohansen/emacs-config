@@ -346,14 +346,50 @@ With a prefix arg, insert the N characters above point.
 
 ;; ------------------------------------------------------------
 
-(setq vj-package-list '( json-reformat
+(setq vj-package-list '(
+                         beacon
                          company
                          company-quickhelp
                          company-statistics
-                         helm iedit
-                         guide-key
+                         csharp-mode
+                         flycheck
+                         git-gutter
                          gitconfig-mode
-                         gitignore-mode))
+                         gitignore-mode
+                         guide-key
+                         helm
+                         helm-git-grep
+                         helm-org-rifle
+                         helm-w32-launcher
+                         helm-xref
+                         htmlize
+                         iedit
+                         magit
+                         perfect-margin
+                         powershell
+                         pyim
+
+                         ;; stack overflow: sos sx
+                         avy ;; In site-lisp
+                         ;; all-the-icons-dired dumb-jump elfeed elfeed-score elpher elpy fireplace
+
+                         dap-mode
+                         edit-indirect
+                         flymake-eslint
+                         json-mode
+                         lsp-mode
+                         lsp-ui
+                         markdown-mode
+                         nodejs-repl
+                         plantuml-mode
+                         prettier
+                         rjsx-mode
+                         tree-sitter
+                         treemacs-icons-dired
+                         vscode-dark-plus-theme
+                         yasnippet
+                         ))
+
 
 (defun vj-install-missing-packages ()
   (interactive)
