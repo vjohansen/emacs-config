@@ -2,7 +2,7 @@
 (global-set-key [M-f1] 'recompile)
 (global-set-key [f5] 'compile)
 (global-set-key [C-tab] 'hippie-expand)
-(global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
+(global-set-key [pause] #'(lambda() (interactive) (kill-buffer nil)))
 
 (global-set-key [f8] 'next-error)
 (global-set-key [S-f8] 'previous-error)
@@ -30,7 +30,7 @@
     (global-unset-key "\M-q"))
 
 (global-set-key [f6] 'other-window)
-(global-set-key [S-f6] '(lambda () (interactive)  (other-window -1)))
+(global-set-key [S-f6] #'(lambda () (interactive)  (other-window -1)))
 (global-set-key (kbd "C-x j") 'jump-to-register)
 
 (global-set-key "\M-q\M-q" 'fill-paragraph)
@@ -62,8 +62,8 @@
   #'(lambda (&optional member)
      (interactive "p")
      (if (equal member 4)
-       (tags-apropos (concat "::" (current-word) "\\>"))
-       (tags-apropos (concat "\\<" (current-word) "\\>")))))
+       (xref-find-apropos (concat "::" (current-word) "\\>"))
+       (xref-find-apropos (concat "\\<" (current-word) "\\>")))))
 
 (defun isearch-yank-symbol-or-char ()
   "Pull next character or symbol from buffer into search string."
@@ -104,9 +104,7 @@
         ;;(shell-command "wmctrl -a firefox")
         )
       (url-at-point ;; http://ozymandias.dk
-        (if (featurep 'w3m)
-          (w3m url-at-point)
-          (browse-url url-at-point)))
+        (browse-url url-at-point))
       (html-buffer-url
         (browse-url html-buffer-url))
       (t (message "no link here")))))

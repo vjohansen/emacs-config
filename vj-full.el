@@ -96,8 +96,8 @@
 (global-set-key [S-down] 'my-scroll-up-hook)
 
 
-(global-set-key [M-f2] '(lambda () (interactive) (vps-grep (current-word))))
-(global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
+(global-set-key [M-f2] #'(lambda () (interactive) (vps-grep (current-word))))
+(global-set-key [pause] #'(lambda() (interactive) (kill-buffer nil)))
 
 ;;  http://www.reddit.com/r/emacs/comments/y76sl/proper_way_of_overriding_mode_keys/
 ;;
@@ -112,7 +112,7 @@
   :group 'vj-global-keys)
 
 (define-globalized-minor-mode vj-global-keys-global-mode vj-global-keys-mode
-  '(lambda ()
+  #'(lambda ()
     (if (not (minibufferp (current-buffer)))
         (vj-global-keys-mode 1))))
 

@@ -771,7 +771,7 @@ call \\[find-file-at-point]"
   (goto-line 3)
   (move-to-column 3)
   (vps-list-dirs-mode)
-  (hide-body)
+  (outline-hide-body)
   (local-set-key (kbd "SPC") 'show-subtree)
   (local-set-key (kbd "RET") 'vps-list-dirs-find-file)
   (message (propertize " RET find-file-at-point   SPACE show-subtree"
