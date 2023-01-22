@@ -1,7 +1,6 @@
 ;; --- vj-load-std ---
 
-(require 'vj-std-essentials) ; <- Tip: Use M-q RET on package name to call
-(require 'vj-std-extras)     ;         `find-file-at-point'
+(require 'vj-std-extras)
 (require 'vj-set-key)
 (load "vj-functions")
 (load "vj-prog")

@@ -539,7 +539,7 @@ foo.cpp and in the same directory as the current header file, foo.h."
 ; ------------------------------------------------------------
 
 (setq auto-mode-alist
-  (append '(("\\.md\\'" . markdown-mode))
+  (append '(("\\.md\\'" . markdown-view-mode))
     auto-mode-alist))
 
 (autoload 'markdown-mode "markdown-mode" "markdown-mode*" t)

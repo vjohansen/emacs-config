@@ -11,6 +11,28 @@
     (setq confirm-kill-emacs 'y-or-n-p)
     (setq confirm-kill-emacs nil))
 
+(show-paren-mode t)
+(recentf-mode t)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(which-function-mode)
+(auto-compression-mode t)
+
+;; Change annoying yes/no RET questions to single keypress of y or n
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(prefer-coding-system 'utf-8)
+
+;; Also show filename and vps project in title bar
+(setq frame-title-format
+  '("" invocation-name "@" system-name " "  " %f [" vps-project-name "]"))
+
+(setq visible-bell t) ;; no beeps!
+
+(setq-default indent-tabs-mode nil)     ; Do not use tabs for indent
+(setq compilation-ask-about-save nil)   ; Just save files before compile
+(setq find-file-existing-other-name t)
+
+
 (setq nxml-slash-auto-complete-flag t
       nxml-sexp-element-flag        t
       ediff-split-window-function   'split-window-horizontally
@@ -23,9 +45,6 @@
       eshell-ask-to-save-history    'always
       eshell-save-history-on-exit   t
       eshell-buffer-maximum-lines   8192)
-
-;; (setq solar-holidays nil
-;;       calendar-holidays nil)
 
 
 (autoload 'edit-list "edit-list"
@@ -80,22 +99,6 @@
 (global-set-key [M-f2] '(lambda () (interactive) (vps-grep (current-word))))
 (global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
 
-(if (equal system-type 'windows-nt)
-  ;; http://blogs.msdn.com/b/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx
-  (progn
-    ;; (autoload 'powershell "powershell"
-    ;;   "*Run powershell as a shell within emacs." t)
-    (autoload 'shell-toggle "eshell-toggle" "Toggles between the *shell* buffer and whatever buffer you are editing."
-      t))
-  (autoload 'shell-toggle "shell-toggle" "Toggles between the *shell* buffer and whatever buffer you are editing."
-    t))
-
-(global-set-key (kbd "<C-f12>") 'shell-toggle-cd)
-(global-set-key (kbd "<M-f12>") 'shell-toggle)
-(global-set-key (kbd "ESC <f12>") 'shell-toggle)
-
-
-
 ;;  http://www.reddit.com/r/emacs/comments/y76sl/proper_way_of_overriding_mode_keys/
 ;;
 (define-minor-mode vj-global-keys-mode
@@ -140,24 +143,6 @@
 
 ;; Type unicode numbers with C-q
 (setq read-quoted-char-radix 16)
-
-(defvar vj-journal-filename "~/Documents/notes.txt")
-
-(defun vj-journal ()
-  (interactive)
-  (find-file vj-journal-filename)
-  (goto-char (point-max))
-  (insert "\n")
-  (org-meta-return)
-  (org-insert-time-stamp (current-time))
-  (insert " "))
-
-(global-set-key (kbd "M-q j") 'vj-journal)
-
-
-
-
-
 
 
 (global-set-key (kbd "M-[") 'my-expand-file-name-at-point)
@@ -251,9 +236,7 @@
   (interactive)
   (set-frame-parameter (selected-frame) 'alpha '(45 70))
   (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  )
-
+  (menu-bar-mode -1))
 
 
 (defun my/org-narrow-forward ()
@@ -307,8 +290,25 @@
 (global-set-key (kbd "C-c +") 'vj-alpha-adjust)
 (global-set-key (kbd "C-c -") 'vj-alpha-adjust)
 
-(global-set-key (kbd "C-M-7") 'toggle-input-method)
-(global-set-key (kbd "C-/") 'set-input-method)
 
 
+;; (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward)
+
+(setq
+  recentf-exclude '("\\.tags$")
+  recentf-max-saved-items 200)
+
+;; ------------------------------------------------------------
+
+;; Use M-n/M-p in minibuffer to complete history entries based on prefix
+(mapcar
+ (function
+  (lambda (x)
+    (define-key x (kbd "ESC p") 'previous-complete-history-element)
+    (define-key x (kbd "ESC n") 'next-complete-history-element)))
+ (list minibuffer-local-completion-map minibuffer-local-isearch-map
+       minibuffer-local-map minibuffer-local-must-match-map
+       minibuffer-local-ns-map))

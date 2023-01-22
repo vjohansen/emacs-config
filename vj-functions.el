@@ -205,14 +205,6 @@ This should probably be generalized in the future."
     (fill-paragraph nil)))
 
 
-
-(defun vj-tv-mode ()
-  (interactive)
-  (set-frame-parameter (selected-frame) 'alpha '(45 70))
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-)
-
 (defun occur-non-ascii ()
   "Find any non-ascii characters in the current buffer."
   (interactive)

@@ -4,9 +4,12 @@
 (global-set-key [C-tab] 'hippie-expand)
 (global-set-key [pause] '(lambda() (interactive) (kill-buffer nil)))
 
+(global-set-key [f8] 'next-error)
+(global-set-key [S-f8] 'previous-error)
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
-(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-o") 'delete-horizontal-space)
+(global-set-key (kbd "C-M-o") 'other-window) ;; was split-line
 (global-set-key (kbd "M-+") 'delete-horizontal-space)
 
 ;; Easier to type on danish keyboard than M-/
@@ -18,12 +21,16 @@
 (global-set-key [M-down] 'vjo-forward-current-word-keep-offset)
 (global-set-key [M-up] 'vjo-backward-current-word-keep-offset)
 
+(global-set-key (kbd "C-M-7") 'toggle-input-method)
+(global-set-key (kbd "C-/") 'set-input-method)
+
 
 ;; I want to use \M-q as a keymap
 (if (not (keymapp (lookup-key global-map "\M-q")))
     (global-unset-key "\M-q"))
 
-(global-set-key [f6] 'point-to-register)
+(global-set-key [f6] 'other-window)
+(global-set-key [S-f6] '(lambda () (interactive)  (other-window -1)))
 (global-set-key (kbd "C-x j") 'jump-to-register)
 
 (global-set-key "\M-q\M-q" 'fill-paragraph)
@@ -141,6 +148,7 @@
 (if (fboundp 'cycle-spacing)
   (global-set-key (kbd "M-å")  'cycle-spacing))
 
+(global-set-key (kbd "C-M-æ") 'vj-shell-in-project)
 
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 ;;       to show the keybinding description
