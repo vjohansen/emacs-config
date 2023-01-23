@@ -42,6 +42,7 @@
 (global-set-key "\M-q\M-s" 'slash-replace-on-region)
 (global-set-key "\M-qr" 'insert-char-above)
 (global-set-key "\M-q\M-h" 'vj-mark-paragraph)
+(global-set-key "\M-qf" 'font-lock-fontify-buffer)
 
 (global-set-key "\M-qi" 'vj-ifdef-insert)
 (global-set-key "\M-q\M-i" 'vj-ifndef-insert)

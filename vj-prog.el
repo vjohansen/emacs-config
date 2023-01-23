@@ -295,7 +295,9 @@ that file will need to be in your path."
   "(VJO Dec 2005)"
   (interactive)
   (and
-    (thing-at-point-looking-at "[a-zA-Z][a-zA-Z0-9_.:-]*")
+    (if (memq major-mode '(c++-mode))
+      (thing-at-point-looking-at "[a-zA-Z][a-zA-Z0-9_.-:]*")
+      (thing-at-point-looking-at "[a-zA-Z][a-zA-Z0-9_.-]*"))
     (match-string-no-properties 0)))
 
 (defun vjo-cout-watch-current-word ()
@@ -314,14 +316,16 @@ that file will need to be in your path."
               "Console"))
           (insert (concat cs-prefix ".WriteLine" "(\"" cw "={0}\"," cw ");")))
         ;; not c#
-        
+
         (if (memq major-mode '(c-mode))
           (insert (concat "printf(\"" cw "= %s\\n\"," cw ");"))
           (if (memq major-mode '(python-mode))
             (insert (concat "print('" cw "', " cw ")"))
             (if (memq major-mode '(c++-mode))
-              (insert (concat "cout << \"" cw "=\" << " cw " << endl;"))))))
-      )))
+              (insert (concat "cout << \"" cw "=\" << " cw " << endl;"))
+              (if (memq major-mode '(tsx-mode js2-mode js-mode rjsx-mode))
+                (insert (concat "console.log(\"" cw "\", " cw ");")))))))
+    )))
 
 ;; (defun vjo-c++-mode-hook ()
 ;;   "c++-mode-hook"
@@ -542,7 +546,14 @@ foo.cpp and in the same directory as the current header file, foo.h."
   (append '(("\\.md\\'" . markdown-view-mode))
     auto-mode-alist))
 
-(autoload 'markdown-mode "markdown-mode" "markdown-mode*" t)
+;;(autoload 'markdown-mode "markdown-mode" "markdown-mode*" t)
+
+
+(defun markdown-mode-setup ()
+  (turn-on-visual-line-mode)
+  )
+
+(add-hook 'markdown-mode-hook 'markdown-mode-setup)
 
 
 ; ------------------------------------------------------------
