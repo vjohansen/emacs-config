@@ -469,3 +469,13 @@ same directory as the org-buffer and insert a link to this file."
   (org-display-inline-images))
 
 (global-set-key "\C-cs" 'vj-org-screenshot)
+
+
+
+(defun vj-goto-location (filename lineno &optional column)
+  (find-file-other-window filename)
+  (goto-line (if (stringp lineno) (string-to-number lineno) lineno))
+  (when column
+    (beginning-of-line)
+    (forward-char (if (stringp column) (string-to-number column) column)))
+  (pulse-momentary-highlight-region (point-at-bol) (point-at-eol)))
