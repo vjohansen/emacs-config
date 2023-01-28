@@ -16,6 +16,8 @@
   ;; gc-cons-threshold (* 511 1024 1024)
   )
 
+(setq completion-ignore-case t)
+
 (setq default-major-mode 'text-mode)
 (setq initial-major-mode 'emacs-lisp-mode)
 

@@ -315,8 +315,27 @@ With a prefix arg, insert the N characters above point.
 
 (defun vj-git-ag (word)
   (interactive (list (read-string "Search Term: " (current-word))))
-  (let ((dir (vj-git-root)))
-    (grep (format "c:/tools/ag --vimgrep %s %s" word dir))))
+  (let ((dir (vj-git-root))
+         (compilation-buffer-name-function (lambda (mode) (concat "*vj ag*"))))
+    (compile (format "c:/tools/ag --vimgrep %s %s" word dir))))
+
+(defun vj-ag-compilation-mode-finish (buf status)
+  "Remove common path component (default-directory) in '*vj sg*' compilation buffer
+
+Usage:(add-hook 'compilation-finish-functions 'vj-ag-compilation-mode-finish)"
+  (interactive)
+  (when (equal (buffer-name buf) "*vj ag*")
+    (face-remap-add-relative 'compilation-error
+      :foreground "green2")
+    (save-excursion
+      (set-buffer buf)
+      (goto-char (point-min))
+      (while (re-search-forward
+               (replace-regexp-in-string "[/\\]" "." default-directory)
+               nil t)
+        (delete-region (point-at-bol) (point))
+        (insert "•")))))
+
 
 ;; ------------------------------------------------------------
 
