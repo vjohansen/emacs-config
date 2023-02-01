@@ -3,17 +3,17 @@
 ;; Copyright (C) 1998 Free Software Foundation, Inc.
 
 ;; Author: Will Mengarini <seldon@eskimo.com>
-;; URL: <http://www.eskimo.com/~seldon>
+;; Maintainer: Martin Yrjölä <martin.yrjola@gmail.com>
+;; URL: https://github.com/myrjola/diminish.el
 ;; Created: Th 19 Feb 98
-;; Version: 0.44, Sa 23 Jan 99
+;; Version: 0.46
+;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: extensions, diminish, minor, codeprose
-
-;; This file is part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,9 +21,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -106,7 +104,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 (defvar diminish-must-not-copy-minor-mode-alist nil
   "Non-nil means loading diminish.el won't (copy-alist minor-mode-alist).
@@ -117,7 +115,7 @@ try to diminish abbrev-mode under GNU Emacs 19.34, you'll get the error
 message \"Attempt to modify read-only object\".")
 
 (or diminish-must-not-copy-minor-mode-alist
-    (callf copy-alist minor-mode-alist))
+    (cl-callf copy-alist minor-mode-alist))
 
 (defvar diminished-mode-alist nil
   "The original `minor-mode-alist' value of all (diminish)ed modes.")
@@ -159,13 +157,13 @@ Interactively, enter (with completion) the name of any minor mode, followed
 on the next line by what you want it diminished to (default empty string).
 The response to neither prompt should be quoted.  However, in Lisp code,
 both args must be quoted, the first as a symbol, the second as a string,
-as in (diminish 'jiggle-mode \" Jgl\").
+as in (diminish \\='jiggle-mode \" Jgl\").
 
 The mode-line displays of minor modes usually begin with a space, so
 the modes' names appear as separate words on the mode line.  However, if
 you're having problems with a cramped mode line, you may choose to use single
 letters for some modes, without leading spaces.  Capitalizing them works
-best; if you then diminish some mode to \"X\" but have abbrev-mode enabled as
+best; if you then diminish some mode to \"X\" but have `abbrev-mode' enabled as
 well, you'll get a display like \"AbbrevX\".  This function prepends a space
 to TO-WHAT if it's > 1 char long & doesn't already begin with a space."
   (interactive (list (read (completing-read
@@ -177,14 +175,15 @@ to TO-WHAT if it's > 1 char long & doesn't already begin with a space."
                       "To what mode-line display: "
                       nil nil nil 'diminish-history-names)))
   (let ((minor (assq mode minor-mode-alist)))
-    (or minor (error "%S is not currently registered as a minor mode" mode))
-    (callf or to-what "")
-    (when (> (length to-what) 1)
-      (or (= (string-to-char to-what) ?\ )
-          (callf2 concat " " to-what)))
-    (or (assq mode diminished-mode-alist)
-        (push (copy-sequence minor) diminished-mode-alist))
-    (setcdr minor (list to-what))))
+    (when minor
+        (progn (cl-callf or to-what "")
+               (when (and (stringp to-what)
+                          (> (length to-what) 1))
+                 (or (= (string-to-char to-what) ?\ )
+                     (cl-callf2 concat " " to-what)))
+               (or (assq mode diminished-mode-alist)
+                   (push (copy-sequence minor) diminished-mode-alist))
+               (setcdr minor (list to-what))))))
 
 ;; But an image comes to me, vivid in its unreality, of a loon alone on his
 ;; forest lake, shrieking his soul out into a canopy of stars.  Alone this
@@ -208,10 +207,10 @@ to TO-WHAT if it's > 1 char long & doesn't already begin with a space."
 Do nothing if the arg is a minor mode that hasn't been diminished.
 
 Interactively, enter (with completion) the name of any diminished mode (a
-mode that was formerly a minor mode on which you invoked M-x diminish).
+mode that was formerly a minor mode on which you invoked \\[diminish]).
 To restore all diminished modes to minor status, answer `diminished-modes'.
 The response to the prompt shouldn't be quoted.  However, in Lisp code,
-the arg must be quoted as a symbol, as in (diminish-undo 'diminished-modes)."
+the arg must be quoted as a symbol, as in (diminish-undo \\='diminished-modes)."
   (interactive
    (list (read (completing-read
                 "Restore what diminished mode: "
@@ -223,7 +222,7 @@ the arg must be quoted as a symbol, as in (diminish-undo 'diminished-modes)."
       (let ((diminished-modes diminished-mode-alist))
         (while diminished-modes
           (diminish-undo (caar diminished-modes))
-          (callf cdr diminished-modes)))
+          (cl-callf cdr diminished-modes)))
     (let ((minor      (assq mode      minor-mode-alist))
           (diminished (assq mode diminished-mode-alist)))
       (or minor
@@ -260,14 +259,14 @@ what diminished modes would be on the mode-line if they were still minor."
           (when (symbolp minor-name)
             ;; This minor mode uses symbol indirection in the cdr
             (let ((symbols-seen (list minor-name)))
-              (while (and (symbolp (callf symbol-value minor-name))
+              (while (and (symbolp (cl-callf symbol-value minor-name))
                           (not (memq minor-name symbols-seen)))
                 (push minor-name symbols-seen))))
           (push minor-name message)))
-      (callf cdr minor-modes))
+      (cl-callf cdr minor-modes))
     (setq message (mapconcat 'identity (nreverse message) ""))
     (when (= (string-to-char message) ?\ )
-      (callf substring message 1))
+      (cl-callf substring message 1))
     (message "%s" message)))
 
 ;; A human mind is a Black Forest of diminished modes.  Some are dangerous;
