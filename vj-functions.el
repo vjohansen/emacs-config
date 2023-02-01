@@ -313,11 +313,14 @@ With a prefix arg, insert the N characters above point.
          (dir (vj-git-root)))
     (grep (format "cd %s && git --no-pager grep -n %s" dir (thing-at-point 'symbol)))))
 
+(defun vj-ag (dir word)
+  (interactive (list (read-string "Search Term: " (current-word))))
+  (let ((compilation-buffer-name-function (lambda (mode) (concat "*vj ag*"))))
+    (compile (format "%svj-ag.bat --vimgrep %s %s" vj-emacs-config-dir word dir))))
+
 (defun vj-git-ag (word)
   (interactive (list (read-string "Search Term: " (current-word))))
-  (let ((dir (vj-git-root))
-         (compilation-buffer-name-function (lambda (mode) (concat "*vj ag*"))))
-    (compile (format "c:/tools/ag --vimgrep %s %s" word dir))))
+  (vj-ag (vj-git-root) word))
 
 (defun vj-ag-compilation-mode-finish (buf status)
   "Remove common path component (default-directory) in '*vj sg*' compilation buffer
@@ -326,15 +329,17 @@ Usage:(add-hook 'compilation-finish-functions 'vj-ag-compilation-mode-finish)"
   (interactive)
   (when (equal (buffer-name buf) "*vj ag*")
     (face-remap-add-relative 'compilation-error
-      :foreground "green2")
-    (save-excursion
-      (set-buffer buf)
-      (goto-char (point-min))
-      (while (re-search-forward
-               (replace-regexp-in-string "[/\\]" "." default-directory)
-               nil t)
-        (delete-region (point-at-bol) (point))
-        (insert "•")))))
+      :foreground "green2")))
+    ;; Not working : selecting file stops working
+    ;; (save-excursion
+    ;;   (set-buffer buf)
+    ;;   (goto-char (point-min))
+    ;;   (while (re-search-forward
+    ;;            (replace-regexp-in-string "[/\\]" "." default-directory)
+    ;;            nil t)
+    ;;     (delete-region (point-at-bol) (point))
+    ;;     (insert "•")))
+;; maybe use ;;  (progn (add-text-properties (match-beginning 0) (match-end 0) '(invisible t)) 'bold))))
 
 
 ;; ------------------------------------------------------------
