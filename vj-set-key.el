@@ -8,7 +8,7 @@
 (global-set-key [S-f8] 'previous-error)
 (global-set-key (kbd "M-n") 'next-error)
 (global-set-key (kbd "M-p") 'previous-error)
-(global-set-key (kbd "M-o") 'delete-horizontal-space)
+(global-set-key (kbd "M-o") 'vj-next-file-by-extension)
 (global-set-key (kbd "C-M-o") 'other-window) ;; was split-line
 (global-set-key (kbd "M-+") 'delete-horizontal-space)
 

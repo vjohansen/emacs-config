@@ -503,3 +503,20 @@ same directory as the org-buffer and insert a link to this file."
     (beginning-of-line)
     (forward-char (if (stringp column) (string-to-number column) column)))
   (pulse-momentary-highlight-region (point-at-bol) (point-at-eol)))
+
+
+
+(defun vj-next-file-by-extension ()
+  "Toggle between files with same basename but different extension."
+  (interactive)
+  (let (files prefix index next
+         (base (file-name-nondirectory (buffer-file-name))))
+    (setq prefix (replace-regexp-in-string "[^.]*$" "" base))
+    (setq files (directory-files "." nil (concat "^" prefix ".*")))
+    (dotimes (i (length files))
+      (if (equal (nth i files) base)
+        (setq index i)))
+    (setq next (mod (+ 1 index ) (length files)))
+    ;;(message "%s | %s | %s" files index (nth next files))
+    (find-file (nth next files))))
+

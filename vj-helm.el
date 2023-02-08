@@ -1,11 +1,4 @@
 
-(require 'vj-helm-simple-git-grep)
-(global-set-key (kbd "C-x g") 'vj-helm-git-grep)
-;;(global-set-key (kbd "C-'") 'helm-vps-index-db)
-(global-set-key (kbd "C-c b") 'helm-vps)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x c o") 'helm-occur)
-;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 (setq it "") ;; helm-aif macro sets `it´
 
@@ -17,6 +10,15 @@
 (require 'helm-grep) ;for grep to work
 
 (require 'helm-vps) ;; NOT in helm git repo
+
+(require 'vj-helm-simple-git-grep)
+(global-set-key (kbd "C-x g") 'vj-helm-git-grep)
+;;(global-set-key (kbd "C-'") 'helm-vps-index-db)
+(global-set-key (kbd "C-c b") 'helm-vps)
+(global-set-key (kbd "M-x") 'helm-M-x)
+;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+(global-set-key (kbd "C-x c o") 'helm-occur)
 
 ;; Overwrite binding for helm-execute-persistent-action
 ;; "Perform the associated action ATTR without quitting helm."
