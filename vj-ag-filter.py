@@ -4,10 +4,10 @@ import os
 import sys
 
 def print_file_matches(dir, collect):
-    print("\nEntering directory `{}'".format(dir))
+    print("\nEntering directory `{}'".format(dir), flush=True)
     for suffix in collect:
         print(suffix)
-    print("Leaving directory `{}'".format(dir))
+    print("Leaving directory `{}'".format(dir), flush=True)
     collect = []
 
 collect = []
@@ -20,7 +20,7 @@ for line in fileinput.input():
         continue
     match = re.match('^(..[^:]+)([:(]\d+[:,]\d+[:)].*)$', line)
     if not match:
-        print(line)
+        print(line, flush=True)
         continue
     hits += 1
     dir = os.path.dirname(match.group(1)) # os.path.realpath( ?

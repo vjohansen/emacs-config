@@ -21,10 +21,15 @@
 		       filename)))))
     (if (not result)
       (save-excursion
+
         (if (re-search-backward
-              (concat "^\\(" (replace-regexp-in-string "[/\\]" "." default-directory) "[^.]*\\.[a-z][a-z]*\\)")
+              (concat "^\\(" (replace-regexp-in-string "[/\\]" "." default-directory) ".*[a-z]*\\)")
               nil t)
           (setq result (match-string-no-properties 1)))))
+
+    (if (not result)
+      (if (string-match "^http:" filename)
+        (message "URL!")))
 
     (if (and result (file-exists-p result))
 	(progn

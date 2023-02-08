@@ -552,8 +552,10 @@ If no project name is supplied, use the current project name."
 
 (add-hook 'compilation-mode-hook 'vps-compilation-mode-setup)
 
+(defvar vj-compilation-buffer-names '("*vps grep*"))
+
 (defun vps-compilation-mode-setup ()
-  (if (equal (buffer-name) "*vps grep*")
+  (if (member (buffer-name) vj-compilation-buffer-names)
     (face-remap-add-relative 'compilation-error
       :foreground (or (face-foreground 'success) "green1"))))
 
