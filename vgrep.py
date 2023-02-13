@@ -21,7 +21,8 @@ args = parser.parse_args()
 word = args.dirs.pop(0)
 
 exts = re.sub(':code','c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java' +
-              ',cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml',args.e)
+              ',cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml' +
+              ',ts,tsx,jsx,json',args.e)
 exts = re.sub(':text','org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,' +
               'config,xslt,xsl,css,asp,xml,xsl,xslt,sql', exts)
 

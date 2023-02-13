@@ -92,7 +92,13 @@ while (@dirs) {
         $dir =~s/^~/$ENV{HOME}/;
         chdir $dir or warn "chdir $dir failed";
         # Recursively add subdirectories to @dirs
-        find sub {-d $_ and unshift @dirs, $File::Find::name}, $dir;
+        find sub {
+          if ($_ eq 'node_modules'){
+            $File::Find::prune = 1;
+          } else {
+            -d $_ and unshift @dirs, $File::Find::name
+          }
+        }, $dir;
         next;
     }
     $dir =~ s/[\/\\]$//;                          # remove trailing slash

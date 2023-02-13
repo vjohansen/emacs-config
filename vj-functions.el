@@ -509,14 +509,14 @@ same directory as the org-buffer and insert a link to this file."
 (defun vj-next-file-by-extension ()
   "Toggle between files with same basename but different extension."
   (interactive)
-  (let (files prefix index next
-         (base (file-name-nondirectory (buffer-file-name))))
-    (setq prefix (replace-regexp-in-string "[^.]*$" "" base))
-    (setq files (directory-files "." nil (concat "^" prefix ".*")))
-    (dotimes (i (length files))
-      (if (equal (nth i files) base)
-        (setq index i)))
-    (setq next (mod (+ 1 index ) (length files)))
-    ;;(message "%s | %s | %s" files index (nth next files))
-    (find-file (nth next files))))
+  (if (buffer-file-name)
+    (let (files prefix index next
+           (base (file-name-nondirectory (buffer-file-name))))
+      (setq prefix (car (split-string base "\\.")))
+      (setq files (directory-files "." nil (concat "^" prefix)))
+      (dotimes (i (length files))
+        (if (equal (nth i files) base)
+          (setq index i)))
+      (setq next (mod (+ 1 index ) (length files)))
+      (find-file (nth next files)))))
 
