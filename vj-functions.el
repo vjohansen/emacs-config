@@ -316,7 +316,8 @@ With a prefix arg, insert the N characters above point.
 (defun vj-ag (dir word)
   (interactive (list (read-string "Search Term: " (current-word))))
   (let ((compilation-buffer-name-function (lambda (mode) (concat "*vj ag*"))))
-    (compile (format "%svj-ag.bat --vimgrep %s %s" vj-emacs-config-dir word dir))))
+    ;; Do not want to set compilation-command which `compile' does
+    (compilation-start (format "%svj-ag.bat --vimgrep %s %s" vj-emacs-config-dir word dir))))
 
 (defun vj-git-ag (word)
   (interactive (list (read-string "Search Term: " (current-word))))
@@ -496,14 +497,15 @@ same directory as the org-buffer and insert a link to this file."
 
 
 
-(defun vj-goto-location (filename lineno &optional column)
-  (find-file-other-window filename)
+(defun vj-goto-location (other-window filename lineno &optional column)
+  (if other-window
+    (find-file-other-window filename)
+    (find-file filename))
   (goto-line (if (stringp lineno) (string-to-number lineno) lineno))
   (when column
     (beginning-of-line)
     (forward-char (if (stringp column) (string-to-number column) column)))
   (pulse-momentary-highlight-region (point-at-bol) (point-at-eol)))
-
 
 
 (defun vj-next-file-by-extension ()

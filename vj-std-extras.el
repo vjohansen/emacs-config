@@ -21,11 +21,6 @@
 (setq default-major-mode 'text-mode)
 (setq initial-major-mode 'emacs-lisp-mode)
 
-(if (file-directory-p "~/temp/emacs")
-  (setq backup-directory-alist '(("." . "~/temp/emacs")))
-  ;; else
-  (message "please create ~/temp/emacs (for backup files)"))
-
 (setq eshell-ask-to-save-history 'always)
 
 (setq
@@ -47,7 +42,7 @@
 
 (display-time)
 ;; (add-hook 'diary-hook 'appt-make-list)
-;; (setq appt-display-diary nil)
+(setq appt-display-diary nil)
 (appt-activate 1)
 ;; (diary 0)
 (if (< emacs-major-version 23)
