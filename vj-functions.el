@@ -317,10 +317,13 @@ With a prefix arg, insert the N characters above point.
   (interactive (list (read-string "Search Term: " (current-word))))
   (let ((compilation-buffer-name-function (lambda (mode) (concat "*vj ag*"))))
     ;; Do not want to set compilation-command which `compile' does
-    (compilation-start (format "%svj-ag.bat --vimgrep %s %s" vj-emacs-config-dir word dir))))
+    (compilation-start (format "%svj-ag.bat --vimgrep %s %s"
+                         vj-emacs-config-dir (shell-quote-argument word) dir))))
+;; vj-ag.bat
+;;c:\tools\ag --ignore Help --ignore build %* | python %~dp0/vj-ag-filter.py
 
 (defun vj-git-ag (word)
-  (interactive (list (read-string "Search Term: " (current-word))))
+  (interactive (list (read-string "Search Term: ")))
   (vj-ag (vj-git-root) word))
 
 (defun vj-ag-compilation-mode-finish (buf status)

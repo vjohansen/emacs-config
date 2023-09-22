@@ -502,7 +502,7 @@ If no project name is supplied, use the current project name."
         )
       (vps-visit-tags))
 
-    (message "Project %s" proj-name))
+    (message "Project %s" (propertize proj-name 'face font-lock-function-name-face)))
 
   (when (and (featurep 'filecache) (cadr (vps-get-setting 'file-cache-add)))
     (sit-for 1)
