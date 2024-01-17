@@ -291,6 +291,7 @@ With a prefix arg, insert the N characters above point.
   '("perl -MText::Autoformat -e 'autoformat'"
      "$S=','; @F=split(qr($S)); $F[1]=  ; $_=join($S,@F);" ; field manip
      "$_ = \"$. - $_\""                 ; number lines
+     "chomp $_; $_ = \"$_$. = \\\"$_$.\\\"\\n\""                 ; number lines
      "s///g"))
 
 (defun perl-on-region (command)
@@ -518,7 +519,7 @@ same directory as the org-buffer and insert a link to this file."
     (let (files prefix index next
            (base (file-name-nondirectory (buffer-file-name))))
       (setq prefix (car (split-string base "\\.")))
-      (setq files (directory-files "." nil (concat "^" prefix)))
+      (setq files (directory-files "." nil (concat "^" prefix "\\.")))
       (dotimes (i (length files))
         (if (equal (nth i files) base)
           (setq index i)))

@@ -2,7 +2,8 @@
 
 (setq it "") ;; helm-aif macro sets `it´
 
-(require 'helm-config)
+(setq helm-move-to-line-cycle-in-source nil)
+
 (require 'helm-files)
 (require 'helm-command)
 (require 'helm-buffers)
@@ -53,13 +54,22 @@
 (require 'helm-for-files)
 
 
+(defun vj-helm-recentf-list () recentf-list)
+
+(defvar vj-helm-recentf
+  (helm-build-sync-source "Recent Files"
+    :candidates 'vj-helm-recentf-list
+    :filtered-candidate-transformer 'helm-highlight-files
+    :action 'helm-find-files-actions))
+
+
 (defvar vj-helm-list
   '(
-     helm-source-recentf
-     helm-source-vps-files
-     helm-source-files-in-current-dir
-     vj-helm-source-fav
      helm-source-buffers-list
+     helm-source-files-in-current-dir
+     vj-helm-recentf                    ; helm-source-recentf TOO SLOW
+     helm-source-vps-files
+     vj-helm-source-fav
      ;; 			helm-source-files-in-current-dir
      ;;                        helm-c-source-locate
      ))
@@ -70,7 +80,8 @@
     (if (eq system-type 'windows-nt)
       (vj-helm-wdsgrep)
       (vj-helm-local-locate))
-    (helm-other-buffer vj-helm-list "*vj-helm*")))
+    (helm :sources vj-helm-list :buffer "*vj-helm*" :truncate-lines t)))
+
 
 
 ;; Desktop search for windows

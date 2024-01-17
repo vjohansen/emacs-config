@@ -167,12 +167,6 @@ that file will need to be in your path."
 ;; ;;             ("assertion .* failed: file \\([^ ]+\\), line \\([0-9]+\\)[,.]" 1 2)))))
 
 
-(defun perl-region (command)
-  "Run perl command on selected region"
-  (interactive "sWhat command: perl ")
-  (shell-command-on-region (mark) (point) (concat "perl " command) t t))
-
-
 (defun perl-autoformat-on-region ()
   "Run perl command on selected region"
   (interactive)
