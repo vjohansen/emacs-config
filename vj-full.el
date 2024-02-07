@@ -14,7 +14,7 @@
 (show-paren-mode t)
 (recentf-mode t)
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
-(which-function-mode)
+;;(which-function-mode)
 (auto-compression-mode t)
 
 ;; Change annoying yes/no RET questions to single keypress of y or n

@@ -35,6 +35,11 @@
 (global-set-key (kbd "C-å") 'vj-helm)
 (global-set-key (kbd "C-x b") 'helm-mini)
 
+;; use C-c o in helm for other window
+(define-key helm-map (kbd "C-+") #'helm-buffer-switch-other-window)
+(define-key helm-map (kbd "C-å") #'helm-toggle-buffers-details)
+
+
 
 (defvar vj-fav-fn "~/.fav")
 (defvar vj-fav-list
