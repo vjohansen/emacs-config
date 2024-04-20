@@ -21,7 +21,8 @@
 (add-to-list 'load-path my-lisp-dir)
 
 ;; Load customize file
-(setq custom-file (format "%s/custom-%s.el" my-lisp-dir (downcase system-name)))
+(defvar vj-custom-file nil)
+(setq custom-file (or vj-custom-file (format "%s/custom-%s.el" my-lisp-dir (downcase system-name))))
 (set-register ?c `(file . ,custom-file))
 (load custom-file t)
 
