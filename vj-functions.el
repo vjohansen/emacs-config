@@ -305,7 +305,7 @@ With a prefix arg, insert the N characters above point.
 
 (defun vj-git-root ()
   (let ((dir (vj-chomp (shell-command-to-string "git rev-parse --show-toplevel"))))
-    (if (string-match "^[a-zA-Z]:" dir)
+    (if (string-match "^\\([a-zA-Z]:\\|/\\)" dir)
       dir)))
 
 (defun vj-git-grep ()
@@ -328,7 +328,7 @@ With a prefix arg, insert the N characters above point.
   (vj-ag (vj-git-root) word))
 
 (defun vj-ag-compilation-mode-finish (buf status)
-  "Remove common path component (default-directory) in '*vj sg*' compilation buffer
+  "Remove common path component (default-directory) in \'*vj sg*\' compilation buffer
 
 Usage:(add-hook 'compilation-finish-functions 'vj-ag-compilation-mode-finish)"
   (interactive)

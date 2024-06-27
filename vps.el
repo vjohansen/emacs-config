@@ -73,7 +73,7 @@
   "Contains alls vps project definitions. Use vps-add-project to add projects.
 
  (vps-add-project \"name\"
-  '((dirs  (\"~/dir1\" \"~/dir2\"))
+  \'((dirs  (\"~/dir1\" \"~/dir2\"))
     (rdirs (\"~/topdir3\")
     (ext   (\"c\" \"h\")))))
 
@@ -93,7 +93,7 @@ Don't use customize."
 
 Useful for removing build filenames from the list:
 
-  (add-hook 'vps-write-file-list-hook
+  (add-hook \'vps-write-file-list-hook
     (lambda ()
       (goto-char (point-min))
       (flush-lines \"/build/\")))
@@ -947,7 +947,7 @@ call \\[find-file-at-point]"
             (vps-index-db-filename)))))
 
 (defun vps-compile ()
-  "Call compile with the project setting in 'compile-command in first 'rdirs directory."
+  "Call compile with the project setting in \'compile-command in first \'rdirs directory."
   (interactive)
   (compile (read-from-minibuffer "Compile command: "
     (format "cd %s && %s"
@@ -958,7 +958,7 @@ call \\[find-file-at-point]"
 (defun vps-midnight-install ()
   "Rebuild directory cache for current project at midnight.
 
-Note that (require 'midnight) may install clean-buffer-list in midnight-hook"
+Note that (require \'midnight) may install clean-buffer-list in midnight-hook"
   (interactive)
   (require 'midnight)
   (unless midnight-mode

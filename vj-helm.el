@@ -70,9 +70,9 @@
 
 (defvar vj-helm-list
   '(
+     vj-helm-recentf                    ; helm-source-recentf TOO SLOW
      helm-source-buffers-list
      helm-source-files-in-current-dir
-     vj-helm-recentf                    ; helm-source-recentf TOO SLOW
      helm-source-vps-files
      vj-helm-source-fav
      ;; 			helm-source-files-in-current-dir
