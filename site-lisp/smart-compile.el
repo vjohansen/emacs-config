@@ -51,6 +51,7 @@
   (nxhtml-mode        . (browse-url-of-buffer))
   (html-helper-mode   . (browse-url-of-buffer))
   (octave-mode        . (run-octave))
+  ("\\.md\\'"          . "md2html %f")
   ("\\.c\\'"          . "gcc -O2 %f -lm -o %n")
 ;;  ("\\.c\\'"          . "gcc -O2 %f -lm -o %n && ./%n")
 ;;  ("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f -lm -o %n")

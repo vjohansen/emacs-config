@@ -4,47 +4,49 @@
 (setq ispell-program-name (locate-file "hunspell"
                             exec-path exec-suffixes 'file-executable-p))
 
+;; Create a text file with a word per line: c:/hunspell/personal.en
+
 (setq ispell-local-dictionary-alist
   '(("en_US" ;; was nil
        "[[:alpha:]]"
        "[^[:alpha:]]"
        "[']"
        t
-       ("-d" "en_US" "-p" "D:\\hunspell\\share\\hunspell\\personal.en")
+       ("-d" "en_US" "-p" "c:\\hunspell\\personal.en")
        nil
-       iso-8859-1)
+       utf-8)
      ("da_DK"
        "[[:alpha:]ÆØÅæåø]"
        "[^[:alpha:]ÆØÅæåø]"
        "[']"
        t
-       ("-d" "da_DK" "-p" "D:\\hunspell\\share\\hunspell\\personal.da")
+       ("-d" "da_DK" "-p" "c:\\hunspell\\personal.da")
        nil
-       iso-8859-1)
+       utf-8)
      ("american"
        "[[:alpha:]]"
        "[^[:alpha:]]"
        "[']"
        t
-       ("-d" "en_US" "-p" "D:\\hunspell\\share\\hunspell\\personal.en")
+       ("-d" "en_US" "-p" "c:\\hunspell\\personal.en")
        nil
-       iso-8859-1)
+       utf-8)
      ("deutsch"
        "[[:alpha:]ÄÖÜéäöüß]"
        "[^[:alpha:]ÄÖÜéäöüß]"
        "[']"
        t
        ("-d" "de_DE_frami" "-p"
-         "D:\\hunspell\\share\\hunspell\\personal.de")
+         "c:\\hunspell\\personal.de")
        nil
-       iso-8859-1)
+       utf-8)
      ("francais"
        "[[:alpha:]ÀÂÇÈÉÊËÎÏÔÙÛÜàâçèéêëîïôùûü]"
        "[^[:alpha:]ÀÂÇÈÉÊËÎÏÔÙÛÜàâçèéêëîïôùûü]"
        "[-']"
        t
        ("-d" "fr-classique" "-p"
-         "D:\\hunspell\\share\\hunspell\\personal.fr")
+         "c:\\hunspell\\personal.fr")
        nil
        utf-8)
      ))
