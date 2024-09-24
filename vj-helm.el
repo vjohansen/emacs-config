@@ -167,3 +167,24 @@
       :candidates  (lambda () cppref-files)
       ;;    :filtered-candidate-transformer #'helm-kill-ring-transformer
       :action (list (cons "Do it" #'cppref-action)))))
+
+
+(setq vj-text-dir "~/Sync/books")
+
+(defvar vj-text-files
+  (if (file-exists-p vj-text-dir)
+    (mapcar
+      (lambda (f)
+        (substring f (length vj-text-dir )))
+      (mapcar #'(lambda (fn) (concat vj-text-dir fn))
+        (directory-files-recursively vj-text-dir
+        "\\.\\(epub\\|mobi\\|pdf\\)$" )))))
+
+(defvar vj-helm-text
+  (helm-build-sync-source "Books"
+    :candidates  (lambda () vj-text-files)
+    :candidate-number-limit 50
+    :requires-pattern 4
+    :filtered-candidate-transformer 'helm-highlight-files
+    :action 'helm-find-files-actions
+    ))
