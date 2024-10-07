@@ -304,11 +304,11 @@
 ;; ------------------------------------------------------------
 
 ;; Use M-n/M-p in minibuffer to complete history entries based on prefix
-(mapcar
- (function
-  (lambda (x)
-    (define-key x (kbd "ESC p") 'previous-complete-history-element)
-    (define-key x (kbd "ESC n") 'next-complete-history-element)))
- (list minibuffer-local-completion-map minibuffer-local-isearch-map
-       minibuffer-local-map minibuffer-local-must-match-map
-       minibuffer-local-ns-map))
+;; (mapcar
+;;  (function
+;;   (lambda (x)
+;;     (define-key x (kbd "ESC p") 'previous-complete-history-element)
+;;     (define-key x (kbd "ESC n") 'next-complete-history-element)))
+;;  (list minibuffer-local-completion-map minibuffer-local-isearch-map
+;;        minibuffer-local-map minibuffer-local-must-match-map
+;;        minibuffer-local-ns-map))
