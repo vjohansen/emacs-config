@@ -18,7 +18,11 @@
 (auto-compression-mode t)
 
 ;; Change annoying yes/no RET questions to single keypress of y or n
-(fset 'yes-or-no-p 'y-or-n-p)
+(if (>= emacs-major-version 28)
+  ;; TODO: use setopt instead of setq for Emacs 29
+  (setq use-short-answers t)
+  ;; else
+  (fset 'yes-or-no-p 'y-or-n-p))
 
 (prefer-coding-system 'utf-8)
 
