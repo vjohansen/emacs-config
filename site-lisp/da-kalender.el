@@ -177,7 +177,7 @@
 
 ;; other global calendar database
 (setq calendar-date-style 'european)
-(setq diary-file "~/.emacs.d/var/diary")
+;;(setq diary-file "~/.emacs.d/var/diary")
 (setq diary-date-forms
       '((month "/" day "[^/0-9]")
 	(month "/" day "/" year "[^0-9]")
