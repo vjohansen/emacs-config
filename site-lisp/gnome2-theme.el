@@ -7,7 +7,7 @@
 (custom-theme-set-faces
  'gnome2
 
- '(default ((t (:foreground "wheat" :background "darkslategrey"))))
+ '(default ((t (:foreground "wheat" :background "#244"))))
  '(cursor ((t (:foreground "LightGray"))))
  '(mouse-color ((t (:foreground "Grey"))))
  '(border-color ((t (:foreground "black"))))
