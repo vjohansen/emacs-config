@@ -37,7 +37,10 @@
                                (save-excursion
                                  (beginning-of-defun)
                                  (indent-sexp))))
-  (local-set-key "\M-q\M-q" 'lisp-fill-paragraph)
+
+  (local-set-key "\M-q\M-q" (if (fboundp 'prog-fill-reindent-defun)
+                              'prog-fill-reindent-defun
+                              'lisp-fill-paragraph))
   (setq lisp-indent-offset 2)
   (setq fill-column 78)
   ;; Templates
