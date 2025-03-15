@@ -15,7 +15,7 @@
 
 (defun vj-git-diff ()
   (interactive)
-  (if (thing-at-point-looking-at "\\b[0-9a-z]\\{7\\}\\b")
+  (if (thing-at-point-looking-at "\\b[0-9a-z]\\{7,40\\}\\b")
     (if (equal (match-string-no-properties 0) vj-git-diff-last-commit)
       ;; same commit id
       (scroll-other-window)
@@ -30,7 +30,7 @@
 
 (defun vj-git-diff-gitk-gui ()
   (interactive)
-  (if (thing-at-point-looking-at "\\b[0-9a-z]\\{7\\}\\b")
+  (if (thing-at-point-looking-at "\\b[0-9a-z]\\{7,40\\}\\b")
     (shell-command
       ;; show_commit.bat contains:
       ;;   "C:\Program Files (x86)\Git\cmd\gitk" --select-commit=%1
