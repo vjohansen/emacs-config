@@ -45,10 +45,6 @@
   (setq fill-column 78)
   ;; Templates
   (auto-fill-mode)
-  ;;    (filladapt-mode)
-  ;; (local-set-key "\C-c\C-f" 'tempo-forward-mark)
-  ;; (local-set-key "\C-c\C-e" 'tempo-complete-tag)
-  ;; (elisp-tempo)
   (eldoc-mode t)
   )
 
@@ -75,16 +71,6 @@
 (setq auto-mode-alist (cons '("\\.p[lm]$" . cperl-mode) auto-mode-alist))
 (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
 
-;; (setq cperl-array-face (make-face 'cperl-array-face))
-;; (set-face-foreground 'cperl-array-face "DarkMagenta")
-;;                      ;(set-face-background 'cperl-array-face "gray90")
-;; (setq cperl-hash-face (make-face 'cperl-hash-face))
-;; (set-face-foreground 'cperl-hash-face "MediumVioletRed")
-;;                       ;(set-face-background 'cperl-hash-face "gray90")
-
-;;(setq font-lock-constant-face (make-face 'font-lock-constant-face))
-;;(set-face-background 'font-lock-constant-face "Thistle")
-
 (add-hook 'cperl-mode-hook 'vj-cperl-mode-hook)
 
 (eval-after-load "cperl"
@@ -98,13 +84,6 @@
   (make-local-variable 'compile-command)
   (setq compile-command
     (concat "perl -w " (file-name-nondirectory (buffer-file-name))))
-  (message "vj-perl: set compile-command to \"%s\"" compile-command)
-
-  (if (boundp 'ac-source-perl-completion)
-    (when (not (equal system-type 'windows-nt))
-      (perl-completion-mode)
-      (add-to-list 'ac-sources 'ac-source-perl-completion nil)))
-  (auto-complete-mode t)
 
   (setq cperl-indent-level 2
     cperl-continued-statement-offset 2
@@ -118,76 +97,6 @@
     comment-column 40)
   )
 
-
-
-;; make perldocs work on windows
-(defun win-cperl-perldoc (cmds)
-  ;; quick hack by Mike Slass <mikesl@wrq.com>
-  "Hack to make perldocs sorta work under windows.
-
-Works using the perldoc.bat that ships with ActiveState Perl;
-that file will need to be in your path."
-  (interactive
-   (list
-    (read-from-minibuffer
-     "perldoc: "
-     (cperl-word-at-point))))
-  (shell-command
-   (concat
-    "perldoc "
-    (shell-quote-argument cmds))
-   (let ((buf (get-buffer-create "*perldoc*")))
-     (set-buffer buf)
-     (delete-region (point-min) (point-max))
-     buf))
-;;      (outline-mode)
-;;      (setq outline-regexp "^[A-Z]")
-    )
-
-
-
-
-;; (eval-after-load
-;;  "compile"
-;;  ;; Append regexp for Perl errors to global list (20.2 misses the "." case)
-;;  '(setq compilation-error-regexp-alist  ; Perl
-;;      (append compilation-error-regexp-alist
-;;              '(;; <Good Perl advice> at foo.cgi line 13.
-;;                ;; syntax error at bar.pl line 270, near ...
-;;                ;; NB: Emacs 20.2 needs the `.*' (implicitly anchored w/ `^')
-;;                (".* at \\([^ ]+\\) line \\([0-9]+\\)[,.]" 1 2)))))
-
-;; (eval-after-load
-;;  "compile"
-;;  '(setq compilation-error-regexp-alist  ; "assertion .."
-;;      (append compilation-error-regexp-alist
-;;              '(;; <Good Perl advice> at foo.cgi line 13.
-;;                ;; syntax error at bar.pl line 270, near ...
-;;                ;; NB: Emacs 20.2 needs the `.*' (implicitly anchored w/ `^')
-;;                ("assertion \\([^ ]+\\), line \\([0-9]+\\)" 1 2)))))
-;; ;;             ("failed: file \"\\([^ ]+\\), line \\([0-9]+\\)" 1 2)))))
-
-;; ;;             ("assertion .* failed: file \\([^ ]+\\), line \\([0-9]+\\)[,.]" 1 2)))))
-
-
-(defun perl-autoformat-on-region ()
-  "Run perl command on selected region"
-  (interactive)
-  (shell-command-on-region (mark) (point)
-    "perl -MText::Autoformat -e 'autoformat'" t t))
-
-; ------------------------------------------------------------
-
-(autoload 'php-mode "php-mode-improved" "*Major mode for editing PHP code." t)
-
-(add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)\\'" . php-mode))
-
-(add-hook 'php-mode-hook 'vj-php-mode-hook)
-
-(defun vj-php-mode-hook ()
-  "VJs PHP mode hook for php-mode"
-  (auto-complete-mode t)
-  (setq c-basic-offset 4))
 
 ; ------------------------------------------------------------
 
@@ -324,16 +233,6 @@ that file will need to be in your path."
                 (insert (concat "console.log(\"" cw "\", " cw ");")))))))
     )))
 
-;; (defun vjo-c++-mode-hook ()
-;;   "c++-mode-hook"
-;;   (interactive)
-;;   (modify-syntax-entry ?_ "w" c++-mode-syntax-table)
-;;   (c-set-offset 'inline-open 0)
-;;   (c-set-offset 'inextern-lang 0)
-;;                                      ;  (c-set-offset 'access-label 0)
-;;                                         ; (message "VJO C++")
-;;   )
-
 (add-to-list 'auto-mode-alist '("\\.cuh?\\'" . c-or-c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-or-c++-mode))
 (defun c-or-c++-mode ()
@@ -396,17 +295,6 @@ that file will need to be in your path."
 
 
 
-;; (defun vj-gdb ()
-;;   (interactive)
-;;   (let ((subdir (format "%s/std-exe-%s"
-;;                   (getenv "MAKEENV_SYSTEM")
-;;                   (getenv "MAKEENV_CONFIG")))
-;;          (fn))
-;;     (setq fn (car (directory-files subdir t "\.exe$")))
-;;     (gdb (format "gdb %s" fn))))
-
-
-
 (defun my-cc-mode-return ()
    "Intelligent line breaking in all cc-modes. Handles strings in a smart
  way (Klaus Berndl)"
@@ -466,76 +354,12 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 ; ------------------------------------------------------------
 
-
-(setq auto-mode-alist
-  (append '(("CMakeLists\\.txt\\'" . cmake-mode)
-             ("\\.cmake\\'" . cmake-mode))
-    auto-mode-alist))
-
-(autoload 'cmake-mode "cmake-mode" "CMake*" t)
-
-(eval-after-load "cmake-mode"
-  '(progn
-     (load "context-info-cmake")
-     (add-to-list 'compilation-error-regexp-alist-alist
-       '(cmake
-          "^CMake Error at \\([^:\b]+\\):\\([0-9]+\\) (" 1 2))
-     (add-to-list 'compilation-error-regexp-alist 'cmake)
-
-     (add-to-list 'ac-modes 'cmake-mode)))
-
-; ------------------------------------------------------------
-
 (defun sm-try-smerge ()
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil t)
       (smerge-mode 1))))
 (add-hook 'find-file-hook 'sm-try-smerge t)
-
-; ------------------------------------------------------------
-
-;; (require 'flymake)
-
-;; ;; Invoke ruby with '-c' to get syntax checking
-;; (defun flymake-ruby-init ()
-;;   (let* ((temp-file   (flymake-init-create-temp-buffer-copy
-;;                         'flymake-create-temp-inplace))
-;;           (local-file  (file-relative-name
-;;                          temp-file
-;;                          (file-name-directory buffer-file-name))))
-;;     (list "ruby" (list "-c" local-file))))
-
-;; (push '(".+\\.rb$" flymake-ruby-init) flymake-allowed-file-name-masks)
-;; (push '("Rakefile$" flymake-ruby-init) flymake-allowed-file-name-masks)
-
-;; (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
-
-(defun vj-ruby-indent-defun ()
-  ""
-  (interactive)
-  (save-excursion
-    (when (re-search-backward "^def" nil t)
-      (let ((p1 (point)))
-        (when (search-forward-regexp "^end" nil t)
-          (indent-region p1 (point)))))))
-
-
-(defun vj-ruby-setup ()
-  ""
-  (make-local-variable 'compile-command)
-  (local-set-key (kbd "C-c C-q") 'vj-ruby-indent-defun)
-  (setq compile-command
-    (concat "ruby " (file-name-nondirectory (buffer-file-name))))
-  (require 'yari)
-  ;; Don't want flymake mode for ruby regions in rhtml files and also on read only files
-  (if (and
-        (not (null buffer-file-name))
-        (not (file-remote-p buffer-file-name))
-        (file-writable-p buffer-file-name))
-    (flymake-mode)))
-
-(add-hook 'ruby-mode-hook 'vj-ruby-setup)
 
 ; ------------------------------------------------------------
 
