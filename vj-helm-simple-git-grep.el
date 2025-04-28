@@ -1,14 +1,18 @@
 ;;; vj-helm-simple-git-grep.el --- helm source that calls git grep
 
 ;;; Commentary:
-;; A helm source for calling git grep. There are no bells and whistles.
+;; A helm source for calling git grep.  There are no bells and whistles.
 
 ;;; Code:
 
-(defvar vj-helm-simple-git-grep-colors t "Disabling colors may improve speed")
 
-(defvar vj-helm-simple-git-grep-root nil "Last git repo found. Reused when
-running helm outside a git repo")
+(declare-function helm-other-buffer "helm-core" (fn file))
+(declare-function helm-grep-split-line "helm-grep" (line))
+
+(defvar vj-helm-simple-git-grep-colors t "Disabling colors may improve speed.")
+
+(defvar vj-helm-simple-git-grep-root nil "Last git repo found.
+Reused when running helm outside a git repo.")
 
 (defun vj-helm-simple-git-grep-candidates ()
   "Find the candidates.
@@ -60,6 +64,7 @@ If not in a git repo use the root of the previously used git repo"
   "Source for git.")
 
 (defun vj-helm-git-grep ()
+    "Simple git grep."
     (interactive)
     (helm-other-buffer '(vj-helm-simple-git-grep) "*helm git grep*"))
 

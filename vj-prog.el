@@ -20,7 +20,7 @@
     (set (make-local-variable 'indent-tabs-mode) t)
     (setq tab-width 4)))
 
-(add-hook 'find-file-hook 'sm-find-file-tab-setup)
+;;(add-hook 'find-file-hook 'sm-find-file-tab-setup)
 
 ; ------------------------------------------------------------
 
@@ -372,6 +372,9 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 (defun markdown-mode-setup ()
   (turn-on-visual-line-mode)
+  (keymap-local-set "C-c f" (lambda ()
+                              (interactive)
+                              (buffer-face-set :family "Verdana" :height 1.0)))
   )
 
 (add-hook 'markdown-mode-hook 'markdown-mode-setup)

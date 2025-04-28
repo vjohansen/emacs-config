@@ -1,24 +1,31 @@
 
+;;; Code:
+
+;; (check-declare-file (buffer-file-name))
+(declare-function tempo-c-cpp-hfilename "tempo-c-cpp" ())
+(declare-function eshell/ls "em-ls" (&rest ARGS))
+(declare-function w32-shell-execute "ext:dummy" (OPERATION DOCUMENT &optional PARAMETERS SHOW-FLAG))
+
 (defun my-scroll-up-hook ()
-   "My scroll-up."
+   "My scroll up."
    (interactive)
    (scroll-up 2)
 )
 
 (defun my-scroll-down-hook ()
-   "My scroll-down."
+   "My scroll down."
    (interactive)
    (scroll-down 2)
 )
 
 
 (defun vj-os-open (filename)
-  "Let the OS open the file with the appropriate program."
+  "Let the OS open the FILENAME with the appropriate program."
   (cond ((equal system-type 'darwin)
           (shell-command (concat "Open " (shell-quote-argument
                                            (expand-file-name filename)))))
     ((equal system-type 'windows-nt)
-      (w32-shell-execute "open" (substitute ?\\ ?/ (expand-file-name filename))))
+      (w32-shell-execute "open" (replace-regexp-in-string "\\\\" "/" (expand-file-name filename))))
     (t
       (start-process "vj-os-open" nil "/usr/bin/open" (expand-file-name filename)))))
 
@@ -26,19 +33,19 @@
 (defun eshell/lt () "vj 2009" (eshell/ls "-lrt"))
 
 (defun eshell/open (FILE)
-  "Let the OS determine how open a file."
+  "Let the OS determine how open FILE."
   (vj-os-open FILE))
 
 (defun eshell/e (filename)
-  "alias e to find-file"
+  "Alias e to `find-file´ FILENAME."
   (find-file filename))
 
 (global-set-key "\M-:" 'vj-find-tag)
 
 (defun vj-find-tag ()
-    "My find-tag wrapper for easy repetition (VJO 2003).
- Call `find-tag' with current word first time and after that call
- find-tag with NEXT-P set to t (if called repeatedly)"
+    "My `find-tag´ wrapper for easy repetition (VJO 2003).
+Call `find-tag´ with current word first time and after that call
+`find-tag´ with NEXT-P set to t (if called repeatedly)"
     (interactive)
     (vps-auto-change-project t)         ;can change last-command
 ;;    (message "vj-find-tag tag %s, cmd %s" last-tag last-command)
@@ -48,7 +55,7 @@
 
 
 (defun kill-whole-line ()
-  "Kills the entire current line.
+  "Kill the entire current line.
 With prefix argument, kill that many lines from point."
   (interactive)
   (beginning-of-line)

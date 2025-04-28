@@ -14,7 +14,6 @@
 
 (require 'vj-helm-simple-git-grep)
 (global-set-key (kbd "C-x g") 'vj-helm-git-grep)
-;;(global-set-key (kbd "C-'") 'helm-vps-index-db)
 (global-set-key (kbd "C-c b") 'helm-vps)
 (global-set-key (kbd "M-x") 'helm-M-x)
 ;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
@@ -27,9 +26,10 @@
 (define-key helm-map (kbd "C-<return>") #'helm-execute-persistent-action)
 
 ;; Added to helm-locate.el
-;;     (define-key map (kbd "M-]")     'helm-ff-run-toggle-basename)
-(if (eq system-type 'windows-nt)
-  (setq helm-locate-command "c:/tools/Locate32/Locate.exe %s %s"))
+(keymap-global-set "M-]" 'helm-ff-run-toggle-basename)
+
+;; (if (eq system-type 'windows-nt)
+;;   (setq helm-locate-command "c:/tools/Locate32/Locate.exe %s %s"))
 (setq helm-ff-transformer-show-only-basename nil)
 
 (global-set-key (kbd "C-å") 'vj-helm)

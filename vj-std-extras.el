@@ -45,9 +45,7 @@
 (setq appt-display-diary nil)
 (appt-activate 1)
 ;; (diary 0)
-(if (< emacs-major-version 23)
-   (european-calendar)
-  (calendar-set-date-style 'iso))
+(calendar-set-date-style 'iso)
 (setq display-time-24hr-format t)
 
 ;; ------------------------------------------------------------

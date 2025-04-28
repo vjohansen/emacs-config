@@ -56,10 +56,11 @@ def grep(dir_):
         shell_args.append('-B')
         shell_args.append(str(args.A))
     filenames = list(map(lambda fn: fn.replace('{','\{').replace('}','\}'), filenames))
+    # filenames = [f for f in filenames if f != 'main.js']
     shell_args.extend(filenames)
     sys.stdout.flush()
     try:
-        rawdata = subprocess.check_output(shell_args, shell=True)
+        rawdata = subprocess.check_output(shell_args, shell=False)
         output = rawdata.decode('ascii', 'ignore')
     except subprocess.CalledProcessError:
         return count
@@ -90,7 +91,7 @@ if args.r is not None:
     for rdir in args.r:
         rdir = rdir.replace("%20"," ")
         for root, dirs, files in os.walk(rdir, topdown=True):
-            dirs[:] = [d for d in dirs if d != '.git' and d != 'node_modules'and d != 'build']
+            dirs[:] = [d for d in dirs if d != '.git' and d != 'node_modules' and d != 'build' and d != 'dist']
             count += grep(root)
 
 print('{} files searched'.format(count))
