@@ -43,8 +43,8 @@ If not in a git repo use the root of the previously used git repo"
               (propertize (format "%s" (nth 1 fields))
                 'face 'compilation-line-number)
               (nth 2 fields)))
-          (split-string (buffer-string) "\n"))
-        (split-string (buffer-string) "\n")))))
+          (split-string (buffer-string) "\n") t)
+        (split-string (buffer-string) "\n" t)))))
 
 (defvar vj-helm-simple-git-grep
   '((name . "Git grep")
