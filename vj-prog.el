@@ -354,12 +354,7 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 ; ------------------------------------------------------------
 
-(defun sm-try-smerge ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil t)
-      (smerge-mode 1))))
-(add-hook 'find-file-hook 'sm-try-smerge t)
+(add-hook 'find-file-hook 'smerge-start-session t)
 
 ; ------------------------------------------------------------
 
