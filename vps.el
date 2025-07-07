@@ -183,11 +183,16 @@ Optional argument KEY-PREFIX overrides builtin M-i."
       (setcdr entry settingdef)
       )))
 
+
+;; Does not work with vertico
+;; (defun vps-completing-read (&rest args)
+;;   "Like `completing-read' but send TAB so candidates are listed immediately.
+;; Optional argument ARGS is the list of possible completions."
+;;   (let ((unread-command-events (cons ?\t unread-command-events)))
+;;     (apply 'completing-read args)))
+
 (defun vps-completing-read (&rest args)
-  "Like `completing-read' but send TAB so candidates are listed immediately.
-Optional argument ARGS is the list of possible completions."
-  (let ((unread-command-events (cons ?\t unread-command-events)))
-    (apply 'completing-read args)))
+  (apply 'completing-read args))
 
 (defun vps-icompleting-read (prompt choices)
   (let ((iswitchb-make-buflist-hook
