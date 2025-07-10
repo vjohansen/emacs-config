@@ -48,30 +48,35 @@ if (args.dirs.length === 0) {
 }
 const word = args.dirs.shift();
 
-let exts = args.e.replace(
-  /:code/,
-  'c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java' +
-    ',cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml' +
-    ',ts,tsx,jsx,json',
-);
-exts = exts.replace(
-  /:text/,
-  'org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,' +
-    'config,xslt,xsl,css,asp,xml,xsl,xslt,sql',
-);
+let exts = args.e
+  .replace(
+    /:code/,
+    'c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java,cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml,ts,tsx,jsx,json',
+  )
+  .replace(
+    /:text/,
+    'org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql',
+  );
 
-const ext_re = new RegExp('\\.(' + exts.split(',').join('|') + ')$', 'i');
+const ext_re = new RegExp(`\\.(${exts.split(',').join('|')})$`, 'i');
 let exitcode = 1;
 
 const homepath = process.env.HOMEPATH
-  ? process.env.HOMEDRIVE + process.env.HOMEPATH
+  ? path.join(process.env.HOMEDRIVE, process.env.HOMEPATH)
   : null;
 
 function grep(dir_) {
   if (dir_ === 'NUL') return 0;
   dir_ = dir_.replace('~', process.env.HOME || homepath || '~');
-  if (!fs.existsSync(dir_) || !fs.statSync(dir_).isDirectory()) {
-    console.log('Directory does not exists:', dir_);
+  if (!fs.existsSync(dir_)) {
+    console.log('Directory does not exist:', dir_);
+    return 0;
+  }
+
+//  try {
+  const stats = fs.statSync(dir_);
+  if (!stats.isDirectory()) {
+    console.log('Not a directory:', dir_);
     return 0;
   }
   let count = 0;
@@ -89,13 +94,18 @@ function grep(dir_) {
     shell_args.push(String(args.B));
   }
   shell_args.push(word);
-  shell_args = shell_args.concat(
-    files.map((fn) => fn.replace('{', '\\{').replace('}', '\\}')),
-  );
+
+  // Properly escape filenames for grep
+  shell_args = shell_args.concat(files.map(fn => {
+    return fn.replace(/([\\$'"`\s])/g, '\\$1');
+  }));
+
   const grepProc = spawnSync('grep', shell_args, { cwd: dir_, encoding: 'utf8' });
   let output = grepProc.stdout || '';
+
   if (grepProc.error) {
     // grep not found or failed
+    console.error('Grep failed:', grepProc.error);
     return count;
   }
   if (output.length > 2) {
@@ -107,6 +117,11 @@ function grep(dir_) {
     console.log('No matches in', dir_);
   }
   return count;
+
+  // } catch (err) {
+  //   console.error('Error reading directory:', dir_, err);
+  //   return 0;
+  // }
 }
 
 let count = 0;
