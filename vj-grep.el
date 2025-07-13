@@ -78,4 +78,8 @@ With prefix argument do a recursive grep."
           " " (buffer-file-name) " " (shell-quote-argument word))))
 
 
+(defun rg-current-dir (word)
+  (interactive (list (vps-read-from-minibuffer "Search Term" (current-word))))
+  (grep (format "grep -n -s \"%s\" *" word)))
+
 (provide 'vj-grep)

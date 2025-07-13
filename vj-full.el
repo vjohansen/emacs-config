@@ -83,7 +83,6 @@
 (global-set-key "\M-qa" 'align-equals)
 (global-set-key (kbd "M-q RET") 'find-file-at-point)
 (global-set-key "\C-x\C-b" 'ibuffer)
-(global-set-key "\C-\M-g" 'vgrep)
 
 
 (autoload 'fnexpand-complete "fnexpand" "*Expand the file name, env var or command near point" t)
@@ -91,7 +90,7 @@
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 
 (load "vj-grep")
-(global-set-key "\C-\M-g" 'vgrep)       ;FIXME rename to grep vj-lgrep
+(global-set-key "\C-\M-g" 'rg-current-dir)
 
 (global-set-key [M-down] 'vjo-forward-current-word-keep-offset)
 (global-set-key [M-up] 'vjo-backward-current-word-keep-offset)
