@@ -63,14 +63,17 @@
 
 (defvar vj-helm-recentf
   (helm-build-sync-source "Recent Files"
+    ;; https://github.com/emacs-helm/helm/issues/2709#issuecomment-3101237986
+    ;;    If you want to fix it use :coerce 'substring-no-properties, otherwise
+    ;;    you can use the helm-recentf-source to build your source.
     :candidates 'vj-helm-recentf-list
     :filtered-candidate-transformer 'helm-highlight-files
     :action 'helm-find-files-actions))
 
-
 (defvar vj-helm-list
   '(
-     vj-helm-recentf                    ; helm-source-recentf TOO SLOW
+     helm-source-recentf
+;;     vj-helm-recentf                    ; helm-source-recentf TOO SLOW
      helm-source-buffers-list
      helm-source-files-in-current-dir
      helm-source-vps-files
