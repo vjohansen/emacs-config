@@ -1,5 +1,4 @@
 
-(require 'tempo)
 (setq auto-mode-alist (cons '("\\.zsh\\'" . sh-mode) auto-mode-alist))
 
 (autoload 'smart-compile "smart-compile" "Smart-Compile*" t)
@@ -148,8 +147,6 @@
 
 ; ------------------------------------------------------------
 
-(load "tempo-c-cpp")
-
 (add-hook 'c-mode-common-hook 'vjo-c-mode-common-hook)
 ;;(add-hook 'c-mode-common-hook 'hs-hide-initial-comment-block t)
 
@@ -166,12 +163,7 @@
 ;;  (define-key c-mode-map "\C-m" 'my-cc-mode-return)
 ;;  (define-key c++-mode-map "\C-m" 'my-cc-mode-return)
 
-  (local-set-key "\C-c\C-f" 'tempo-forward-mark)
-  (local-set-key "\C-c\C-e" 'tempo-complete-tag)
   (local-set-key "\C-c\C-c" 'comment-region)
-  (if (equal major-mode 'csharp-mode)
-    (local-set-key "\C-t" 'vjo-toggle-csharp-file)
-    (local-set-key "\C-t" 'vjo-toggle-h-cpp-file));; use M-o?
   (local-set-key "\C-ch" 'hs-hide-block)
   (local-set-key "\C-cs" 'hs-show-block)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
@@ -241,59 +233,6 @@
         (or (re-search-forward "[^:]//" 10000 t) (< (buffer-size) 5) ))
       (c++-mode)
     (c-mode)))
-
-(defun vjo-toggle-h-cpp-file ()
-  "Switch buffer from cc to h and vice versa depending on current buffer"
-  (interactive)
-  (let* (
-        (name (file-name-sans-extension (buffer-file-name)))
-        (hname (concat name ".h"))
-        (hhname (concat name ".hh"))
-        (hppname (concat name ".hpp"))
-        (cname (concat name ".c"))
-        (cppname (concat name ".cpp"))
-        (cxxname (concat name ".cxx"))
-        (ccname (concat name ".cc"))
-        )
-    (if (string-match "\\.h.?.?$" (buffer-file-name))
-        (or
-         (and (file-exists-p ccname) (find-file ccname))
-         (and (file-exists-p cppname) (find-file cppname))
-         (and (file-exists-p cxxname) (find-file cxxname))
-         (and (file-exists-p cname) (find-file cname))
-         (if (y-or-n-p "Create cpp file ")
-           (find-file cppname))
-         )
-        (or
-         (and (file-exists-p hhname) (find-file hhname))
-         (and (file-exists-p hname) (find-file hname))
-         (and (file-exists-p hppname) (find-file hppname))
-         (if (y-or-n-p "Create hpp-file ")
-             (find-file hppname)))
-      ))
-    )
-
-(defun vj-nxml-xaml ()
-  (local-set-key (kbd "C-t") 'vjo-toggle-csharp-file))
-
-(add-hook 'nxml-mode-hook 'vj-nxml-xaml)
-
-(defun vjo-toggle-csharp-file ()
-  "Switch buffer from cc to h and vice versa depending on current buffer"
-  (interactive)
- (let*
-   ((fn (buffer-file-name)) basename ext)
-  (when (string-match "^\\([^.]+\\)\\(\\..*\\)$" fn)
-    (setq basename (match-string 1 fn))
-    (setq ext (downcase (match-string 2 fn)))
-    (if (equal ext ".xaml.cs")
-      (find-file (concat basename ".xaml"))
-      (if (equal ext ".xaml")
-        (find-file (concat basename ".xaml.cs"))
-;;        (message "Dunno about %s %s" basename ext)
-    )))))
-
-
 
 (defun my-cc-mode-return ()
    "Intelligent line breaking in all cc-modes. Handles strings in a smart
@@ -389,9 +328,6 @@ foo.cpp and in the same directory as the current header file, foo.h."
 
 
 ; ------------------------------------------------------------
-
-
-
 
 (defun vjo-buffer-contains (text)
   (interactive "sFind: ")

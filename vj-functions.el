@@ -374,64 +374,6 @@ Usage:(add-hook 'compilation-finish-functions 'vj-ag-compilation-mode-finish)"
 
 ;; ------------------------------------------------------------
 
-(setq vj-package-list '(
-                         beacon
-                         company
-                         company-quickhelp
-                         company-statistics
-                         csharp-mode
-                         flycheck
-                         git-gutter
-                         gitconfig-mode
-                         gitignore-mode
-                         guide-key
-                         helm
-                         helm-git-grep
-                         helm-org-rifle
-                         helm-w32-launcher
-                         helm-xref
-                         htmlize
-                         iedit
-                         magit
-                         perfect-margin
-                         powershell
-                         pyim
-
-                         ;; stack overflow: sos sx
-                         avy ;; In site-lisp
-                         ;; all-the-icons-dired dumb-jump elfeed elfeed-score elpher elpy fireplace
-
-                         dap-mode
-                         edit-indirect
-                         flymake-eslint
-                         json-mode
-                         lsp-mode
-                         lsp-ui
-                         markdown-mode
-                         nodejs-repl
-                         plantuml-mode
-                         prettier
-                         rjsx-mode
-                         tree-sitter
-                         treemacs-icons-dired
-                         vscode-dark-plus-theme
-                         yasnippet
-                         ))
-
-
-(defun vj-install-missing-packages ()
-  (interactive)
-  ;; Refresh
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
-  ;; Install the missing packages
-  (dolist (package vj-package-list)
-    (unless (package-installed-p package)
-      (package-install package))))
-
-;; ------------------------------------------------------------
-
 ;; based on code from https://github.com/magit/magit/issues/1972
 
 (require 'color)
