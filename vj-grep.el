@@ -24,6 +24,10 @@ from filenames for nicer display."
   "Command line for calling vgrep22.pl program.")
 
 
+(defun vj-grep-current-dir (word)
+  (interactive (list (vps-read-from-minibuffer "Search Term" (current-word))))
+  (grep (format "grep -n -s \"%s\" *" word)))
+
 (defun vgrep (word &optional ext-string)
   "Run grep WORD on files with vj-grep-source-extensions in current directory.
 
@@ -76,10 +80,5 @@ With prefix argument do a recursive grep."
   (grep (concat vj-perl-program " -w "
           (or (locate-library "incgrep.pl") "-S incgrep.pl")
           " " (buffer-file-name) " " (shell-quote-argument word))))
-
-
-(defun rg-current-dir (word)
-  (interactive (list (vps-read-from-minibuffer "Search Term" (current-word))))
-  (grep (format "grep -n -s \"%s\" *" word)))
 
 (provide 'vj-grep)

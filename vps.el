@@ -119,7 +119,6 @@ if they match this setting."
 
 
 (defvar vps-project-dir "~/.emacs.d/vps")
-(defvar vps-perl-program "perl")
 (defvar vps-etags-program "etags")
 
 (defvar vps-default-setting-alist
@@ -132,10 +131,8 @@ if they match this setting."
      )
   "Fallback values for projects. Update with vps-add-default-setting")
 
-(defvar vps-vgrep-call
-  (concat vps-perl-program " "
-          (or (locate-library "vgrep22.pl") "-S vgrep22.pl"))
-  "Command line for calling vgrep22.pl program.")
+(defvar vps-vgrep-call (concat "node " (locate-library "vgrep.mjs"))
+  "Command line for calling vgrep.mjs.")
 
 ;; Internal globals
 (defvar vps-project-name nil "Current project.")

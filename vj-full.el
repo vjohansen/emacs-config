@@ -90,7 +90,7 @@
 ;;trick: call global-set-key interactively and then do C-x ESC ESC
 
 (load "vj-grep")
-(global-set-key "\C-\M-g" 'rg-current-dir)
+(global-set-key "\C-\M-g" 'vj-grep-current-dir)
 
 (global-set-key [M-down] 'vjo-forward-current-word-keep-offset)
 (global-set-key [M-up] 'vjo-backward-current-word-keep-offset)
