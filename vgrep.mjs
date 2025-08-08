@@ -48,15 +48,14 @@ if (args.dirs.length === 0) {
 }
 const word = args.dirs.shift();
 
-let exts = args.e
-  .replace(
-    /:code/,
-    'c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java,cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml,ts,tsx,jsx,json',
-  )
-  .replace(
-    /:text/,
-    'org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql',
-  );
+const EXT_ALIASES = {
+  ':code': 'c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java,cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml,ts,tsx,jsx,json',
+  ':text': 'org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql'
+};
+let exts = args.e;
+for (const alias in EXT_ALIASES) {
+  exts = exts.replace(alias, EXT_ALIASES[alias]);
+}
 
 const ext_re = new RegExp(`\\.(${exts.split(',').join('|')})$`, 'i');
 let exitcode = 1;
@@ -80,7 +79,7 @@ function grep(dir_) {
     return 0;
   }
   let count = 0;
-  const files = fs.readdirSync(dir_).filter((f) => ext_re.test(f.toLowerCase()));
+  const files = fs.readdirSync(dir_).filter((f) => ext_re.test(f));
   if (files.length === 0) return 0;
   count += files.length;
   let shell_args = ['-nH'];
@@ -95,10 +94,7 @@ function grep(dir_) {
   }
   shell_args.push(word);
 
-  // Properly escape filenames for grep
-  shell_args = shell_args.concat(files.map(fn => {
-    return fn.replace(/([\\$'"`\s])/g, '\\$1');
-  }));
+  shell_args.push(...files);
 
   const grepProc = spawnSync('grep', shell_args, { cwd: dir_, encoding: 'utf8' });
   let output = grepProc.stdout || '';

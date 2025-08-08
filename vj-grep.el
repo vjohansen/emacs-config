@@ -18,15 +18,14 @@ from filenames for nicer display."
 
 (defvar vj-perl-program "perl")
 
-(defvar vj-vgrep-call
-  (concat vj-perl-program " "
-          (or (locate-library "vgrep22.pl") "-S vgrep22.pl"))
-  "Command line for calling vgrep22.pl program.")
-
+(defvar vj-vgrep-call (concat "node " (locate-library "vgrep.mjs"))
+  "Command line for calling vgrep.mjs.")
 
 (defun vj-grep-current-dir (word)
-  (interactive (list (vps-read-from-minibuffer "Search Term" (current-word))))
-  (grep (format "grep -n -s \"%s\" *" word)))
+  (interactive
+    (list
+      (vps-read-from-minibuffer "Search Term" (current-word))))
+  (grep (format "grep -n -i -I -s \"%s\" *" word)))
 
 (defun vgrep (word &optional ext-string)
   "Run grep WORD on files with vj-grep-source-extensions in current directory.

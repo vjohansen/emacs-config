@@ -67,6 +67,7 @@
     ;;    If you want to fix it use :coerce 'substring-no-properties, otherwise
     ;;    you can use the helm-recentf-source to build your source.
     :candidates 'vj-helm-recentf-list
+    :coerce 'substring-no-properties
     :filtered-candidate-transformer 'helm-highlight-files
     :action 'helm-find-files-actions))
 
