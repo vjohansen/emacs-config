@@ -81,13 +81,19 @@ With prefix argument, kill that many lines from point."
 
 
 
+;; ‘\_<’
+;;      matches the empty string, but only at the beginning of a symbol.  A
+;;      symbol is a sequence of one or more word or symbol constituent
+;;      characters.  ‘\_<’ matches at the beginning of the buffer (or
+;;      string) only if a symbol-constituent character follows.
+
 (defun vjo-forward-current-word-keep-offset ()
   " (VJO 1999)"
   (interactive)
   (let ((re-curword) (curword) (offset (point))
         (old-case-fold-search case-fold-search) )
     (setq curword (thing-at-point 'symbol))
-    (setq re-curword (concat "\\<" (thing-at-point 'symbol) "\\>") )
+    (setq re-curword (concat "\\_<" (thing-at-point 'symbol) "\\_>") )
     (beginning-of-thing 'symbol)
     (setq offset (- offset (point)))    ; offset from start of symbol/word
     (setq offset (- (length curword) offset)) ; offset from end
@@ -114,7 +120,7 @@ With prefix argument, kill that many lines from point."
   (let ((re-curword) (curword) (offset (point))
         (old-case-fold-search case-fold-search) )
     (setq curword (thing-at-point 'symbol))
-    (setq re-curword (concat "\\<" curword "\\>") )
+    (setq re-curword (concat "\\_<" curword "\\_>") )
     (beginning-of-thing 'symbol)
     (setq offset (- offset (point)))    ; offset from start of symbol/word
 ;;    (message "VJO-SEARCH-BACK: %s %d" curword  offset)
