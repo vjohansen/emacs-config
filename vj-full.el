@@ -285,7 +285,7 @@
       (when step
         (setq val (car (frame-parameter (selected-frame) 'alpha)))
         (setq val (+ val step))
-        (set-frame-parameter (selected-frame) 'alpha (list val 70))
+        (set-frame-parameter (selected-frame) 'alpha (list (min val 100) 70))
         (setq inc 1 first nil)
         (setq ev (read-event (format "+,-,0 for further adjustment: %d" val)))))
     (push ev unread-command-events)))

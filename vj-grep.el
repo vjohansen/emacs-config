@@ -22,10 +22,8 @@ from filenames for nicer display."
   "Command line for calling vgrep.mjs.")
 
 (defun vj-grep-current-dir (word)
-  (interactive
-    (list
-      (vps-read-from-minibuffer "Search Term" (current-word))))
-  (grep (format "grep -n -i -I -s \"%s\" *" word)))
+  (interactive (list (vps-read-from-minibuffer "Search Term" (current-word))))
+  (grep (format "grep -n -i -I -s \"%s\" -- *" word)))
 
 (defun vgrep (word &optional ext-string)
   "Run grep WORD on files with vj-grep-source-extensions in current directory.

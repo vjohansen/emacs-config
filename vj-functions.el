@@ -286,6 +286,7 @@ With a prefix arg, insert the N characters above point.
         (setq from (match-string-no-properties 0))
         (cond
           ((equal from "/") (setq to "\\"))
+          ((equal from "//") (setq to "\\"))
           ((equal from "\\") (setq to "\\\\"))
           ((equal from "\\\\") (setq to "/"))
           (t (message "No slash found")))))      ;never happens
