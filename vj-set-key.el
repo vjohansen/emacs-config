@@ -35,18 +35,13 @@
 
 (global-set-key "\M-q\M-q" 'fill-paragraph)
 (global-set-key "\M-q\M-l" 'vj-insert-local-variables-section)
-(global-set-key "\M-qc" 'indent-region)
-(global-set-key "\M-qd" 'dumb-jump-go)
-(global-set-key "\M-q\M-d" 'dumb-jump-quick-look)
 (global-set-key "\M-qp" 'find-file-at-point)
 (global-set-key "\M-q\M-s" 'slash-replace-on-region)
 (global-set-key "\M-qr" 'insert-char-above)
 (global-set-key "\M-q\M-h" 'vj-mark-paragraph)
 (global-set-key "\M-qf" 'font-lock-fontify-buffer)
-
-(global-set-key "\M-qi" 'vj-ifdef-insert)
-(global-set-key "\M-q\M-i" 'vj-ifndef-insert)
-
+;; (global-set-key "\M-qi" 'vj-ifdef-insert)
+;; (global-set-key "\M-q\M-i" 'vj-ifndef-insert)
 (global-set-key (kbd "M-q +") 'my-increment-number-at-point)
 (global-set-key (kbd "M-q M-+") 'copy-and-inc-line)
 
@@ -57,14 +52,7 @@
 
 ;; You can now use M-s . instead
 (define-key isearch-mode-map (kbd "C-S-w") 'isearch-yank-symbol-or-char)
-
-;; tags-apropos current word. Use C-u for C++ members (prepends ::)
-(global-set-key "\M-qt"
-  #'(lambda (&optional member)
-     (interactive "p")
-     (if (equal member 4)
-       (xref-find-apropos (concat "::" (current-word) "\\>"))
-       (xref-find-apropos (concat "\\<" (current-word) "\\>")))))
+(define-key isearch-mode-map (kbd "C-f") 'isearch-yank-char)
 
 (defun isearch-yank-symbol-or-char ()
   "Pull next character or symbol from buffer into search string."
@@ -76,7 +64,6 @@
          (forward-symbol 1)
        (forward-char 1))
      (point))))
-
 
 
 (defun vj-switch-to-buffer-hook ()
@@ -92,18 +79,12 @@
 (defun vj-browse-url ()
   (interactive)
   (let
-    ((w3m-url (if (featurep 'w3m)
-                (get-text-property (point) 'w3m-href-anchor)))
-      (url-at-point (thing-at-point-url-at-point))
+    ((url-at-point (thing-at-point-url-at-point))
       (html-buffer-url
         (if (and (buffer-file-name) (string-match "\\.html?$"
                                      (buffer-file-name)))
           (format "file://%s" (buffer-file-name)))))
     (cond
-      (w3m-url
-        (browse-url w3m-url)
-        ;;(shell-command "wmctrl -a firefox")
-        )
       (url-at-point ;; http://ozymandias.dk
         (browse-url url-at-point))
       (html-buffer-url
@@ -140,12 +121,8 @@
 (add-hook 'prog-mode-hook 'vj-prog-keys-setup)
 ;;(add-hook 'prog-mode-hook 'vj-prog-auto-fill)
 
-
-(global-set-key (kbd "M-æ")  'backward-paragraph)
-(global-set-key (kbd "M-ø")  'forward-paragraph)
-
 (if (fboundp 'cycle-spacing)
-  (global-set-key (kbd "M-å")  'cycle-spacing))
+  (global-set-key (kbd "M-å") 'cycle-spacing))
 
 (global-set-key (kbd "C-M-æ") 'vj-shell-in-project)
 

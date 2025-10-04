@@ -83,6 +83,10 @@
      ;;                        helm-c-source-locate
      ))
 
+(setq vj-text-dir (expand-file-name  "Sync/books" (getenv "USERPROFILE")))
+;; (when (file-exists-p vj-text-dir)
+;;   (add-to-list 'vj-helm-list 'vj-helm-text))
+
 (defun vj-helm ()
   (interactive)
   (if current-prefix-arg
@@ -173,7 +177,6 @@
       :action (list (cons "Do it" #'cppref-action)))))
 
 
-(setq vj-text-dir "~/Sync/books")
 
 (defvar vj-text-files
   (if (file-exists-p vj-text-dir)
@@ -192,3 +195,57 @@
     :filtered-candidate-transformer 'helm-highlight-files
     :action 'helm-find-files-actions
     ))
+
+
+;; (defvar vj-helm-marked-files nil)
+
+;; (defvar vj-helm-marked-files
+;;   (helm-build-sync-source "Marked"
+;;     :candidates  (lambda () vj-helm-marked-files)
+;;     :candidate-number-limit 50
+;;     :requires-pattern 2
+;;     :filtered-candidate-transformer 'helm-highlight-files
+;;     :action 'helm-find-files-actions
+;;     ))
+
+;; (defun vj-helm-marked-files-ui ()
+;;   (interactive)
+;;   (helm :sources vj-helm-marked-files
+;;     :buffer "*vj-helm-marked-files*"
+;;     :truncate-lines t))
+
+;; (defun vj-helm-ff-run-helm-on-marked-files ()
+;;   "Run `vj-helm' on marked files."
+;;   (interactive)
+;;   (let ((files (helm-marked-candidates)))
+;;     (when files
+;;       (setq vj-helm-marked-files files)
+;;       ;; (with-helm-alive-p
+;;       ;;   (exit-minibuffer))
+;;       ;; exit helm
+;;       (helm-keyboard-quit)
+;;       (message "Marked files: %s" (length files))
+;;       (vj-helm-marked-files-ui))))
+;; ;; helm-grep-ag-search-results
+
+;; (define-key helm-map (kbd "M-,") 'vj-helm-ff-run-helm-on-marked-files)
+
+
+;; (require 'helm-grep)
+;; (define-key helm-map (kbd "C-c s") 'helm-grep-ag-run-search-results)
+;; (add-to-list 'helm-type-file-actions
+;;   '("Run search on results" . helm-grep-ag-search-results) )
+
+;; ;; helm-locate-map
+
+(global-set-key (kbd "M-q l") 'vj-helm-locate)
+
+(defun vj-helm-locate ()
+  (interactive)
+  "Query user for locate pattern and run helm locate."
+  (let ((pattern (read-string "Locate pattern: ")))
+    (when (and pattern (> (length pattern) 2))
+      (let ((helm-locate-command
+              (concat "c:/tools/Locate32/Locate.exe -i %s " pattern " %s")))
+        (helm-other-buffer '(helm-source-locate) "*vj-helm-locate*"))))
+  )

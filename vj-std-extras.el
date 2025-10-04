@@ -54,14 +54,6 @@
 
 (require 'dired-x)
 
-(autoload 'wdired-change-to-wdired-mode "wdired")
-(eval-after-load "dired"
-  '(progn
-     (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
-     (define-key dired-mode-map
-       [menu-bar immediate wdired-change-to-wdired-mode]
-       '("Edit File Names" . wdired-change-to-wdired-mode))))
-
 ;; Add different directory sorting keys to dired
 (eval-after-load "dired"
   '(mapc (lambda (elt)
@@ -84,8 +76,6 @@
 
 ;; Extra C-h .. keybindings
 (find-function-setup-keys)
-
-
 
 ;; ------------------------------------------------------------
 (defun isearch-yank-symbol-or-char ()

@@ -167,8 +167,6 @@
   (local-set-key "\C-ch" 'hs-hide-block)
   (local-set-key "\C-cs" 'hs-show-block)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
-  (local-set-key "\C-c\C-i" 'ewd-insert-new-method)
-  (local-set-key "\C-ci" 'vjo-using-fix)
 
   (require 'if-jump)
   (local-set-key [C-home]'(lambda() (interactive) (if-jump-jump 'backward)))
@@ -225,7 +223,6 @@
                 (insert (concat "console.log(\"" cw "\", " cw ");")))))))
     )))
 
-(add-to-list 'auto-mode-alist '("\\.cuh?\\'" . c-or-c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c-or-c++-mode))
 (defun c-or-c++-mode ()
   (if (save-excursion
@@ -247,49 +244,6 @@
                          ;; must add a single space.
           (end-of-line))
          (t (c-context-line-break))))
-
-
-
-;; If point is in a class definition, return the name of the
-;; class. Otherwise, return nil. Thanks to Elijah Daniel for this one.
-
-(defun ewd-classname ()
-  "If the point is in a class definition, gets the name of the class.
-Return nil otherwise."
-  (save-excursion
-    (let ((brace (assoc 'inclass (c-guess-basic-syntax))))
-      (if (null brace) '()
-        (goto-char (cadr brace))
-        (let ((class-open (assoc 'class-open (c-guess-basic-syntax))))
-          (if class-open (goto-char (cadr class-open)))
-          (if (looking-at "^class[ \t]+\\([A-Za-z_][^ \t:{]*\\)")
-              (buffer-substring (match-beginning 1) (match-end 1))
-            (error "Error parsing class definition!")))))))
-
-;; Insert function prototype in current header file and matching
-;; function body in implementation file.
-(defun ewd-insert-new-method (rettype proto)
-  "Insert a function declaration into the current class header file at
-point, along with matching function definition in the corresponding
-implementation file, complete with class name and scope resolution
-operator.  This function expects the implementation file to be named
-foo.cpp and in the same directory as the current header file, foo.h."
-  (interactive "sReturn type:\nsPrototype: ")
-  (let ((classname (ewd-classname))
-        (c-tab-always-indent t))
-    (if (null classname) (message "Not in class definition!")
-      (unless (string-equal rettype "") (setq rettype (concat rettype " ")))
-      (insert rettype proto ";")
-      (c-indent-command)
-      (save-window-excursion
-        (find-file (concat (file-name-sans-extension (buffer-file-name))
-                           ".cc"))
-        (end-of-buffer)
-        (insert "\n\n")
-        (end-of-buffer)
-        (insert rettype classname "::" proto "\n{\n  \n}\n")
-        (previous-line 2)))))
-
 
 ; ------------------------------------------------------------
 
@@ -335,22 +289,3 @@ foo.cpp and in the same directory as the current header file, foo.h."
     (goto-char (point-min))
     (re-search-forward text nil t)))
 
-(defun vjo-maybe-insert (typename)
-  (when (and (not (vjo-buffer-contains (concat "^using +" typename)))
-          (vjo-buffer-contains typename))
-    (insert (concat "using " typename ";"))
-    (newline)))
-
-(defun vjo-using-fix ()
-  "2021 Sep"
-  (interactive)
-  (goto-char (point-max))
-  (re-search-backward "^#include")
-  (beginning-of-line)
-  (forward-line 1)
-  (vjo-maybe-insert "std::string")
-  (vjo-maybe-insert "std::wstring")
-  (vjo-maybe-insert "std::vector")
-  (vjo-maybe-insert "std::map")
-  (vjo-maybe-insert "std::shared_ptr")
-  )
