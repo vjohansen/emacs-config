@@ -1,5 +1,8 @@
 ;;; ewth-mode.el --- Display weather info in mode-line -*- lexical-binding: t; -*-
 
+;; Copyright (C) 2025 Free Software Foundation, Inc.
+;; License: GPL-3.0-or-later
+
 ;; Author: ISouthRain
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "26.1") (request "0.3.0"))
@@ -19,7 +22,8 @@
 
 ;;; Code:
 
-(require 'request)
+(unless (require 'request nil 'noerror)
+  (error "[ewth.el] package `request` not found. Please install it (e.g. M-x package-install RET request RET)"))
 
 (defgroup ewth nil
   "Weather display in mode-line."
@@ -84,18 +88,14 @@ Reference URL: https://github.com/chubin/wttr.in?tab=readme-ov-file#one-line-out
   (force-mode-line-update))
 
 (defun ewth--insert-modeline ()
-  "Insert ewth string into mode-line if not already present."
-  (unless (member '(:eval (ewth--modeline-string)) mode-line-format)
-    (setq-default
-     mode-line-format
-     (append mode-line-format
-             '((:eval (ewth--modeline-string)))))))
+  "Insert ewth string into `global-mode-string` if not already present."
+  (setq global-mode-string (remove '(:eval (ewth--modeline-string)) global-mode-string))
+  (add-to-list 'global-mode-string '(:eval (ewth--modeline-string)) t))
 
 (defun ewth--remove-modeline ()
-  "Remove ewth string from mode-line."
-  (setq-default
-   mode-line-format
-   (remove '(:eval (ewth--modeline-string)) mode-line-format)))
+  "Remove ewth string from `global-mode-string`."
+  (setq global-mode-string
+        (remove '(:eval (ewth--modeline-string)) global-mode-string)))
 
 (defun ewth--modeline-string ()
   "Return mode-line string for weather info."
