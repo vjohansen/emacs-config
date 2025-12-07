@@ -101,7 +101,7 @@
 
 
 (defun vj-prog-keys-setup ()
-  "Bind æ -> {,  M-æ -> forward-paragraph, etc."
+  "Bind æ -> {, etc."
   (interactive)
   (local-set-key (kbd "æ") '(lambda () (interactive) (insert "[")))
   (local-set-key (kbd "ø") '(lambda () (interactive) (insert "]")))
