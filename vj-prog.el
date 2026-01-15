@@ -276,6 +276,7 @@
   ;; (eldoc-mode t)
   (auto-fill-mode -1)
   (local-set-key "\M-q\M-w" 'vjo-cout-watch-current-word)
+  (local-set-key (kbd "C-, C-,") 'eldoc-print-current-symbol-info)
   )
 
 (add-hook 'python-mode-hook 'vj-python-setup)

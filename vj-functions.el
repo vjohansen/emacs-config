@@ -72,6 +72,7 @@ With prefix argument, kill that many lines from point."
   ""
   (interactive)
   (goto-char (point-max))
+  (insert "\n")
   (insert (concat comment-start " Local " "Variables: ***\n"))
   (insert (concat comment-start " compile-command: " (format "\"%s\"" compile-command) "  ***\n"))
   (insert (concat comment-start " End: ***\n"))
@@ -485,3 +486,25 @@ same directory as the org-buffer and insert a link to this file."
       (setq next (mod (+ 1 index ) (length files)))
       (find-file (nth next files)))))
 
+
+;; alternative: magit-stage-files or C-c M-g s
+(global-set-key (kbd "C-x v a") 'vj-git-stage-current-buffer)
+
+(defun vj-git-stage-current-buffer ()
+  "call 'git add on current-buffer"
+  (interactive)
+  (let* ((buffile (buffer-file-name))
+         (output (shell-command-to-string
+                  (concat "git add " (buffer-file-name)))))
+    (message (if (not (string= output ""))
+                 output
+               (concat "Added " buffile))))
+  (if (fboundp 'diff-hl-update)
+    (diff-hl-update)))
+
+
+(defun vj-dired-up-directory ()
+  (interactive)
+  (if current-prefix-arg
+    (scroll-right current-prefix-arg)
+    (dired-up-directory)))

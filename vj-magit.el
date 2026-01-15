@@ -3,7 +3,7 @@
 
 (setq magit-last-seen-setup-instructions "1.4.0")
 
-(setq magit-diff-visit-prefer-worktree t)
+(setopt magit-diff-visit-prefer-worktree t)
 
 ;; (when (equal magit-log-format-graph-function 'magit-log-format-unicode-graph)
 ;;   (setcdr (assoc ?* magit-log-format-unicode-graph-alist) ?●))
@@ -39,3 +39,9 @@
       ;;
       (format "c:/temp/show_commit.bat %s &" (match-string-no-properties 0))
         "*vj-git-diff-gui*")))
+
+(defun vj-magit-bun-check ()
+  (interactive)
+  (save-buffer)
+  (compile (concat "bun x --bun commitlint --edit " (buffer-file-name)))
+  )
