@@ -40,7 +40,6 @@
   "Alias e to `find-file´ FILENAME."
   (find-file filename))
 
-(global-set-key "\M-:" 'vj-find-tag)
 
 (defun vj-find-tag ()
     "My `find-tag´ wrapper for easy repetition (VJO 2003).
@@ -52,21 +51,6 @@ Call `find-tag´ with current word first time and after that call
     (if (eq last-command 'vj-find-tag)
         (find-tag nil t)
         (find-tag (current-word) current-prefix-arg)))
-
-
-(defun kill-whole-line ()
-  "Kill the entire current line.
-With prefix argument, kill that many lines from point."
-  (interactive)
-  (beginning-of-line)
-  (let ((beg (point)))
-    (end-of-line)
-    (if (eq current-prefix-arg nil)
-        (forward-line 1)
-      (forward-line current-prefix-arg))
-    (kill-region beg (point)))
-  )
-
 
 (defun vj-insert-local-variables-section ()
   ""
@@ -285,8 +269,8 @@ With a prefix arg, insert the N characters above point.
   (let (from to)
     (unless (use-region-p) ;; If there is no region use current line
       (setq
-        beg (point-at-bol)
-        end (point-at-eol)))
+        beg (line-beginning-position)
+        end (line-end-position)))
     (save-excursion
       (goto-char beg)
       (when (search-forward-regexp "[/\\]+" end)
@@ -327,45 +311,13 @@ With a prefix arg, insert the N characters above point.
   (interactive)
   (let ((grep-use-null-device)
          (dir (vj-git-root)))
-    (grep (format "cd %s && git --no-pager grep -n %s" dir (thing-at-point 'symbol)))))
-
-(defun vj-ag (dir word)
-  (interactive (list (read-string "Search Term: " (current-word))))
-  (let ((compilation-buffer-name-function (lambda (mode) (concat "*vj ag*"))))
-    ;; Do not want to set compilation-command which `compile' does
-    (compilation-start (format "%svj-ag.bat --vimgrep %s %s"
-                         vj-emacs-config-dir (shell-quote-argument word) dir))))
-;; vj-ag.bat
-;;c:\tools\ag --ignore Help --ignore build %* | python %~dp0/vj-ag-filter.py
-
-(defun vj-git-ag (word)
-  (interactive (list (read-string "Search Term: ")))
-  (vj-ag (vj-git-root) word))
-
-(defun vj-ag-compilation-mode-finish (buf status)
-  "Remove common path component (default-directory) in \'*vj sg*\' compilation buffer
-
-Usage:(add-hook 'compilation-finish-functions 'vj-ag-compilation-mode-finish)"
-  (interactive)
-  (when (equal (buffer-name buf) "*vj ag*")
-    (face-remap-add-relative 'compilation-error
-      :foreground "green2")))
-    ;; Not working : selecting file stops working
-    ;; (save-excursion
-    ;;   (set-buffer buf)
-    ;;   (goto-char (point-min))
-    ;;   (while (re-search-forward
-    ;;            (replace-regexp-in-string "[/\\]" "." default-directory)
-    ;;            nil t)
-    ;;     (delete-region (point-at-bol) (point))
-    ;;     (insert "•")))
-;; maybe use ;;  (progn (add-text-properties (match-beginning 0) (match-end 0) '(invisible t)) 'bold))))
-
+    (grep (format "cd %s && git --no-pager grep -n %s" dir
+            (shell-quote-argument (thing-at-point 'symbol))))))
 
 ;; ------------------------------------------------------------
 
 (defun vj-line-at-point ()
-  (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
 (defun vj-mark-paragraph ()
   (interactive)
@@ -457,7 +409,6 @@ same directory as the org-buffer and insert a link to this file."
   (insert (concat "[[file:" filename "]]"))
   (org-display-inline-images))
 
-(global-set-key "\C-cs" 'vj-org-screenshot)
 
 
 
@@ -469,7 +420,7 @@ same directory as the org-buffer and insert a link to this file."
   (when column
     (beginning-of-line)
     (forward-char (if (stringp column) (string-to-number column) column)))
-  (pulse-momentary-highlight-region (point-at-bol) (point-at-eol)))
+  (pulse-momentary-highlight-region (line-beginning-position) (line-end-position)))
 
 
 (defun vj-next-file-by-extension ()
@@ -488,8 +439,6 @@ same directory as the org-buffer and insert a link to this file."
 
 
 ;; alternative: magit-stage-files or C-c M-g s
-(global-set-key (kbd "C-x v a") 'vj-git-stage-current-buffer)
-
 (defun vj-git-stage-current-buffer ()
   "call 'git add on current-buffer"
   (interactive)
@@ -508,3 +457,10 @@ same directory as the org-buffer and insert a link to this file."
   (if current-prefix-arg
     (scroll-right current-prefix-arg)
     (dired-up-directory)))
+
+;; ------------------------------------------------------------
+;; Keybindings
+
+(global-set-key "\M-:" 'vj-find-tag)
+(global-set-key "\C-cs" 'vj-org-screenshot)
+(global-set-key (kbd "C-x v a") 'vj-git-stage-current-buffer)
