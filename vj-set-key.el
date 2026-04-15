@@ -78,17 +78,23 @@
 
 (defun vj-browse-url ()
   (interactive)
-  (let
+  (let*
     ((url-at-point (thing-at-point-url-at-point))
       (html-buffer-url
-        (if (and (buffer-file-name) (string-match "\\.html?$"
-                                     (buffer-file-name)))
-          (format "file://%s" (buffer-file-name)))))
+        (when (and (buffer-file-name) (string-match "\\.html?$"
+                                       (buffer-file-name)))
+          (format "file://%s" (buffer-file-name))))
+      (md-filename
+        (when (and (derived-mode-p 'markdown-mode)
+                   (thing-at-point-looking-at "@\\([^ \t\n]+\\)"))
+          (match-string 1))))
     (cond
       (url-at-point ;; http://ozymandias.dk
         (browse-url url-at-point))
       (html-buffer-url
         (browse-url html-buffer-url))
+      (md-filename
+        (find-file md-filename))
       (t (message "no link here")))))
 
 
