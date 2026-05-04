@@ -43,14 +43,14 @@ function parseArgs() {
 
 const args = parseArgs();
 if (args.dirs.length === 0) {
-  console.error('Usage: node vgrep.js <word> [dirs...]');
+  console.error('Usage: node vgrep.mjs <word> [dirs...]');
   process.exit(1);
 }
 const word = args.dirs.shift();
 
 const EXT_ALIASES = {
-  ':code': 'c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,py,ml,cs,java,cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml,ts,tsx,jsx,json',
-  ':text': 'org,txt,log,htm,html,mak,csproj,sln,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql'
+  ':code': 'c,cpp,cc,cxx,cs,h,hpp,hh,asm,el,pl,pm,js,mjs,py,ml,cs,java,cls,bas,pas,frm,sh,zsh,rb,php,ts,fs,fsx,r,m,xaml,ts,tsx,jsx,json',
+  ':text': 'org,txt,log,htm,html,mak,csproj,sln,slnx,vcproj,proj,bat,zsh,config,xslt,xsl,css,asp,xml,xsl,xslt,sql'
 };
 let exts = args.e;
 for (const alias in EXT_ALIASES) {
@@ -66,13 +66,11 @@ const homepath = process.env.HOMEPATH
 
 function grep(dir_) {
   if (dir_ === 'NUL') return 0;
-  dir_ = dir_.replace('~', process.env.HOME || homepath || '~');
+  dir_ = dir_.replace(/^~(?=\/|$)/, process.env.HOME || homepath || '~');
   if (!fs.existsSync(dir_)) {
     console.log('Directory does not exist:', dir_);
     return 0;
   }
-
-//  try {
   const stats = fs.statSync(dir_);
   if (!stats.isDirectory()) {
     console.log('Not a directory:', dir_);
@@ -93,14 +91,12 @@ function grep(dir_) {
     shell_args.push(String(args.B));
   }
   shell_args.push(word);
-
   shell_args.push(...files);
 
   const grepProc = spawnSync('grep', shell_args, { cwd: dir_, encoding: 'utf8' });
   let output = grepProc.stdout || '';
 
   if (grepProc.error) {
-    // grep not found or failed
     console.error('Grep failed:', grepProc.error);
     return count;
   }
@@ -109,15 +105,30 @@ function grep(dir_) {
     console.log(`Entering directory \`${dir_}'`);
     process.stdout.write(output.trimEnd() + '\n');
     console.log(`Leaving directory \`${dir_}'\n`);
-  } else {
-    console.log('No matches in', dir_);
   }
   return count;
+}
 
-  // } catch (err) {
-  //   console.error('Error reading directory:', dir_, err);
-  //   return 0;
-  // }
+function walk(root) {
+  let subdirs;
+  try {
+    subdirs = fs.readdirSync(root, { withFileTypes: true });
+  } catch (e) {
+    return;
+  }
+  let dirs = [];
+  for (const entry of subdirs) {
+    if (
+      entry.isDirectory() &&
+      !['.git', 'node_modules', 'build', 'dist'].includes(entry.name)
+    ) {
+      dirs.push(entry.name);
+    }
+  }
+  count += grep(root);
+  for (const d of dirs) {
+    walk(path.join(root, d));
+  }
 }
 
 let count = 0;
@@ -125,30 +136,8 @@ for (const dir_ of args.dirs) {
   count += grep(dir_);
 }
 
-if (args.r && args.r.length > 0) {
-  for (let rdir of args.r) {
-    rdir = rdir.replace(/%20/g, ' ');
-    function walk(root) {
-      let subdirs;
-      try {
-        subdirs = fs.readdirSync(root, { withFileTypes: true });
-      } catch (e) {
-        return;
-      }
-      let dirs = [];
-      for (const entry of subdirs) {
-        if (
-          entry.isDirectory() &&
-          !['.git', 'node_modules', 'build', 'dist'].includes(entry.name)
-        ) {
-          dirs.push(entry.name);
-        }
-      }
-      count += grep(root);
-      for (const d of dirs) {
-        walk(path.join(root, d));
-      }
-    }
+if (args.r.length > 0) {
+  for (const rdir of args.r) {
     walk(rdir);
   }
 }

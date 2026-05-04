@@ -28,7 +28,7 @@ from filenames for nicer display."
 (defun vgrep (word &optional ext-string)
   "Run grep WORD on files with vj-grep-source-extensions in current directory.
 
-With prefix argument do a recursive grep."
+With prefix argument do a recursive grep, prompting for a directory."
   (interactive
    (list
     (read-from-minibuffer
@@ -36,38 +36,17 @@ With prefix argument do a recursive grep."
          (format "vgrep [%s]: " (current-word))
        "vgrep Expression: ")
      nil nil nil 'grep-history (current-word))))
-  (if (string= word "")
-      (setq word (current-word)))
-  (unless (< (length word) 1)
+  (when (string-empty-p word)
+    (setq word (current-word)))
+  (unless (string-empty-p word)
     (grep
      (concat vj-vgrep-call
        " -i -e " (or ext-string vj-grep-source-extensions) " "
        (shell-quote-argument word) " "
        (if current-prefix-arg
          (concat "-r " (shell-quote-argument
-                         (file-name-directory
-                           (expand-file-name (read-file-name "Directory(-r): " default-directory)))))
-         ".")
-       ))))
-
-
-
-(defun vj-rgrep ()
-  "Recursive grep (VJ June 2003)"
-  (interactive)
-  (let
-    ((compilation-enter-directory-regexp-alist '(("Dir: \\(.*\\)" 1)))
-      (compilation-scroll-output nil)
-      (command
-        (concat vj-vgrep-call " -i "
-          " -e " vj-grep-source-extensions
-          " " (shell-quote-argument
-                (vj-read-from-minibuffer "rgrep" (current-word) 'grep-history))
-          " -r " (replace-regexp-in-string " " "%20"
-                   (expand-file-name (read-file-name "Dir: " nil default-directory nil))))))
-    (grep (if current-prefix-arg
-            (read-from-minibuffer "rgrep command: " command)
-            command ))))
+                         (expand-file-name (read-file-name "Directory: " default-directory))))
+         ".")))))
 
 
 ;; VJ april 2005

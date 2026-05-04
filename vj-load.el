@@ -21,7 +21,8 @@
 (vps-add-project "load-path" `((dirs ,load-path) (ext ("el"))))
 
 (vps-add-project "elisp" `((rdirs (,my-lisp-dir))
-                           (dirs (,vj-emacs-config-dir)) (ext ("el" "txt" "org"))))
+                            (dirs (,vj-emacs-config-dir))
+                            (ext ("el" "txt" "js" "pl" "py" "mjs" "org"))))
 
 (vps-change-project "elisp")
 

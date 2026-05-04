@@ -260,7 +260,7 @@
 
 (defun markdown-mode-setup ()
   (turn-on-visual-line-mode)
-  (keymap-local-set "C-c f" (lambda ()
+  (keymap-local-set "C-c C-f" (lambda ()
                               (interactive)
                               (buffer-face-set :family "Verdana" :height 1.0)))
   )
